@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head prefix="og: https://ogp.me/ns# fb: https://ogp.me/ns/fb# website: https://ogp.me/ns/website#">
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-W52QT7Q');</script>
+    <!-- End Google Tag Manager -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <link rel="preload" as="style" href="https://curebell.jp/css/style.css?202405022000">
+    <script src="https://curebell.jp/js/gsap/gsap.min.js" defer></script>
+    <script src="https://curebell.jp/js/gsap/ScrollTrigger.min.js" defer></script>
+    <script src="https://curebell.jp/js/swiper/swiper-bundle.min.js" defer></script>
+    <script src="https://curebell.jp/js/lazyload.min.js" defer></script>
+    <script src="https://curebell.jp/js/script.js?202405022000" defer></script>
+    <!-- Facebook SDK -->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v16.0" nonce="onK3tdF9"></script>
+    <!-- Twitter SDK -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="https://curebell.jp/css/sanitize.css?202405022000" />
+    <link rel="stylesheet" href="https://curebell.jp/js/swiper/swiper-bundle.min.css?202405022000" />
+    <link rel="stylesheet" href="https://curebell.jp/css/style.css?202405022000" />
+    <link rel="icon" href="https://curebell.jp/img/favicon.ico">
+    <meta property="og:url" content="https://curebell.jp/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="市販薬をくらべて、えらんで、なおす" />
+    <meta property="og:description" content="たくさんの市販薬の中から、症状や状況、好みに合ったものをスムーズに探せるWebアプリです。" />
+    <meta property="og:site_name" content="CureBell" />
+    <meta property="og:image" content="" />
+    <meta property="og:locale" content="ja_JP" />
+    <title>CureBell - 市販薬をくらべて、えらんで、なおす</title>
+</head>
+<body id="body" class="body">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W52QT7Q"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <header class="header">
+        <div class="spHeader mod-pcHidden">
+            <div class="header__txt">
+                <span class="fs9">くらべて、</span>
+                <span class="fs9">えらんで、</span>
+                <span class="fs9">なおす</span>
+            </div>
+            <h1>
+                <img src="https://curebell.jp/img/logo.png" alt="CureBell">
+            </h1>
+            <button class="menuTrgr">
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="spNav navHidden">
+                <ul>
+                    <li><a class="spnavLi mb20" href="#about"><span>キュアベルとは<small class="enTxt">About CureBell</small></span></a></li>
+                    <li>
+                        <a class="mb10" href="/app"><span>お薬・漢方を検索<small class="enTxt">Search for Medicine</small></span></a>
+                        <ul>
+                            <li><a class="mb20" href="/app/search/medicine_type"><span>お薬の種類で検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/body_parts"><span>体の部位で検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/herbal"><span>漢方薬を検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/commodity_name"><span>商品名で検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/series_name"><span>シリーズ名で検索</span></a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a class="mb10" href="/app"><span>サプリメントを検索<small class="enTxt">Search for Supplement</small></span></a>
+                        <ul>
+                            <li><a class="mb20" href="/app/search/medicine_type"><span>目的・お悩みで検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/body_parts"><span>成分で検索</span></a></li>
+                            <li><a class="mb20" href="/app/search/herbal"><span>ブランド/メーカ名で検索</span></a></li>
+                        </ul>
+                    </li>
+                    <li><a class="mb20" href="/articles/"><span>お悩みコラム<small class="enTxt">Tips for healthcare</small></span></a></li>
+                    <li><a class="mb20" target="_blank" href="https://www.google.com/maps/search/?api=1&query=%E3%83%89%E3%83%A9%E3%83%83%E3%82%B0%E3%82%B9%E3%83%88%E3%82%A2"><span>お店を探す<small class="enTxt">Find a nearby drugstore</small></span></a></li>
+                    <li><a class="mb24" href="/app/commodity/clip"><span>お気に入り<small class="enTxt">Save to Favorites</small></span></a></li>
+                </ul>
+                <!-- ul class="mb80">
+                    <a class="spnavLi" href="#will"><li>サービス提供の想い</li></a>
+                    <a class="spnavLi" href="#dr"><li>監修・開発協力</li></a>
+                    <a class="spnavLi" href="#company"><li>提供会社</li></a>
+                </ul -->
+                <a class="btn btn--fv" target="_blank" href="https://curebell.jp/app">いますぐCureBellを試す</a>
+            </nav>
+        </div>
+        <div class="pcHeader mod-spHidden">
+            <div class="wd960--pc">
+                <h1>
+                    <img src="https://curebell.jp/img/logo.png" alt="CureBell">
+                </h1>
+                <!-- ul>
+                    <a class="pcNavLi" href="#will"><li>サービス提供の想い</li></a>
+                    <a class="pcNavLi" href="#dr"><li>開発協力</li></a>
+                    <a class="pcNavLi" href="#company"><li>提供会社</li></a>
+                </ul -->
+            </div>
+            <nav class="wd960--pc">
+                <ul class="pcHdrNav__ul">
+                    <a class="pcNavLi" href="#about"><li><span>キュアベルとは<small class="enTxt">About CureBell</small></span></li></a>
+                    <a class="pcNavLi" href="#case"><li><span>こんな時にお役立てください<small class="enTxt">Case</small></span></li></a>
+                    <a class="pcNavLi" href="#specialists"><li><span>専門家からのおすすめの言葉<small class="enTxt">Message from specialists</small></span></li></a>
+                    <a class="pcNavLi" href="#voice"><li><span>利用者の声<small class="enTxt">User’s voice</small></span></li></a>
+                    <a class="pcNavLi" href="#howto"><li><span>キュアベルの使い方<small class="enTxt">How to use</small></span></li></a>
+                </ul>
+                <a class="btn btn--fv" target="_blank" href="https://curebell.jp/app">いますぐCureBellを試す</a>
+            </nav>
+        </div>
+    </header>
+    <main>
+        <section class="fv fade">
+            <div class="frontSwiper fv__img">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <picture>
+                            <source srcset="https://curebell.jp/img/fv1--pc.jpg" media="(min-width: 960px)">
+                            <img src="https://curebell.jp/img/fv1--sp.jpg" alt="">
+                        </picture>
+                    </div>
+                    <div class="swiper-slide">
+                        <picture>
+                            <source srcset="https://curebell.jp/img/fv2--pc.jpg" media="(min-width: 960px)">
+                            <img src="https://curebell.jp/img/fv2--sp.jpg" alt="">
+                        </picture>
+                    </div>
+                </div>
+                <div class="fv__txt">
+                    あなたに寄り添う<br>
+                    おくすり・サプリメントえらび
+                    <small>（市販薬）</small>
+                </div>
+                <div class="fv__txt fv__txt--shadow">
+                    あなたに寄り添う<br>
+                    おくすり・サプリメントえらび
+                    <small>（市販薬）</small>
+                </div>
+            </div>            
+            <div class="fv__points">
+                <div class="fv__point">
+                    <div class="fv__point__content">
+                        <span>数千点のお薬・サプリメント<br>から選りすぐりを<br class="mod-pcHidden">
+                        セレクト</span>
+                    </div>
+                </div>
+                <div class="fv__point">
+                    <div class="fv__point__content">
+                        <span>効果・効能の<br class="mod-pcHidden">
+                        データを<br class="mod-spHidden">専門家が<br class="mod-pcHidden">
+                        整備</span>
+                        <span style="font-size: 0.9rem;">※市販薬の場合</span>
+                    </div>
+                </div>
+                <div class="fv__point">
+                    <div class="fv__point__content">
+                    <span>症状・目的ごとに<br class="mod-pcHidden">
+                    調べやすい<br>
+                    検索機能</span>
+                    </div>
+                </div>
+            </div>
+            <p class="mb24 mb40--pc">ドラッグストア等1500店にOTC（市販薬）接客支援システムを提供する会社がつくった、一般の方向けおくすり・サプリメント選びのためのWebアプリです。</p>
+            <a class="btn mb56" target="_blank" href="https://curebell.jp/app">いますぐCureBellを試す</a>
+        </section>
+        <section id="curebell_guidance" class="curebell_guidance">
+            <div class="curebell_guidance__content mb24 wd24 wd960--pc">
+                <h2 class="head01 mb24 wd75 wd960--pc">
+                    <span><small class="enTxt">Search for Medicine</small>
+                    お薬を探す</span>
+                </h2>
+                <div class="btnpanel">
+                    <a href="/app/search/medicine_type" class="btn2 btn2--white mb12 wd45 wd80--pc">お薬の種類で検索</a>
+                    <a href="/app/search/body_parts" class="btn2 btn2--white mb12 wd45 wd80--pc">体の部位で検索</a>
+                    <a href="/app/search/herbal" class="btn2 btn2--white mb12 wd45 wd80--pc">漢方薬を検索</a>
+                    <a href="/app/search/commodity_name" class="btn2 btn2--white wd45 wd32 wd80--pc">商品名で検索</a>
+                    <a href="/app/search/series_name" class="btn2 btn2--white mb12 wd45 wd80--pc">シリーズ名で検索</a>
+                </div>
+            </div>
+        </section>
+        <section id="curebell_guidance" class="curebell_guidance">
+            <div class="curebell_guidance__content mb24 wd24 wd960--pc">
+                <h2 class="head01 mb24 wd75 wd960--pc">
+                    <span><small class="enTxt">Search for Supplement</small>
+                    サプリメントを探す</span>
+                </h2>
+                <div class="btnpanel">
+                    <a href="/app/search/medicine_type" class="btn2 btn2--white mb12 wd45 wd80--pc">目的・お悩みで検索</a>
+                    <a href="/app/search/body_parts" class="btn2 btn2--white mb12 wd45 wd80--pc">成分で検索</a>
+                    <a href="/app/search/herbal" class="btn2 btn2--white mb12 wd45 wd80--pc">ブランド/メーカー名<br>で検索</a>
+            </div>
+        </section>
+        <section id="curebell_guidance" class="curebell_guidance">
+            <div class="curebell_guidance__content mb24 wd24 wd960--pc">
+                <div class="btnpanel third">
+                    <a href="/articles/" class="btn2 btn2--white mb12 wd45 wd80--pc third">お悩みコラム</a>
+                </div>
+            </div>
+        </section>
+</li>
+</ul>
+
+
+
+        
+
+        <section id="news" class="news">
+            <div class="news__content mb24 wd24 wd960--pc">
+                <h2 class="head01 mb24 wd75 wd960--pc">
+                    <span><small class="enTxt">News</small>
+                    ニュース</span>
+                </h2>
+                <ul class="news__list">
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2024.5.21</p>
+                        </div>
+                        <p class="textinfo">
+                            <a class="news__link" target="_blank" rel="norefferrer" href="https://curebell.jp/articles/606/">
+                                『サプリメントの正しい選び方』管理栄養士によるコラムを掲載しました。
+                            </a>
+                        </p>
+                    </li>
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2024.4.8</p>
+                        </div>
+                        <p class="textinfo">
+                            <a class="news__link" target="_blank" rel="norefferrer" href="https://curebell.jp/articles/502/">
+                                『話題の内臓脂肪薬アライ』現役薬剤師からのアドバイス（お悩みコラム）を掲載しました。
+                            </a>
+                        </p>
+                    </li>
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2024.4.4</p>
+                        </div>
+                        <p class="textinfo">
+                            <a class="news__link" target="_blank" rel="norefferrer" href="https://prtimes.jp/main/html/rd/p/000000009.000072976.html">
+                                『花粉症対策いつから始める?市販薬の満足度は？』鼻炎薬活用の実態を調査しました。
+                            </a>
+                        </p>
+                    </li>
+		            <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2023.8.29</p>
+                        </div>
+                        <p class="textinfo">
+                            <a class="news__link" target="_blank" rel="norefferrer" href="https://jw-webmagazine.com/curebell-support-for-japanese-otc-medicine-selection/">
+                                訪日観光客向け情報発信サイト「Japan Web Magazine」にCureBellの紹介記事が掲載されました。訪日外国人が日本でCureBellを活用するメリット等が紹介されています。
+                            </a>
+                        </p>
+                    </li>
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2023.5.13</p>
+                        </div>
+                        <p class="textinfo"> 
+                            「マップ機能」が搭載されました。近隣のドラッグストア、薬局を一発検索し、地図上に表示します。
+                        </p> </li>
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2023.4.21</p>
+                        </div>
+                        <p class="textinfo">
+                            <a class="news__link" target="_blank" rel="norefferrer" href="https://www.yakuji.co.jp/entry102710.html">
+                            薬事日報に「セルフＭのサポートツール目指して」と題した記事が掲載されました。</a></p> </li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="about" class="about fade">
+            <div class="about__content mb64 wd70 wd960--pc">
+                <h2 class="head01 mb48 wd75 wd960--pc">
+                    <span><small class="enTxt">About CureBell</small>
+                    キュアベルとは</span>
+                </h2>
+                <img class="wd768--pc mb40 lazyload" data-src="https://curebell.jp/img/about.png" alt="">
+                <p class="mb16">
+                    CureBell（キュアベル）は<br>
+                    セルフケアのための<br>
+                    サポートツールです。
+                </p>
+            </div>
+
+            <div class="about__points">
+
+                <h3 class="head02 enTxt mb48">POINT</h3>
+                <dl class="mb40">
+                    <dt class="about__points__num enTxt">POINT<strong>1</strong></dt>
+                    <img class="lazyload" data-src="https://curebell.jp/img/point01.png" alt="">
+                    <div><dt class="mb24"><span class="mod-lineTxt">数千点のお薬・サプリメントから</span><br>
+                        <span class="mod-lineTxt">選りすぐりをピックアップ</span></dt>
+                    <dd>今の売れ筋や対応する症状・目的等から厳選されたお薬・サプリメントを調べることができます。</dd></div>
+                </dl>
+                <dl class="mb40">
+                    <dt class="about__points__num enTxt">POINT<strong>2</strong></dt>
+                    <img class="lazyload" data-src="https://curebell.jp/img/point02.png" alt="">
+                    <div><dt class="mb24"><span class="mod-lineTxt">効能など基本情報から禁忌情報まで、</span><br>
+                        <span class="mod-lineTxt">適正に選べるデータを</span><br>
+                        <span class="mod-lineTxt">専門家が整備</span></dt>
+                    <dd>お薬の基本情報はもちろん、併用したらダメな薬の情報、服用してはいけない人の情報が分かり安心安全です。※市販薬の場合
+</dd></div>
+                </dl>
+                <dl class="mb40 mb88--pc">
+                    <dt class="about__points__num enTxt">POINT<strong>3</strong></dt>
+                    <img class="lazyload" data-src="https://curebell.jp/img/point03.png" alt="">
+                    <div><dt class="mb24"><span class="mod-lineTxt">症状や目的ごとに調べやすい<br class="mod-spHidden">検索機能</span></dt>
+                    <dd>症状から候補となる薬を検索、比較して自分にぴったりな薬を簡単に選べます。<br>またサプリメント版では自身の目的にあったサプリメントを簡単に選べます。</dd></div>
+                </dl>
+            </div>
+        </section>
+        <section id="case" class="case fade">
+            <h2 class="head01 mb48 wd75 wd960--pc">
+                <span><small class="enTxt">Case</small>
+                こんな時にお役立て<br class="mod-pcHidden">ください</span>
+            </h2>
+            <div class="mb64 wd85">
+                
+                <dl class="mb32 wd830--pc">
+                    <h3 class="head02 enTxt mb24"><span>case<strong>1</strong></span></h3>
+                    <dt class="mb18">自宅や移動中に急に症状が出て<br>
+                        急ぎ薬を買いに行きたいとき
+                    </dt>
+                    <img class="mb32 lazyload" data-src="https://curebell.jp/img/case01.png" alt="case1">
+                    <dd>急な症状が出て辛い時にドラッグストアで薬をひとつひとつ確認するのは大変です。短時間で選べて店で迷わなくて良いCureBellをご活用ください。</dd>
+                </dl>
+                
+                <dl class="mb32 mb104--pc wd830--pc">
+                    <h3 class="head02 enTxt mb24"><span>case<strong>2</strong></span></h3>
+                    <dt class="mb18">
+                        ドラッグストア・薬局のスタッフが<br>つかまらない、または相談しづらい時に
+                    </dt>
+                    <img class="mb32 lazyload" data-src="https://curebell.jp/img/case02.png" alt="case2">
+                    <dd>水虫、痔、発毛、便秘などのデリケートな症状は、ドラッグストアのスタッフに聞いたり、パッケージを手に取りじっくり読んだりはしずらいもの。<br><br>
+                        また、お店のスタッフが忙しい時はなかなかつかまらない時があります。<br><br>
+                        そんなときは手もとで調べることができるCureBellをご活用ください。
+                    </dd>
+                </dl>
+                
+                <dl class="mb32 mb104--pc wd830--pc">
+                    <h3 class="head02 enTxt mb24"><span>case<strong>3</strong></span></h3>
+                    <dt class="mb18">インターネットで薬・サプリメントを<br class="mod-pcHidden">購入するときに
+                    </dt>
+                    <img class="mb32 lazyload" data-src="https://curebell.jp/img/case03.png" alt="case3">
+                    <dd>最近ではインターネットでの市販薬・サプリメントの購入もふつうになってきました。<br><br>
+                        しかし店での購入と違い対面で尋ねることもできず、また、たいていの販売サイトでは絞り込みがうまく出来ずに選ぶのに苦労します。<br><br>
+                        様々な角度から楽に検索、選定できるCureBellをネット購入時にご活用ください。
+                    </dd>
+                </dl>
+            </div>
+        </section>
+
+    <style>
+        /* 既存のスタイル */
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .btn2--white {
+            font-size: 1.4rem !important;
+        }
+        .btnpanel.third {
+            display: grid;
+            justify-content: center !important;
+            grid-template-columns: repeat(1, 1fr)  !important;
+        }
+
+        .btn2.btn2--white.mb12.wd45.wd80--pc.third {
+            width: 90% !important;
+        }
+
+        /* 以下カルーセル */
+
+        .specialists {
+            background-color: #f4f4f4;
+            padding: 60px 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+        }
+
+        .specialists-title {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 40px;
+        }
+
+        .specialists-subtitle {
+            display: block;
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        /* カルーセルのスタイルを更新 */
+        .carousel {
+            position: relative;
+            overflow: hidden;
+            padding: 0 20%;
+        }
+
+        .carousel-container {
+            display: flex;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .carousel-slide {
+            flex: 0 0 80%;
+            padding: 0 10px;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .specialist-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+        }
+
+        .specialist-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .specialist-image {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            margin-right: 16px;
+        }
+
+        .specialist-info {
+            flex-grow: 1;
+        }
+
+        .specialist-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0 0 4px;
+        }
+
+        .specialist-title {
+            font-size: 14px;
+            color: #666;
+            margin: 0;
+        }
+
+        .specialist-profile {
+            font-size: 1.8em;
+            color: #666;
+            margin-bottom: 16px;
+        }
+
+        .specialist-divider {
+            border-top: 1px solid #e0e0e0;
+            margin: 16px 0;
+        }
+
+        .specialist-quote {
+            margin-bottom: 16px;
+        }
+
+        .read-more-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 8px;
+            background-color: transparent;
+            border: none;
+            color: #3b82f6;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .read-more-btn:hover {
+            color: #2563eb;
+        }
+
+        .chevron {
+            width: 20px;
+            height: 20px;
+            margin-right: 4px;
+            transition: transform 0.3s;
+        }
+
+        .chevron.up {
+            transform: rotate(180deg);
+        }
+
+        .specialist-details {
+            display: none;
+            margin-top: 16px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .carousel-button {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(255, 255, 255, 0.7);
+            border: none;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            z-index: 10;
+        }
+
+        .carousel-button:hover {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .carousel-button.prev {
+            left: 5%;
+        }
+
+        .carousel-button.next {
+            right: 5%;
+        }
+
+        @media (max-width: 768px) {
+            .specialists-title {
+                font-size: 24px;
+            }
+
+            .specialist-card {
+                padding: 16px;
+            }
+
+            .carousel {
+                padding: 0 5%;
+            }
+
+            .carousel-slide {
+                flex: 0 0 90%;
+            }
+
+            .carousel-button.prev {
+                left: 2%;
+            }
+
+            .carousel-button.next {
+                right: 2%;
+            }
+        }
+    </style>
+        <section id="specialists" class="specialists fade">
+            <h2 class="head01 wd75 mb24 mb24--pc wd960--pc">
+                <span>
+                    <small class="enTxt">Message from specialists</small>
+                    専門家からのおすすめの言葉
+                </span>
+            </h2>
+            <div class="carousel">
+                <div class="carousel-container">
+                    <div class="carousel-slide">
+                        <div class="specialist-card">
+                            <div class="specialist-header">
+                                <img src="https://placehold.jp/64x64.png" alt="久里 建人" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name">久里 建人 様</h3>
+                                    <p class="specialist-title">薬剤師</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                薬剤師。 2005年に薬剤師免許取得後、医療用医薬品情報に関わる業務等を経て、市販薬の店舗責任者や新規事業関連のマネージャーを務める。ブログやSNSを通じて一般消費者向けに情報を発信し、講演、寄稿、書籍監修等も行う。著書「その病気、市販薬で治せます」（新潮新書）が各所より大きな反響を得る。
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-quote">
+                                薬剤師としてはたらく中で、市販薬の説明をしてお客様から感謝されることを日々経験してきました。それも、こちらが恐縮するくらい多大に感謝されるのです。これは、生活者の皆さんが、市販薬の情報に"飢えている証（あかし）"だと思っています。
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details1">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details1" class="specialist-details">
+                                <p>今やインターネット上には数多く薬の情報があり、医療用のサイトのみならず様々なサイトで簡単に見ることができます。しかし、今本当に自分が知りたい情報、それも信頼ある情報を見つけることは簡単ではありません。「セルフメディケーション推進」という名のもとで市販薬の使用を広めたいと考える国と、自分で適切な情報を選ぶための信頼ある情報に飢えている生活者との間の"大きなギャップ"がここにあるといえるでしょう。</p>
+                                <p>そこで期待するのが本サービスCureBellです。その��徴を挙げると、①生活者目線で作られたアプリで「妊婦授乳婦でも服用できる」などの条件検索がとても優れており、②製品特徴や注意事項の表記が一目瞭然で、パッケージに内包されている添付文書よりも格段にわかりやすい。</p>
+                                <p>さらに、③利用者にとって適正使用の知識が自然と身につき、商品選びの目が養われていく「エデュケーショナルな要素」も備わっています。この「エデュケーショナルな要素」によって皆さんは、大半の風邪薬で高血圧患者が「禁忌」または「要相談」となっているなど、市販薬には安全に服用するための「使用上の注意」が数多く存在することに初めて気づき、驚くはずです。</p>
+                                <p>CureBellがこの３つの特徴をさらに発展させ、日本のセルフメディケーション推進の良き伴走者になることを願い、応援したいと思います。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="specialist-card">
+                            <div class="specialist-header">
+                                <img src="./serada.png" alt="山田 花子" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name">世良田　和幸 様</h3>
+                                    <p class="specialist-title">医師 渕野辺総合病院 病院長</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                1976年昭和大学卒業。1980年同大学大学院修了。同大学麻酔科へ入局後、同大学藤が丘病院、同大学横浜市北部病院などで約40年にわたって手術室における麻酔とペインクリニックでの診療に従事。同大学横浜市北部病院病院長などを経て2018年より現職。昭和大学名誉教授。医療法人社団相和会理事。医学博士。著書に「疾患・症状別漢方治療 慢性疼痛」「すぐに使える痛みの漢方診療ハンドブック: 現代に合わせた本格的な漢方薬の応用-病態と漢方薬の特性を捉える」などがある。
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-quote">
+                                漢方薬は、2000年以上の昔から、古代中国の先人達が苦労して探し出した様々な自然界の薬草や鉱物などで構成されており、その効果と副作用をまた長い年月を掛けて調整し、完成された薬です。人類の食べ物や環境の異なった場所でも、2000年もの間その効果が持続していることは、西洋薬にはない地球のパワーを感じます。
+
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details2">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details2" class="specialist-details">
+                                <p>CureBellは、この漢方薬を簡単に選び、その効用をわかりやすく知ることが出来るツールです。CureBellを使って漢方薬についての理解を深めることで、自らのセルフケアが出来るようになることでしょう。
+                                また、CureBellは、医療関係者にとっても、漢方を含めた市販薬（OTC）全般について、内容、効果効能等を簡単に確認できるツールであり、医療の現場においても十二分に活用できることでしょう。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <div class="specialist-card">
+                            <div class="specialist-header">
+                                <img src="./suzuki.jpg" alt="佐藤 太郎" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name">鈴木 伸悟 様</h3>
+                                    <p class="specialist-title">薬剤師</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                薬局に勤務する現役薬剤師。横浜市西区薬剤師会理事。大手ドラッグストアでの勤務を経験後、処方せん調剤を主体とした保険薬局にてOTC医薬品の販売に取り組む。また、薬剤師や医薬品登録販売者向けにOTC医薬品の役立つ情報をSNSで発信するほか、メディア出演、全国各地での講演会、日経DIプレミアムでは連載を持つなど多方面で活動している。著書『薬局OTC販売マニュアル臨床知識から商品選びまで分かる（日経BP）
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-quote">
+                                セルフメディケーション推進の時代、市販薬の有効活用がますます重要になってきています。最近では、医療用医薬品と同成分同量といった市販薬も増加しており、効果が高い一方で、副作用などのリスクに注意が必要です。また市販薬には、自動車の運転が禁止されている商品、高血圧や糖尿病の方の服用が禁止されている商品など注意を必要とするものもあります。
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details3">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details3" class="specialist-details">
+                                <p>自らの症状や体質に合った市販薬を選択することがとても大切なのです。しかし、市販薬の相談場所として薬局やドラッグストアなどがあるものの、いわゆる調剤薬局では、処方せんがないと相談しづらい、ドラッグストアでは、お客様が並んでいるレジで相談しづらいといった声もあります。インターネット販売で市販薬を購入する方も増えています。</p>
+                                <p>こうした状況の中、市販薬選定アプリCureBellは、自らの判断で市販薬を選んで購入する際にとても役立つツールであると思います。「こだわり条件」などの機能が豊富で、選択した薬の「禁忌事項」なども簡単に確認できることや特長が簡単に分かることがポイントだと思います。CureBellの認知がより拡大し、生活者のセルフメディケーションの推進、ヘルスリテラシーの向上につながることを期待しています。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-button prev" aria-label="前のスライド">&lt;</button>
+            <button class="carousel-button next" aria-label="次のスライド">&gt;</button>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const carousel = document.querySelector('.carousel-container');
+            const slides = document.querySelectorAll('.carousel-slide');
+            const prevButton = document.querySelector('.carousel-button.prev');
+            const nextButton = document.querySelector('.carousel-button.next');
+            const readMoreBtns = document.querySelectorAll('.read-more-btn');
+            let currentIndex = 0;
+
+            function updateCarousel() {
+                const offset = currentIndex * -80;
+                carousel.style.transform = `translateX(${offset}%)`;
+                
+                slides.forEach((slide, index) => {
+                    if (index === currentIndex) {
+                        slide.style.opacity = '1';
+                    } else {
+                        slide.style.opacity = '0.5';
+                    }
+                });
+            }
+
+            function showNextSlide() {
+                currentIndex = (currentIndex + 1) % slides.length;
+                updateCarousel();
+            }
+
+            function showPrevSlide() {
+                currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+                updateCarousel();
+            }
+
+            nextButton.addEventListener('click', showNextSlide);
+            prevButton.addEventListener('click', showPrevSlide);
+
+            // キーボードナビゲーションのサポート
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft') {
+                    showPrevSlide();
+                } else if (e.key === 'ArrowRight') {
+                    showNextSlide();
+                }
+            });
+
+            // アクセシビリティの向上
+            function updateAriaAttributes() {
+                slides.forEach((slide, index) => {
+                    slide.setAttribute('aria-hidden', index !== currentIndex);
+                });
+            }
+
+            nextButton.addEventListener('click', updateAriaAttributes);
+            prevButton.addEventListener('click', updateAriaAttributes);
+
+            // アコーディオン機能
+            readMoreBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const details = document.getElementById(this.getAttribute('aria-controls'));
+                    const chevron = this.querySelector('.chevron');
+                    const btnText = this.querySelector('span');
+                    const expanded = this.getAttribute('aria-expanded') === 'true';
+
+                    if (expanded) {
+                        details.style.display = 'none';
+                        this.setAttribute('aria-expanded', 'false');
+                        chevron.classList.remove('up');
+                        btnText.textContent = '詳細を読む';
+                    } else {
+                        details.style.display = 'block';
+                        this.setAttribute('aria-expanded', 'true');
+                        chevron.classList.add('up');
+                        btnText.textContent = '詳細を閉じる';
+                    }
+                });
+
+                // キーボードアクセシビリティ
+                btn.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        this.click();
+                    }
+                });
+            });
+
+            // 初期表示の設定
+            updateCarousel();
+            updateAriaAttributes();
+        });
+    </script>
+
+
+        <section id="voice" class="voice fade">
+            <div class="voice__content mb24 mb24--pc wd70 wd960--pc">
+                <h2 class="head01 wd75 wd960--pc">
+                    <span><small class="enTxt">User’s voice</small>
+                    利用者の声</span>
+                </h2>
+            </div>
+
+            <div class="voice__intro">
+                <p class="mb32">医薬品登録販売者の資格取得<br class="sp">にも積極活用</p>
+            </div>
+            <div class="voice__steps wd90 mb80">
+                <div class="voice__step">
+                        <figure>
+                            <img class="lazyload" data-src="https://curebell.jp/img/hh.jpg" alt="神奈川県 某調剤薬局 営業事務勤務 H.H様">
+                            <figcaption>神奈川県 某調剤薬局 営業事務勤務 H.H様</figcaption>
+                        </figure>
+
+                    <div class="voice__step__content">
+                    </div>
+                    <div class="voice__step__content">
+                        <dl>
+                            <dd>
+                                CureBellは医薬品登録販売者の資格取得の勉強をしている際に薬剤師である上司からの勧めで、利用し始めました。試験勉強では多くの成分の作用や注意点などを勉強します。しかし、個々の成分が市販薬にどのように使われているかをイメージできませんでした。<br>
+                                <br>
+                                CureBellを利用することでただ成分を覚えるだけではなく、<span class="mod-lineTxt">市販薬と成分を対比ができ、また注意点なども理解することができた</span>ので、自然に知識が身につきました。<br>
+                                今は夫や両親にも勧め、ドラッグストアに行く前に利用しています。症状によってはドラッグストアの<span class="mod-lineTxt">従業員に相談しにくい場合や相談したくても従業員が近くにいない場合</span>などがよくあります。そんな時、症状から薬を検索し、比較までできるので、ほしい商品が見つかります。また私が薬局、ドラッグストアの従業員の立場として、接客することがあれば利用したいと思っています。<br>
+                                <br>
+                                私自身は調剤薬局で従事しているので、<span class="mod-lineTxt">お薬手帳との連携</span>ができるとより患者さんにとってよいご提案ができると思っています。今後も利用しながら、サービスの発展を楽しみにしています。<br>
+                                <br>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="wd85 mb72 wd768--pc">
+                <div class="voice__balloon voice__balloon--fm mb40">
+                    <div class="voice__balloon__content">
+                        妊娠中に服用可能な薬の候補が一発で検索できるところがよかった。また、錠剤かリキッドか等の形状により検索できるところが便利です。
+                        <div class="voice__info">（30代・女性）</div>
+                    </div>
+                </div>
+                <div class="voice__balloon voice__balloon--fm mb40">
+                    <div class="voice__balloon__content">
+                        ドラッグストアにいく直前や店内で簡単に検索して購入する候補が絞り込めるのがよい。店内で迷わず短時間で買い物ができる。
+                        <div class="voice__info">（50代・女性）</div>
+                    </div>
+                </div>
+                <div class="voice__balloon voice__balloon--ml">
+                    <div class="voice__balloon__content">
+                        目薬などはどれも同じと思っていて今まで安いものを店内で適当に選んで買っていたが、キュアベルで調べて疲れ目とかすみ目の効能レベルが両方とも高いものを検索比較して選び、ネットで購入した。いつも買う目薬の倍くらいの値段だったが、いい買い物ができたと思っている。
+                        <div class="voice__info">（40代・男性）</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="articles" class="articles fade">
+            <h2 class="head01 wd75 mb24 mb24--pc wd960--pc">
+                <span>
+                    <small class="enTxt">Related articles</small>
+                    関連記事
+                </span>
+            </h2>
+            <div class="articles__steps wd90 mb80">
+                <div class="articles__step">
+                    <div class="articles__step__content">
+                        <a href="/articles/502/">
+                            <div class="article">
+                                <img width="640" height="426" src="https://curebell.jp/articles/wp-content/uploads/2024/04/pixta_88580922_S.jpg" class="attachment-full size-full wp-post-image" alt="" decoding="async" srcset="https://curebell.jp/articles/wp-content/uploads/2024/04/pixta_88580922_S.jpg 640w, https://curebell.jp/articles/wp-content/uploads/2024/04/pixta_88580922_S-300x200.jpg 300w" sizes="(max-width: 640px) 100vw, 640px">
+                                <dl class="">
+                                    <dd class="date">2024/04/05</dd>
+                                    <dd class="title">話題の「内臓脂肪減少薬」アライ（オルリスタット）〜市販薬を販売する現役薬剤師からのアドバイス〜</dd>
+                                </dl>
+                            </div>    
+                        </a>
+                        <a href="/articles/164/">
+                            <div class="article">
+                                    <img width="640" height="426" src="https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_48443202_S.jpg" class="attachment-full size-full wp-post-image" alt="" decoding="async" fetchpriority="high" srcset="https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_48443202_S.jpg 640w, https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_48443202_S-300x200.jpg 300w" sizes="(max-width: 640px) 100vw, 640px">
+                                    <dl class="">
+                                        <dd class="date">2024/03/07</dd>
+                                        <dd class="title">薬剤師が教える！風邪の諸症状におすすめの市販薬</dd>
+                                    </dl>
+                            </div>
+                        </a>
+                        <a href="/articles/137/">
+                            <div class="article">
+                                <img width="640" height="426" src="https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_89399437_S.jpg" class="attachment-full size-full wp-post-image" alt="" decoding="async" srcset="https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_89399437_S.jpg 640w, https://curebell.jp/articles/wp-content/uploads/2024/03/pixta_89399437_S-300x200.jpg 300w" sizes="(max-width: 640px) 100vw, 640px">
+                                <dl class="">
+                                    <dd class="date">2024/03/07</dd>
+                                    <dd class="title">薬剤師が教える！胃の不調におすすめの市販薬</dd>
+                                </dl>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+
+        <section id="howto" class="howto fade">
+            <h2 class="head01 wd75 mb48 mb96--pc wd960--pc">
+                <span>
+                    <small class="enTxt">How to use</small>
+                    キュアベルの使い方（おくすりの場合）
+                </span>
+            </h2>
+            <div class="howto__intro">
+                <p class="mb32">例えばこんなケースでは</p>
+                <ul class="wd75 mb48">
+                    <li>風邪っぽい</li>
+                    <li>発熱・頭痛・鼻水がある</li>
+                    <li>肝障害の持病がある</li>
+                </ul>
+            </div>
+            <div class="howto__steps wd90 mb80">
+                <div class="howto__step howto__step--line">
+                    <div class="howto__step__content">
+                        <img class="lazyload" data-src="https://curebell.jp/img/step01.png" alt="step1スクリーン">
+                        <dl>
+                            <dt class="head02 mb20"><span>step<strong>1</strong></span></dt>
+                            <dd><span class="blueTxt">CureBellにアクセス</span>し、「お薬の種類で検索」ボタンをタップします。</dd>
+                            <p class="mod-spHidden">
+                                「お薬の種類で検索」以外にも「体の部位で検索」「漢方薬を検索」「商品名で検索」などがあります。
+                            </p>
+                        </dl>
+                    </div>
+                    <p class="wd85 mod-pcHidden">
+                        「お薬の種類で検索」以外にも「体の部位で検索」「漢方薬を検索」「商品名で検索」などがあります。
+                    </p>
+                </div>
+                
+                <div class="howto__step">
+                    <div class="howto__step__content">
+                    <img class="lazyload" data-src="https://curebell.jp/img/step02.png" alt="step2スクリーン">
+                    <dl>
+                        <dt class="head02 mb20"><span>step<strong>2</strong></span></dt>
+                        <dd><span class="blueTxt">お薬の種類を選ぶ</span>ラジオボタンから<span class="redTxt">「かぜ薬」</span>をタップします。</dd>
+                    </dl>
+                    </div>
+                </div>
+                <div class="howto__step howto__step--line">
+                    <div class="howto__step__content">
+                        <img class="lazyload" data-src="https://curebell.jp/img/step03.png" alt="step3スクリーン">
+                        <dl>
+                            <dt class="head02 mb20"><span>step<strong>3</strong></span></dt>
+                            <dd><span class="blueTxt">症状を選ぶ</span>チェックボックスから<span class="redTxt">「頭痛」「鼻水」「発熱」</span>をタップしてから、<span class="redTxt">「探す」</span>ボタンをタップします。</dd>
+                            <p class="mod-spHidden">4つまでの複数症状を同時にチェックすることが可能です。</p>
+                        </dl>
+                    </div>
+                    <p class="wd85 mod-pcHidden">4つまでの複数症状を同時にチェックすることが可能です。</p>
+                </div>
+                <div class="howto__step howto__step--line">
+                    <div class="howto__step__content">
+                        <img class="lazyload" data-src="https://curebell.jp/img/step04.png" alt="step4スクリーン">
+                        <dl>
+                            <dt class="head02 mb20"><span>step<strong>4</strong></span></dt>
+                            <dd>検索画面から<span class="redTxt">「検索除外条件」</span>をタップします。</dd>
+                            <p class="mod-spHidden">検索除外条件以外にも「こだわり条件」（眠くなる成分がはいっていない等）で絞込みが可能です。</p>
+                        </dl>
+                    </div>
+                    <p class="wd85 mod-pcHidden">検索除外条件以外にも「こだわり条件」（眠くなる成分がはいっていない等）で絞込みが可能です。</p>
+                </div>
+                <div class="howto__step howto__step--line">
+                    <div class="howto__step__content">
+                        <img class="lazyload" data-src="https://curebell.jp/img/step05.png" alt="step5スクリーン">
+                        <dl>
+                            <dt class="head02 mb20"><span>step<strong>5</strong></span></dt>
+                            <dd><span class="blueTxt">検索除外条件</span>チェックボックスから<span class="redTxt">「肝障害」</span>をチェックし、<span class="blueTxt">OK</span>ボタンをタップします。</dd>
+                            <p class="mod-spHidden">複数の検索除外条件をチェックすることももちろん可能です。</p>
+                        </dl>
+                    </div>
+                    <p class="wd85 mod-pcHidden">複数の検索除外条件をチェックすることももちろん可能です。</p>
+                </div>
+                <div class="howto__step">
+                    <div class="howto__step__content">
+                    <img class="lazyload" data-src="https://curebell.jp/img/step06.png" alt="step6スクリーン">
+                    <dl>
+                        <dt class="head02 mb20"><span>step<strong>6</strong></span></dt>
+                        <dd>効能や特徴を比較し、<span class="blueTxt">興味がある薬の画像</span>をタップします。</dd>
+                    </dl>
+                    </div>
+                </div>
+                <div class="howto__step">
+                    <div class="howto__step__content">
+                    <img class="lazyload" data-src="https://curebell.jp/img/step07.png" alt="step7スクリーン">
+                    <dl>
+                        <dt class="head02 mb20"><span>step<strong>7</strong></span></dt>
+                        <dd>服用の仕方、特徴の詳細など、薬の情報を確認します。禁忌等服用上の注意事項などの詳細確認は<span class="blueTxt">添付文書</span>をタップします。
+                        </dd>
+                    </dl>
+                    </div>
+                </div>
+                <div class="howto__step">
+                    <div class="howto__step__content">
+                    <img class="lazyload" data-src="https://curebell.jp/img/step08.png" alt="step8スクリーン">
+                    <dl>
+                        <dt class="head02 mb20"><span>step<strong>8</strong></span></dt>
+                        <dd>添付文書の内容を確認します。</dd>
+                    </dl>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section id="will" class="will fade">
+            <h2 class="head02 head02--white mb40">サービス提供の想い</h2>
+            <div class="will__content wd894--pc mb64--pc">
+                <div><h3 class="head01 head01--white head01--nospan wd75 wd100--pc mb24">
+                    なぜいまキュアベルか
+                </h3>
+                <img class="wd85 wd100--pc lazyload" data-src="https://curebell.jp/img/will1.png" alt="健康イメージ">
+                <p class="wd80 wd100--pc mb32">
+                    “キュアベル”は「治す」（Cure）と比べる（Bell）を合わせた造語です。市販薬（おくすり）をもっと簡単に、かつ安全に選べたら、との私達の思いから生まれたサービスです。<br><br>
+                    さまざまなモノの売り方、買い方がここ10年、またコロナ禍を経て大きく変わりました。しかし、ネットでの販売、購買が徐々に増えてはいるものの、市販薬（おくすり）の売り方、買い方はほとんど変わっておらず、かぜ薬だけでも市場には600種類があり、売る方も買う方もおくすり選びに苦労しているのが実情です。<br><br>
+                    一方で、市販薬（おくすり）をうまく選び利用・服用すれば、より短期間で病状が改善したり治癒ができますし、病院に行くよりも安くすることもできます。国の制度を利用すれば、税金も安く済むのです。<br><br>
+                    このような背景から、CureBellを開発いたしました。今後も、ご利用いただいた皆様のご意見を取り入れながら、さまざまな機能を追加いたしますので、CureBellの進化にご期待ください。
+                </p>
+                </div>
+                <div>
+                    <h3 class="head01 head01--white head01--nospan wd75 wd100--pc mb24">
+                        いま大切な「セルフメディケーション」
+                    </h3>
+                    <img class="wd85 wd100--pc lazyload" data-src="https://curebell.jp/img/will2.png" alt="薬の服用">
+                    <p class="wd80 wd100--pc mb20">
+                        「セルフメディケーション」という言葉はご存じですか？<br>
+                        世界保健機関（WHO）は、セルフメディケーションとは「自分自身の健康に責任を持ち、軽度な身体の不調は自分で手当てすること」と定義しています。つまり、処方せんがなくても購入できる市販医薬品をうまく利用しながら病気の予防や体調管理を行い、自分の健康を自分で守ることです。たとえば、風邪の症状が出た時にすぐ病院に行くのではなく、市販の風邪薬を飲んで症状を抑えることなどがセルフメディケーションにあたります。<br><br>
+                        市販医薬品の購入により税金の負担が抑えられる｢セルフメディケーション税制｣も2017年からスタートし、費用面でもメリットが出るようになってきました。
+                    </p>
+                    <a href="https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000124853.html" target="_blank" class="btn btn--white mb32 wd85 wd100--pc">セルフメディケーション税制について<br>（厚生労働省）</a>
+                    <p class="wd80 mb32 wd100--pc">平均寿命が長くなり生活習慣病などが問題になってきた今日において、生活者の皆さんがセルフメディケーションを実践することは、費用面でのメリットを享受しつつ健康寿命を延ばすだけでなく、国の医療費削減にもつながることになり、生活者と国の双方にとって大きなメリットがあるのです。</p>
+                </div>
+            </div>
+            <p class="will__end">セルフケアの<br class="mod-pcHidden">
+                サポートツールとして、<br>
+                CureBellをぜひご活用ください。</p>
+        </section>
+        <section class="sns fade">
+            <div class="socialWrap">
+                <div class="fb-share-button" data-href="https://curebell.jp/" data-layout="button" data-size="large">
+                    <a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcurebell.jp%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">シェアする</a>
+                </div>
+                <div>
+                    <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false" data-hashtags="CureBell" data-url="https://curebell.jp/" data-size="large">Tweet</a>
+                </div>
+            </div>
+            <p class="sns_info">お役立ち情報発信中。公式SNSはこちら</p>
+            <ul class="sns_icon_list">
+                <li class="sns_icon_item"><a target="_blank" rel="nofollow noopener" href="https://page.line.me/254tqxgt?oat__id=1882000&openQrModal=true"><img src="https://curebell.jp/img/LINE_Brand_icon.png" alt="LINE"></a></li>
+                <li class="sns_icon_item"><a target="_blank" rel="nofollow noopener" href="https://www.facebook.com/CureBell-105283035758097"><img src="https://curebell.jp/img/f_logo_RGB-Blue_58.png" alt="facebook"></a></li>
+                <li class="sns_icon_item"><a target="_blank" rel="nofollow noopener" href="https://twitter.com/curebell"><img src="https://curebell.jp/img/TwitterSocialIconCircleBlue.svg" alt="twitter"></a></li>
+                <li class="sns_icon_item"><a target="_blank" rel="nofollow noopener" href="https://www.instagram.com/curebell_medicine/"><img src="https://curebell.jp/img/Instagram_Glyph_Gradient_RGB.svg" alt="Instagram"></a></li>
+            </ul>
+            <div id="fb-root"></div>
+        </section>
+
+
+        <section class="info fade">
+            <!--<div id="dr" class="mb72--pc">
+                <h2 class="head02 mb32">開発協力</h2>
+                <div class="whiteBox wd85 wd100--pc">
+                    <div class="dr wd70 mb24 wd100--pc">
+                        <img class="lazyload" data-src="https://curebell.jp/img/doctor01.png" alt="堀美智子医師">
+                        <div class="drInfo">
+                            <div>おくすりの<br>専門家</div>
+                            <h3>
+                                堀美智子
+                                <small>（ほり・みちこ）</small>
+                            </h3>
+                        </div>
+                    </div>
+                    <h4 class="mb20">メッセージ</h4>
+                    <div class="hideTxt mb24">
+                        <span>
+                            人生百年時代。いつまでも健康でよりよく生きるウエルビーイング。そのためにはセルフケアはとても重要です。「自分の健康は自分で守り、増進する」という主体的な意識を持ち手入れしていく「セルフケア」は、健康寿命の延伸だけでなく社会保障制度の維持という観点からも大切なことです。軽い疾患や症状に対して市販薬の活用が推進されています。しかし、薬は選び方、使い方を間違うと重篤な副作用などの有害事象が起こり得る商品です。<br><br>
+                            このような中で、数ある市販薬の中から適切なものを選ぶサポートツールとして生まれたのがキュアベルです。キュアベルが、皆さんに市販薬に関心を持っていただくきっかけになり、それがセルフメディケーション、セルフケアの促進になればとても嬉しいことです。また、皆様のご意見が製薬メーカーがより良い市販薬を生む出すことに繋がり、セルフメディケーション、セルフケアがさらに促進されるという好循環になれば素晴らしいことでしょう。<br><br>
+                            まずはキュアベルを触ってみてください。今まで知らなかった市販薬の効能や各々の違いが理解でき、賢く市販薬を選ぶきっかけになることでしょう。
+                        </span>
+                    </div>
+                    <h4 class="mb20">プロフィール</h4>
+                    <p class="drProfile">
+                        <span class="fs9">医薬情報研究所（株）エス・アイ・シー取締役／医薬情報部門責任者。一般社団法人日本薬業研修センター医薬研究所所長。一般社団法人日本セルフケア推進協議会理事。一般財団法人日本ヘルスケア協会理事。日本臨床栄養協会理事。名城大学薬学部卒。同大薬学部医薬情報室、帝京大学薬学部医薬情報室勤務を経て、現職。1998～2002年日本薬剤師会常務理事。薬剤師への研修をはじめ、薬やサプリメントに関する講演・セミナーを数多く行い、テレビやラジオ番組にも出演。OTC医薬品等に関する著書多数。</span>
+                    </p>
+                </div>
+            </div>-->
+            <div id="company" class="mb48 mb72--pc">
+                <h2 class="head02 mb32">提供会社</h2>
+                <div class="whiteBox wd85 wd768--pc">
+                    <img class="lazyload" data-src="https://curebell.jp/img/willbaseLogo.png" alt="ウィルベース株式会社">
+                    <h3 class="companyName mb32">ウィルベース株式会社</h3>
+                    <a href="https://www.willbase.co.jp/" target="_blank" class="btn btn--white mb32 wd70 wd100--pc">ウィルベース株式会社<br class="mod-pcHidden">オフィシャルサイト</a>
+                    <p class="wd70 wd100--pc">ドラッグストアや薬局、その他小売会社の販売業務支援をおこなっている企業です。Curebellで使用している市販薬の検索・選定エンジンは、当社が企業向けに提供している医薬品カウンセリングツールのベースにもなっており、ドラッグストア・薬局1500店、2000名以上の薬剤師、登録販売者等に利用されています。
+                        <br><br>
+                        <small>※当市販薬の検索・選定エンジンは、特許出願中です。</small>
+                    </p>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="ftr">
+        <right class="wd85 wd768--pc"><a href="https://curebell.jp/sendout_data.html">データの外部送信について</a></right>
+        <small>Copyright © WillBase Inc. All Rights Reserved.</small>
+    </footer>
+</body>
+</html>
