@@ -202,9 +202,6 @@
 </ul>
 
 
-
-        
-
         <section id="news" class="news">
             <div class="news__content mb24 wd24 wd960--pc">
                 <h2 class="head01 mb24 wd75 wd960--pc">
@@ -212,6 +209,14 @@
                     ニュース</span>
                 </h2>
                 <ul class="news__list">
+                    <li class="news__item" style="">
+                        <div class="news__dateinfo" style="">
+                            <p class="dateinfo">2024.10.16</p>
+                        </div>
+                        <p class="textinfo"> 
+                            サプリメント選定機能を追加装備しました。
+                        </p>
+                    </li>
                     <li class="news__item" style="">
                         <div class="news__dateinfo" style="">
                             <p class="dateinfo">2024.5.21</p>
@@ -252,20 +257,6 @@
                             </a>
                         </p>
                     </li>
-                    <li class="news__item" style="">
-                        <div class="news__dateinfo" style="">
-                            <p class="dateinfo">2023.5.13</p>
-                        </div>
-                        <p class="textinfo"> 
-                            「マップ機能」が搭載されました。近隣のドラッグストア、薬局を一発検索し、地図上に表示します。
-                        </p> </li>
-                    <li class="news__item" style="">
-                        <div class="news__dateinfo" style="">
-                            <p class="dateinfo">2023.4.21</p>
-                        </div>
-                        <p class="textinfo">
-                            <a class="news__link" target="_blank" rel="norefferrer" href="https://www.yakuji.co.jp/entry102710.html">
-                            薬事日報に「セルフＭのサポートツール目指して」と題した記事が掲載されました。</a></p> </li>
                 </ul>
             </div>
         </section>
@@ -407,7 +398,7 @@
         .carousel {
             position: relative;
             overflow: hidden;
-            padding: 0 20%;
+            padding: 0 31%;
         }
 
         .carousel-container {
@@ -416,8 +407,8 @@
         }
 
         .carousel-slide {
-            flex: 0 0 80%;
-            padding: 0 10px;
+            flex: 0 0 100%;
+            padding: 0 2rem 0 0.5rem;
             transition: opacity 0.3s ease-in-out;
         }
 
@@ -470,7 +461,7 @@
         }
 
         .specialist-quote {
-            margin-bottom: 16px;
+            margin-bottom: 4px;
 
         }
 
@@ -486,7 +477,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 8px;
+            padding: 3px;
             background-color: transparent;
             border: none;
             color: #3b82f6;
@@ -511,7 +502,7 @@
 
         .specialist-details {
             display: none;
-            margin-top: 16px;
+            margin-top: 7px;
             animation: fadeIn 0.5s ease-out;
         }
 
@@ -562,6 +553,7 @@
 
             .carousel-slide {
                 flex: 0 0 90%;
+                padding: 0 2rem;
             }
 
             .carousel-button.prev {
@@ -574,32 +566,35 @@
         }
     </style>
         <section id="specialists" class="specialists fade">
-            <h2 class="head01 wd75 mb24 mb24--pc wd960--pc">
-                <span>
-                    <small class="enTxt">Message from specialists</small>
-                    専門家からのおすすめの言葉
-                </span>
-            </h2>
-            <div class="carousel">
-                <div class="carousel-container">
-                    <div class="carousel-slide">
-                        <div class="specialist-card">
-                            <div class="specialist-header">
-                                <img src="https://placehold.jp/64x64.png" alt="久里 建人" class="specialist-image">
+        <h2 class="head01 wd75 mb24 mb24--pc wd960--pc">
+            <span>
+                <small class="enTxt">Message from specialists</small>
+                専門家からのおすすめの言葉
+            </span>
+        </h2>
+        <div class="carousel">
+            <div class="carousel-container">
+                <!-- 変更: specialist-cardの構造を更新 -->
+                <div class="carousel-slide">
+                    <div class="specialist-card">
+                        <div class="specialist-header">
+                                <img src="./inoue.JPEG" alt="井上 蕗子" class="specialist-image">
                                 <div class="specialist-info">
-                                    <h3 class="specialist-name">久里 建人 様</h3>
-                                    <p class="specialist-title">薬剤師</p>
+                                    <h3 class="specialist-name">井上 蕗子様【サプリメント部分監修】</h3>
+                                    <p class="specialist-title">管理栄養士</p>
                                 </div>
-                            </div>
+                        </div>
                             <p class="specialist-profile">
-                                薬剤師。 2005年に薬剤師免許取得後、医療用医薬品情報に関わる業務等を経て、市販薬の店舗責任者や新規事業関連のマネージャーを務める。ブログやSNSを通じて一般消費者向けに情報を発信し、講演、寄稿、書籍監修等も行う。著書「その病気、市販薬で治せます」（新潮新書）が各所より大きな反響を得る。
+                                日本スポーツ協会公認スポーツ栄養士、管理栄養士、食アスリート協会シニアインストラクター
+                                山口県立大学生活科学部栄養学科(当時)卒業後、給食受託企業で勤務。その後、大手食品 メーカーで、スポーツサプリメントの研究開発、マーケティングに従事。管理栄養士としてアスリート、学生スポーツへの栄養指導、栄養セミナー等にも携わる。 2021年に独立し、 現在はスポーツ栄養士として、アスリートの栄養サポー トに携わっている。
+
                             </p>
                             <hr class="specialist-divider">
                             <p class="specialist-title">
-                                市販薬を身近にするCureBell、セルフメディケーション推進の良き伴走者に
+                                健康リテラシー向上のための学びの場に
                             </p>
                             <p class="specialist-quote">
-                                薬剤師としてはたらく中で、市販薬の説明をしてお客様から感謝されることを日々経験してきました。それも、こちらが恐縮するくらい多大に感謝されるのです。これは、生活者の皆さんが、市販薬の情報に"飢えている証（あかし）"だと思っています。
+                                近年、機能性表示食品や、サプリメントの市場規模は年々伸⾧し、ドラッグストアではたくさんのサプリメントが並んでおり、インターネットやSNSでは様々な商品の広告を目にします。 
                             </p>
                             <button class="read-more-btn" aria-expanded="false" aria-controls="details1">
                                 <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -608,19 +603,56 @@
                                 <span>詳細を読む</span>
                             </button>
                             <div id="details1" class="specialist-details">
-                                <p>今やインターネット上には数多く薬の情報があり、医療用のサイトのみならず様々なサイトで簡単に見ることができます。しかし、今本当に自分が知りたい情報、それも信頼ある情報を見つけることは簡単ではありません。「セルフメディケーション推進」という名のもとで市販薬の使用を広めたいと考える国と、自分で適切な情報を選ぶための信頼ある情報に飢えている生活者との間の"大きなギャップ"がここにあるといえるでしょう。</p>
-                                <p>そこで期待するのが本サービスCureBellです。その��徴を挙げると、①生活者目線で作られたアプリで「妊婦授乳婦でも服用できる」などの条件検索がとても優れており、②製品特徴や注意事項の表記が一目瞭然で、パッケージに内包されている添付文書よりも格段にわかりやすい。</p>
-                                <p>さらに、③利用者にとって適正使用の知識が自然と身につき、商品選びの目が養われていく「エデュケーショナルな要素」も備わっています。この「エデュケーショナルな要素」によって皆さんは、大半の風邪薬で高血圧患者が「禁忌」または「要相談」となっているなど、市販薬には安全に服用するための「使用上の注意」が数多く存在することに初めて気づき、驚くはずです。</p>
-                                <p>CureBellがこの３つの特徴をさらに発展させ、日本のセルフメディケーション推進の良き伴走者になることを願い、応援したいと思います。</p>
+                                <p>管理栄養士、スポーツ栄養士として働くなかでも、サプリメントのことを聞かれる機会は非常に増えてきています。身体は食べたもの、飲んだものからできているので、基本となる食事を整えることが大前提ですが、特殊な環境下やライフスタイルが多様化する現代において、サプリメントの使用を検討することがあるのは事実です。たくさん情報があふれている中でも、専門家への助言を求める背景には、自分の求める情報にたどり着くことが難しいことの現れではないかと感じています。 </p>
+                                <p>CureBellは、様々な商品の情報が集約して掲載されているので、知りたい情報にアクセスしやすいサービスとなっています。目的別、成分別にサプリメントが検索でき、商品の特徴や注意表記まで変わりやすく表記されています。また、栄養成分表示も掲載されているので、自分が何の栄養素をどのくらい摂取しているか、確認することで過剰摂取を防ぐこともできます。サプリメントの使い方、注意すべきポイント、各成分の働きなど、常に情報もアップデートされていくので、健康リテラシー向上のための学びの場としても活用できるものだと考えています。 </p>
+                                <p>人生を豊かに過ごすためには、「健康」は重要な要素のひとつです。そのためには正しい情 報を入手し、理解して活用できる力を身につけることが大切です。CureBellを活用することで、みなさまの健康づくりの一助となることを期待し、応援しています。</p>
                             </div>
                         </div>
                     </div>
+
+
                     <div class="carousel-slide">
                         <div class="specialist-card">
                             <div class="specialist-header">
-                                <img src="./serada.png" alt="山田 花子" class="specialist-image">
+                                <img src="./suzuki.jpg" alt="鈴木 伸悟" class="specialist-image">
                                 <div class="specialist-info">
-                                    <h3 class="specialist-name">世良田　和幸 様</h3>
+                                    <h3 class="specialist-name">鈴木 伸悟様</h3>
+                                    <p class="specialist-title">薬剤師</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                薬局に勤務する現役薬剤師。横浜市西区薬剤師会理事。大手ドラッグストアでの勤務を経験後、処方せん調剤を主体とした保険薬局にてOTC医薬品の販売に取り組む。また、薬剤師や医薬品登録販売者向けにOTC医薬品の役立つ情報をSNSで発信するほか、メディア出演、全国各地での講演会、日経DIプレミアムでは連載を持つなど多方面で活動している。著書『薬局OTC販売マニュアル臨床知識から商品選びまで分かる（日経BP）
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-title">
+                                「禁忌事項」も簡単に確認、症状や体質に合った市販薬の選択に
+                            </p>
+                            <p class="specialist-quote">
+                                セルフメディケーション推進の時代、市販薬の有効活用がますます重要になってきています。最近では、医療用医薬品と同成分同量といった市販薬も増加しており、効果が高い一方で、副作用などのリスクに注意が必要です。
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details2">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details2" class="specialist-details">
+                                <p>また市販薬には、自動車の運転が禁止されている商品、高血圧や糖尿病の方の服用が禁止されている商品など注意を必要とするものもあります。</p>
+                                <p>自らの症状や体質に合った市販薬を選択することがとても大切なのです。しかし、市販薬の相談場所として薬局やドラッグストアなどがあるものの、いわゆる調剤薬局では、処方せんがないと相談しづらい、ドラッグストアでは、お客様が並んでいるレジで相談しづらいといった声もあります。インターネット販売で市販薬を購入する方も増えています。</p>
+                                <p>こうした状況の中、市販薬選定アプリCureBellは、自らの判断で市販薬を選んで購入する際にとても役立つツールであると思います。「こだわり条件」などの機能が豊富で、「検索除外条件」を使い選択した薬の「禁忌事項」なども簡単に確認できることや特長が簡単に分かることがポイントだと思います。CureBellの認知がより拡大し、生活者のセルフメディケーションの推進、ヘルスリテラシーの向上につながることを期待しています。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div class="carousel-slide">
+                        <div class="specialist-card">
+                            <div class="specialist-header">
+                                <img src="./serada.png" alt="世良田　和幸" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name">世良田　和幸様</h3>
                                     <p class="specialist-title">医師 渕野辺総合病院 院長</p>
                                 </div>
                             </div>
@@ -634,38 +666,6 @@
                             <p class="specialist-quote">
                                 漢方薬は、2000年以上の昔から、古代中国の先人達が苦労して探し出した様々な自然界の薬草や鉱物などで構成されており、その効果と副作用をまた長い年月を掛けて調整し、完成された薬です。
                             </p>
-                            <button class="read-more-btn" aria-expanded="false" aria-controls="details2">
-                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                                <span>詳細を読む</span>
-                            </button>
-                            <div id="details2" class="specialist-details">
-                                <p>人類の食べ物や環境の異なった場所でも、2000年もの間その効果が持続していることは、西洋薬にはない地球のパワーを感じます。</p>
-                                <p>CureBellは、この漢方薬を簡単に選び、その効用をわかりやすく知ることが出来るツールです。CureBellを使って漢方薬についての理解を深めることで、自らのセルフケアが出来るようになることでしょう。
-                                また、CureBellは、医療関係者にとっても、漢方を含めた市販薬（OTC）全般について、内容、効果効能等を簡単に確認できるツールであり、医療の現場においても十二分に活用できることでしょう。</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="carousel-slide">
-                        <div class="specialist-card">
-                            <div class="specialist-header">
-                                <img src="./suzuki.jpg" alt="佐藤 太郎" class="specialist-image">
-                                <div class="specialist-info">
-                                    <h3 class="specialist-name">鈴木 伸悟 様</h3>
-                                    <p class="specialist-title">薬剤師</p>
-                                </div>
-                            </div>
-                            <p class="specialist-profile">
-                                薬局に勤務する現役薬剤師。横浜市西区薬剤師会理事。大手ドラッグストアでの勤務を経験後、処方せん調剤を主体とした保険薬局にてOTC医薬品の販売に取り組む。また、薬剤師や医薬品登録販売者向けにOTC医薬品の役立つ情報をSNSで発信するほか、メディア出演、全国各地での講演会、日経DIプレミアムでは連載を持つなど多方面で活動している。著書『薬局OTC販売マニュアル臨床知識から商品選びまで分かる（日経BP）
-                            </p>
-                            <hr class="specialist-divider">
-                            <p class="specialist-title">
-                                タイトルタイトルタイトルタイトルタイトル
-                            </p>
-                            <p class="specialist-quote">
-                                セルフメディケーション推進の時代、市販薬の有効活用がますます重要になってきています。最近では、医療用医薬品と同成分同量といった市販薬も増加しており、効果が高い一方で、副作用などのリスクに注意が必要です。
-                            </p>
                             <button class="read-more-btn" aria-expanded="false" aria-controls="details3">
                                 <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <polyline points="6 9 12 15 18 9"></polyline>
@@ -673,10 +673,78 @@
                                 <span>詳細を読む</span>
                             </button>
                             <div id="details3" class="specialist-details">
-                                <p>また市販薬には、自動車の運転が禁止されている商品、高血圧や糖尿病の方の服用が禁止されている商品など注意を必要とするものもあります。</p>
-                                <p>自らの症状や体質に合った市販薬を選択することがとても大切なのです。しかし、市販薬の相談場所として薬局やドラッグストアなどがあるものの、いわゆる調剤薬局では、処方せんがないと相談しづらい、ドラッグストアでは、お客様が並んでいるレジで相談しづらいといった声もあります。インターネット販売で市販薬を購入する方も増えています。</p>
-                                <p>こうした状況の中、市販薬選定アプリCureBellは、自らの判断で市販薬を選んで購入する際にとても役立つツールであると思います。「こだわり条件」などの機能が豊富で、選択した薬の「禁忌事項」なども簡単に確認できることや特長が簡単に分かることがポイントだと思います。CureBellの認知がより拡大し、生活者のセルフメディケーションの推進、ヘルスリテラシーの向上につながることを期待しています。
-                                </p>
+                                <p>人類の食べ物や環境の異なった場所でも、2000年もの間その効果が持続していることは、西洋薬にはない地球のパワーを感じます。</p>
+                                <p>CureBellは、この漢方薬を簡単に選び、その効用をわかりやすく知ることが出来るツールです。CureBellを使って漢方薬についての理解を深めることで、自らのセルフケアが出来るようになることでしょう。
+                                また、CureBellは、医療関係者にとっても、漢方を含めた市販薬（OTC）全般について、内容、効果効能等を簡単に確認できるツールであり、医療の現場においても十二分に活用できることでしょう。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                    <div class="specialist-card">
+                        <div class="specialist-header">
+                                <img src="https://placehold.jp/64x64.png" alt="久里 建人" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name">久里 建人様</h3>
+                                    <p class="specialist-title">薬剤師</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                薬剤師。 2005年に薬剤師免許取得後、医療用医薬品情報に関わる業務等を経て、市販薬の店舗責任者や新規事業関連のマネージャーを務める。ブログやSNSを通じて一般消費者向けに情報を発信し、講演、寄稿、書籍監修等も行う。著書「その病気、市販薬で治せます」（新潮新書）が各所より大きな反響を得る。
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-title">
+                                市販薬を身近にするCureBell、セルフメディケーション推進の良き伴走者に
+                            </p>
+                            <p class="specialist-quote">
+                                薬剤師としてはたらく中で、市販薬の説明をしてお客様から感謝されることを日々経験してきました。それも、こちらが恐縮するくらい多大に感謝されるのです。これは、生活者の皆さんが、市販薬の情報に"飢えている証（あかし）"だと思っています。
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details4">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details4" class="specialist-details">
+                                <p>今やインターネット上には数多く薬の情報があり、医療用のサイトのみならず様々なサイトで簡単に見ることができます。しかし、今本当に自分が知りたい情報、それも信頼ある情報を見つけることは簡単ではありません。「セルフメディケーション推進」という名のもとで市販薬の使用を広めたいと考える国と、自分で適切な情報を選ぶための信頼ある情報に飢えている生活者との間の"大きなギャップ"がここにあるといえるでしょう。</p>
+                                <p>そこで期待するのが本サービスCureBellです。その特徴を挙げると、①生活者目線で作られたアプリで「妊婦授乳婦でも服用できる」などの条件検索がとても優れており、②製品特徴や注意事項の表記が一目瞭然で、パッケージに内包されている添付文書よりも格段にわかりやすい。</p>
+                                <p>さらに、③利用者にとって適正使用の知識が自然と身につき、商品選びの目が養われていく「エデュケーショナルな要素」も備わっています。この「エデュケーショナルな要素」によって皆さんは、大半の風邪薬で高血圧患者が「禁忌」または「要相談」となっているなど、市販薬には安全に服用するための「使用上の注意」が数多く存在することに初めて気づき、驚くはずです。</p>
+                                <p>CureBellがこの３つの特徴をさらに発展させ、日本のセルフメディケーション推進の良き伴走者になることを願い、応援したいと思います。</p>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="carousel-slide">
+                        <div class="specialist-card">
+                            <div class="specialist-header">
+                                <img src="./kashiwabara.jpg" alt="佐藤 太郎" class="specialist-image">
+                                <div class="specialist-info">
+                                    <h3 class="specialist-name"> 柏原ゆきよ様</h3>
+                                    <p class="specialist-title">日本健康食育協会代表理事</p>
+                                </div>
+                            </div>
+                            <p class="specialist-profile">
+                                一般社団法人日本健康食育協会　代表理事、一般社団法人食アスリート協会　副代表理事
+                                公益財団法人日本ヘルスケア協会、お米で健康推進部会　部会長
+                                10万人以上の食生活サポートで圧倒的な改善成果を出し、「お米」が健康に寄与することを実証する。心と体を元氣に美しくレベルアップさせる食事法として「お米生活黄金比率６：４」「食べる断食®︎」を開発、幅広いクライアントから支持される。「健康食育マスター講座」を主宰、食と健康の指導者育成に力を入れると共に、「食から人生を楽しく豊かにする活動」を精力的に行う。国内外でのセミナーや講演は2000回を超え、<a href="https://www.youtube.com/@user-fd6yt9ge2r/featured" target="_blank" rel="noopener noreferrer">YouTubeお米チャンネル</a>を通じての情報発信にも力を入れている。著書「お腹からやせる食べ方」（三笠書房）他累計15万部超。
+
+                            </p>
+                            <hr class="specialist-divider">
+                            <p class="specialist-title">
+                                サプリメントの必要最低限の摂取のために活用を
+                            </p>
+                            <p class="specialist-quote">
+                                健康意識の高まりと共にサプリメントの活用がとても身近になっており、市場規模が拡大し選択肢も増えています。一方で、複数商品の摂取による過剰摂取や薬との飲み合わせによる問題など、健康被害が増えている現状があり、安易な摂取にはご注意ください。
+                            </p>
+                            <button class="read-more-btn" aria-expanded="false" aria-controls="details5">
+                                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                                <span>詳細を読む</span>
+                            </button>
+                            <div id="details5" class="specialist-details">
+                                <p>サプリメントの選択においては、食生活との関係も考慮し、必要最低限の摂取をお勧めしています。</p>
+                                <p>CureBellではサプリメントの原材料や成分量などの情報が統一されたフォーマットで掲載されており、簡単に検索することできます。ご自身で補いたい栄養素（成分）が分かれば、それを含むサプリメントを検索・比較し、選択するための一助になるものと思います。</p>
                             </div>
                         </div>
                     </div>
@@ -697,7 +765,7 @@
             let currentIndex = 0;
 
             function updateCarousel() {
-                const offset = currentIndex * -80;
+                const offset = currentIndex * -90;
                 carousel.style.transform = `translateX(${offset}%)`;
                 
                 slides.forEach((slide, index) => {
