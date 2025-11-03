@@ -1,7 +1,7 @@
-// ====== Apps Script /exec のURL ======
+// ====== Apps Script /exec のURL（本番用に更新済み） ======
 const ENDPOINT = "https://script.google.com/macros/s/AKfycbwY2gQhaXcWE-eQVSmUN67lA6MQTOmPGQiCxuGevl2tICdydlrx18oXiKStgHTS7niRTA/exec";
 
-// ====== サンクス表示（UI用） ======
+// ====== サンクス表示（UI用／既存） ======
 function showInlineThanks(){
   const p = document.getElementById('inlineThanks');
   if (p) p.hidden = false;
@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', ()=>{
     showInlineThanks();
     submitBtn.disabled = true;
 
-    // 送信（form-urlencoded：プリフライト回避）
     const params = new URLSearchParams({
       name: uiForm.elements['name'].value.trim(),
       email: uiForm.elements['email'].value.trim(),
@@ -43,20 +42,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
       uiForm.reset();
     } catch (err) {
       console.error('[FORM FETCH ERROR]', err);
-      // 失敗でもUIはサンクスのまま
     } finally {
       submitBtn.disabled = false;
-      // 以後の自動ポップアップ抑止に使う場合のフック
       window.dispatchEvent(new CustomEvent('lp:submitted'));
     }
   });
 });
 
 // ====== ポップアップ：アクセス毎に表示（クールダウンなし） ======
-(function(){
+document.addEventListener('DOMContentLoaded', ()=>{
   const POPUP_ID = "popup";
-  const DELAY_MS = 1200; // 表示までの遅延
-
+  const DELAY_MS = 1200;
   const el = document.getElementById(POPUP_ID);
   if (!el) return;
 
@@ -71,46 +67,58 @@ document.addEventListener('DOMContentLoaded', ()=>{
     releaseFocus();
   };
 
-  // ×／背景クリック／「閉じる」で閉じる
   el.addEventListener('click', (e)=>{
     if (e.target.closest('[data-popup-close]')) close();
     if (e.target.classList.contains('popup__backdrop')) close();
   });
-  // Escで閉じる
   document.addEventListener('keydown', (e)=>{
     if (e.key === 'Escape' && el.getAttribute('aria-hidden') === 'false') close();
   });
 
-  // アクセス毎に表示（リロードしても毎回出す）
   setTimeout(open, DELAY_MS);
 
-  // ====== クリックログ：sendBeacon優先 → fetchフォールバック ======
+  // ====== クリックログ：三段フォールバック ======
   function logPopupChoice(choice){
-    const bodyStr = new URLSearchParams({
+    const payload = new URLSearchParams({
       popup_choice: choice,
       ua: navigator.userAgent,
       path: location.pathname + location.search + location.hash,
       ts: String(Date.now())
-    }).toString();
+    });
 
-    // 1) sendBeacon（遷移中でも投げやすい）
+    // 1) sendBeacon（DOMStringで送る：Blob不要・CSP影響を減らす）
     if (navigator.sendBeacon) {
-      const ok = navigator.sendBeacon(
-        ENDPOINT,
-        new Blob([bodyStr], { type: "application/x-www-form-urlencoded;charset=UTF-8" })
-      );
+      const ok = navigator.sendBeacon(ENDPOINT, payload.toString()); // text/plain として送られる
       if (ok) return Promise.resolve(true);
     }
-    // 2) fetch フォールバック（短時間だけ待つ）
+
+    // 2) fetch no-cors（レスポンスは読めないが送信は通る）
     return fetch(ENDPOINT, {
       method: "POST",
+      mode: "no-cors",
       headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: bodyStr,
-      keepalive: true,
-    }).then(()=>true).catch(()=>false);
+      body: payload.toString(),
+      keepalive: true
+    }).then(()=>true).catch(async ()=>{
+      // 3) 画像ビーコン（GET）：最後の保険（doGet で拾う）
+      try {
+        const img = new Image();
+        const u = new URL(ENDPOINT);
+        u.searchParams.set('popup_choice', choice);
+        u.searchParams.set('ua', navigator.userAgent);
+        u.searchParams.set('path', location.pathname + location.search + location.hash);
+        u.searchParams.set('ts', String(Date.now()));
+        img.src = u.toString();
+        // ちょっとだけ待つ（送信猶予）
+        await new Promise(res => setTimeout(res, 120));
+        return true;
+      } catch(e){
+        console.warn('[popup img beacon failed]', e);
+        return false;
+      }
+    });
   }
 
-  // 2つのカードにバインド（data-choice を送る）
   document.querySelectorAll(".js-popup-choice").forEach(anchor=>{
     anchor.addEventListener("click", async (e)=>{
       e.preventDefault(); // 遷移前に確実に送る
@@ -119,19 +127,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
       try {
         await Promise.race([
           logPopupChoice(choice),
-          new Promise(res => setTimeout(res, 300)) // 長く待たない
+          new Promise(res => setTimeout(res, 400)) // 送信待機は最大400ms
         ]);
       } catch (_) {}
 
-      // UI：閉じてフォームへスクロール
+      // UI：閉じてフォームへ
       close();
       const target = document.getElementById('entry');
       if (target) {
         if (location.hash !== "#entry") location.hash = "entry";
         target.scrollIntoView({ behavior: "smooth" });
       }
-      // a[href] のデフォルト遷移は抑制したままでOK
-    }, { passive: false });
+    }, { passive:false });
   });
 
   // ====== フォーカス制御（アクセシビリティ） ======
@@ -153,4 +160,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
     document.removeEventListener('focus', el.__focusLoop, true);
     if (prevFocus && document.body.contains(prevFocus)) prevFocus.focus();
   }
-})();
+});
