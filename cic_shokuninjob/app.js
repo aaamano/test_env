@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
   });
 });
 
-// ====== ポップアップ：アクセス毎に表示（送信ロギングは削除） ======
+// ====== ポップアップ：毎回表示／選択肢以外で閉じられない ======
 document.addEventListener('DOMContentLoaded', ()=>{
   const POPUP_ID = "popup";
   const DELAY_MS = 1200;
@@ -66,23 +66,18 @@ document.addEventListener('DOMContentLoaded', ()=>{
     releaseFocus();
   };
 
-  // ×／背景クリック／「閉じる」で閉じる
-  el.addEventListener('click', (e)=>{
-    if (e.target.closest('[data-popup-close]')) close();
-    if (e.target.classList.contains('popup__backdrop')) close();
-  });
-  // Escで閉じる
-  document.addEventListener('keydown', (e)=>{
-    if (e.key === 'Escape' && el.getAttribute('aria-hidden') === 'false') close();
-  });
+  // ★ 以前の「×／背景クリック／Escで閉じる」は無効化
+  // （意図せず閉じられないように、イベントを付けない）
+  // el.addEventListener('click', ... );
+  // document.addEventListener('keydown', ... );
 
-  // アクセス毎に表示（リロードしても毎回）
+  // アクセス毎に表示
   setTimeout(open, DELAY_MS);
 
-  // ▼ 2カードクリック時：送信せず UI だけ（閉じる→フォームへ）
+  // ▼ 2カードのクリックでのみ閉じる → フォームへスクロール
   document.querySelectorAll(".js-popup-choice").forEach(anchor=>{
     anchor.addEventListener("click", (e)=>{
-      e.preventDefault();
+      e.preventDefault();               // ページ遷移より先にUI制御
       close();
       const target = document.getElementById('entry');
       if (target) {
@@ -97,11 +92,14 @@ document.addEventListener('DOMContentLoaded', ()=>{
   function trapFocus(){
     prevFocus = document.activeElement;
     const focusables = el.querySelectorAll('a,button,input,select,textarea,[tabindex]:not([tabindex="-1"])');
-    if (focusables.length) focusables[0].focus();
+    // 選択肢にフォーカスを当てる（1枚目を初期フォーカス）
+    const first = el.querySelector('.js-popup-choice') || focusables[0];
+    if (first) first.focus();
+
     function loop(){
       if (el.getAttribute('aria-hidden') === 'true') return;
       if (!el.contains(document.activeElement)) {
-        if (focusables.length) focusables[0].focus();
+        if (first) first.focus();
       }
     }
     el.__focusLoop = loop;
