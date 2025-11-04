@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>転職支援｜お問い合わせ</title>
+  <meta name="description" content="お名前・メール・転職希望時期・業界経験のみの1分登録。送信内容はスプレッドシートに保存されます。">
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+
+<!-- ===== Popup: スムーズなお手続きをサポートします（選択必須） ===== -->
+<div id="popup" class="popup" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="popup__backdrop" tabindex="-1" aria-hidden="true"></div>
+
+  <div class="popup__box" role="document" aria-labelledby="popupTitle" aria-describedby="popupDesc">
+    <div class="popup__cap"></div>
+    <!-- ×ボタンは削除（選択肢以外で閉じられない） -->
+
+    <div class="popup__content">
+      <h3 id="popupTitle" class="popup__title">ご経験をお選びして次に進んでください</h3>
+      <p id="popupDesc" class="popup__desc">
+        下記どちらかを選択すると次に進めます。
+
+      <div class="popup__grid">
+        <!-- 選択肢1 -->
+        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界の経験あり" role="button" aria-label="建設業界の経験ありを選ぶ">
+          <div class="popup__card-text">
+            <div class="popup__card-title">建設業界の経験あり</div>
+          </div>
+          <span class="popup__chev" aria-hidden="true">›</span>
+        </a>
+
+        <!-- 選択肢2 -->
+        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界は未経験" role="button" aria-label="建設業界は未経験を選ぶ">
+          <div class="popup__card-text">
+            <div class="popup__card-title">建設業界は未経験</div>
+          </div>
+          <span class="popup__chev" aria-hidden="true">›</span>
+        </a>
+      </div>
+
+      <!-- 「閉じる」などの逃げ道は置かない -->
+    </div>
+  </div>
+</div>
+
+
+<body>
+  <!-- ===== FV（画像のみ・PCは<img>、SPはcoverに切替） ===== -->
+  <section class="fv" aria-label="メインビジュアル">
+    <div class="fv__inner">
+      <!-- PC用：画像そのまま（全幅） -->
+      <img src="./images/hero-cic.png" alt="CIC職人ジョブのメインビジュアル" class="fv__img" />
+      <!-- SP用：coverで安定表示 -->
+      <div class="fv__bg" role="img" aria-label="CIC職人ジョブのメインビジュアル"></div>
+    </div>
+  </section>
+
+  <!-- FVとフォームの間に明確な余白（くっつかない） -->
+  <section class="lead" aria-label="お知らせ">
+    <div class="lead__inner">
+      <p class="lead__title">下のフォームからご登録ください。</p>
+      <p class="lead__note">（現在サイト公開準備中のため、準備出来次第ご連絡いたします）</p>
+    </div>
+  </section>
+
+  <!-- ===== 登録フォーム（4項目のみ） ===== -->
+  <main id="entry" class="entry">
+    <form id="uiForm" class="form" novalidate>
+      <h2>登録して求人を見る</h2>
+
+      <div class="grid">
+        <label class="field">
+          <span>お名前 <em>必須</em></span>
+          <input type="text" name="name" placeholder="例）山田 太郎" required />
+        </label>
+
+        <label class="field">
+          <span>メールアドレス <em>必須</em></span>
+          <input type="email" name="email" placeholder="例）example@mail.com" required />
+        </label>
+
+        <label class="field">
+          <span>転職希望時期 <em>必須</em></span>
+          <select name="job_change_timing" required>
+            <option value="">—以下から選択してください—</option>
+            <option>3ヶ月以内</option>
+            <option>半年以内</option>
+            <option>1年以内</option>
+            <option>良い機会があれば</option>
+            <option>今は転職を考えていない</option>
+          </select>
+        </label>
+
+        <label class="field">
+          <span>業界経験 <em>必須</em></span>
+          <select name="industry_experience" required>
+            <option value="">—以下から選択してください—</option>
+            <option>建設業界の経験あり</option>
+            <option>建設業界で建設現場での経験あり</option>
+            <option>建設業界未経験</option>
+          </select>
+        </label>
+      </div>
+
+      <label class="agree">
+        <input type="checkbox" name="terms" required />
+        <span>利用規約に同意する</span>
+      </label>
+
+      <!-- ▼ 追加：プライバシーポリシーリンク（利用規約の直下） -->
+      <p class="legal-links">
+        <a href="https://www.cic-ct.co.jp/privacypolicy/" target="_blank" rel="noopener noreferrer">
+          プライバシーポリシー
+        </a>
+      </p>
+
+      <div class="actions">
+        <button type="submit" class="btn btn--primary">送信する</button>
+      </div>
+
+      <!-- サンクス文言（即表示用） -->
+      <p id="inlineThanks" class="inline-thanks" hidden>
+        ご登録ありがとうございます。送信を受け付けました。担当者よりご連絡いたします。
+      </p>
+    </form>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>
