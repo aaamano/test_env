@@ -8,29 +8,30 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 
-<!-- ===== Popup: スムーズなお手続きをサポートします ===== -->
+<!-- ===== Popup: スムーズなお手続きをサポートします（選択必須） ===== -->
 <div id="popup" class="popup" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="popup__backdrop" data-popup-close tabindex="-1"></div>
+  <div class="popup__backdrop" tabindex="-1" aria-hidden="true"></div>
 
-  <div class="popup__box" role="document" aria-labelledby="popupTitle">
+  <div class="popup__box" role="document" aria-labelledby="popupTitle" aria-describedby="popupDesc">
     <div class="popup__cap"></div>
-    <button class="popup__close" type="button" aria-label="閉じる" data-popup-close>×</button>
+    <!-- ×ボタンは削除（選択肢以外で閉じられない） -->
 
     <div class="popup__content">
-      <h3 id="popupTitle" class="popup__title">職務経験をお伺いしたいです</h3>
-
+      <h3 id="popupTitle" class="popup__title">ご経験をお選びして次に進んでください</h3>
+      <p id="popupDesc" class="popup__desc">
+        下記どちらかを選択すると次に進めます。
 
       <div class="popup__grid">
-        <!-- カード1 -->
-        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界の経験あり">
+        <!-- 選択肢1 -->
+        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界の経験あり" role="button" aria-label="建設業界の経験ありを選ぶ">
           <div class="popup__card-text">
             <div class="popup__card-title">建設業界の経験あり</div>
           </div>
           <span class="popup__chev" aria-hidden="true">›</span>
         </a>
 
-        <!-- カード2 -->
-        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界は未経験">
+        <!-- 選択肢2 -->
+        <a class="popup__card js-popup-choice" href="#entry" data-choice="建設業界は未経験" role="button" aria-label="建設業界は未経験を選ぶ">
           <div class="popup__card-text">
             <div class="popup__card-title">建設業界は未経験</div>
           </div>
@@ -38,9 +39,7 @@
         </a>
       </div>
 
-      <div class="popup__foot">
-        <button class="popup__ghost" type="button" data-popup-close>閉じる</button>
-      </div>
+      <!-- 「閉じる」などの逃げ道は置かない -->
     </div>
   </div>
 </div>
