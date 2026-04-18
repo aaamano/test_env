@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  text-align: left;
+}
+
+.shift-cell {
+  @apply text-center text-xs font-medium py-1 px-0.5 rounded cursor-pointer select-none;
+  min-width: 36px;
+}
+
+.shift-f    { @apply bg-green-100 text-green-800; }
+.shift-x    { @apply bg-gray-100 text-gray-500; }
+.shift-open { @apply bg-blue-100 text-blue-800; }
+.shift-late { @apply bg-purple-100 text-purple-800; }
+.shift-mid  { @apply bg-amber-100 text-amber-800; }
+
+.drag-selecting { @apply bg-blue-200 border-2 border-blue-400; }
