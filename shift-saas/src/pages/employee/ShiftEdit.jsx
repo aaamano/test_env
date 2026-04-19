@@ -1,88 +1,54 @@
-import { useState, useRef, useCallback } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { daysConfig, YEAR_MONTH, staff } from '../../data/mockData'
 
 const ME = staff[0]
-const WEEK_SIZE = 7
 
-const TIME_SLOTS = [
-  '5:00','6:00','7:00','8:00','9:00','10:00','11:00','12:00',
-  '13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00',
+const STATUS_OPTIONS = [
+  { value: 'off',       label: '休み',      icon: '✕', inactive: 'bg-gray-100 text-gray-500 border border-gray-200', active: 'bg-gray-500 text-white border border-gray-500' },
+  { value: 'available', label: '出勤可',    icon: '○', inactive: 'bg-emerald-50 text-emerald-600 border border-emerald-200', active: 'bg-emerald-500 text-white border border-emerald-500' },
+  { value: 'prefer',    label: '★第一希望', icon: '★', inactive: 'bg-blue-50 text-blue-600 border border-blue-200', active: 'bg-blue-600 text-white border border-blue-600' },
 ]
 
-const SHIFT_OPTIONS = [
-  { label: '希望あり', value: 'available', btn: 'bg-emerald-500 text-white', cell: 'bg-emerald-200 border-emerald-400' },
-  { label: '第一希望', value: 'prefer',    btn: 'bg-blue-500 text-white',    cell: 'bg-blue-400 border-blue-600' },
-  { label: '出勤不可', value: 'off',       btn: 'bg-red-400 text-white',     cell: 'bg-red-200 border-red-400' },
-  { label: 'クリア',   value: null,        btn: 'bg-gray-200 text-gray-600', cell: '' },
-]
+const HOURS = Array.from({ length: 15 }, (_, i) => i + 8)  // 8〜22
+const MINS  = ['00', '15', '30', '45']
+
+const defaultPref = { status: 'off', startH: 9, startM: '00', endH: 18, endM: '00' }
 
 export default function ShiftEdit() {
-  const [cells, setCells] = useState({})
-  const [mode, setMode] = useState('available')
-  const [dragging, setDragging] = useState(false)
-  const [weekPage, setWeekPage] = useState(0)
-  const [targetEarnings, setTargetEarnings] = useState(ME.wage * 80)
-  const [editingEarnings, setEditingEarnings] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const startCell = useRef(null)
-  const currentMode = useRef(mode)
-  currentMode.current = mode
+  const [prefs, setPrefs]           = useState(() => Object.fromEntries(daysConfig.map(d => [d.day, { ...defaultPref }])))
+  const [targetEarnings, setTarget] = useState(ME.wage * 80)
+  const [editingTarget, setEditing] = useState(false)
+  const [saved, setSaved]           = useState(false)
+  const [expandAll, setExpandAll]   = useState(false)
 
-  const totalWeeks = Math.ceil(daysConfig.length / WEEK_SIZE)
-  const visibleDays = daysConfig.slice(weekPage * WEEK_SIZE, weekPage * WEEK_SIZE + WEEK_SIZE)
+  const setStatus = (day, status) =>
+    setPrefs(prev => ({ ...prev, [day]: { ...prev[day], status } }))
 
-  const cellKey = (day, si) => `${day}-${si}`
+  const setTime = (day, field, val) =>
+    setPrefs(prev => ({ ...prev, [day]: { ...prev[day], [field]: val } }))
 
-  const applyRange = useCallback((from, to) => {
-    const d1 = Math.min(from.day, to.day), d2 = Math.max(from.day, to.day)
-    const s1 = Math.min(from.si, to.si), s2 = Math.max(from.si, to.si)
-    setCells(prev => {
-      const next = { ...prev }
-      for (let d = d1; d <= d2; d++) {
-        for (let s = s1; s <= s2; s++) {
-          const k = cellKey(d, s)
-          if (currentMode.current === null) delete next[k]
-          else next[k] = currentMode.current
-        }
-      }
-      return next
-    })
-  }, [])
-
-  const handleMouseDown = (day, si) => {
-    setDragging(true)
-    startCell.current = { day, si }
-    applyRange({ day, si }, { day, si })
-  }
-  const handleMouseEnter = (day, si) => {
-    if (!dragging || !startCell.current) return
-    applyRange(startCell.current, { day, si })
-  }
-  const handleMouseUp = () => { setDragging(false); startCell.current = null }
+  const applyAll = (status) =>
+    setPrefs(prev => Object.fromEntries(
+      Object.entries(prev).map(([day, p]) => [day, { ...p, status }])
+    ))
 
   const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2500) }
 
-  const filledCount = Object.keys(cells).length
-  const availCount  = Object.values(cells).filter(v => v === 'available' || v === 'prefer').length
-
-  const getCellCls = (val, isWeekend) => {
-    const base = 'h-8 border transition-colors cursor-crosshair'
-    const wknd = isWeekend ? 'bg-red-50/40' : ''
-    const opt = SHIFT_OPTIONS.find(o => o.value === val)
-    if (opt && opt.cell) return `${base} ${opt.cell}`
-    return `${base} ${wknd || 'bg-white border-gray-100'} hover:bg-emerald-50`
-  }
+  const availCount  = Object.values(prefs).filter(p => p.status === 'available' || p.status === 'prefer').length
+  const preferCount = Object.values(prefs).filter(p => p.status === 'prefer').length
 
   return (
-    <div className="p-4 select-none" onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
-      {/* Header */}
+    <div className="p-4 max-w-2xl mx-auto">
+
+      {/* ── Header ── */}
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <div className="text-xs text-gray-400 mb-0.5">{YEAR_MONTH} 前半</div>
           <h1 className="text-xl font-bold text-gray-900">希望シフト入力</h1>
+          <p className="text-sm text-gray-500">{ME.name} さん</p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-shrink-0">
           <Link to="/employee" className="text-sm border border-gray-300 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50">← 戻る</Link>
           <button onClick={handleSave}
             className="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-emerald-700">
@@ -91,105 +57,134 @@ export default function ShiftEdit() {
         </div>
       </div>
 
-      {/* Target earnings */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4 flex items-center gap-4">
-        <div className="flex-1">
-          <div className="text-xs font-semibold text-emerald-700 mb-0.5">今月の目標収入</div>
-          {editingEarnings ? (
-            <input
-              type="number"
-              defaultValue={targetEarnings}
-              autoFocus
-              className="w-40 border-2 border-emerald-400 rounded-lg px-3 py-1 text-sm outline-none font-bold text-gray-900"
-              onBlur={e => { setTargetEarnings(Number(e.target.value)); setEditingEarnings(false) }}
-              onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }}
-            />
-          ) : (
-            <button onClick={() => setEditingEarnings(true)}
-              className="text-xl font-bold text-gray-900 hover:text-emerald-700 transition-colors">
-              ¥{targetEarnings.toLocaleString()}
-              <span className="text-xs font-normal text-emerald-500 ml-1">タップして編集</span>
-            </button>
-          )}
-        </div>
-        <div className="text-xs text-emerald-600 text-right leading-relaxed">
-          設定した目標収入は<br/>マネージャーがシフト作成時に参考にします
+      {/* ── Target earnings ── */}
+      <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4">
+        <div className="flex items-center gap-4">
+          <div className="flex-1">
+            <div className="text-xs font-semibold text-emerald-700 mb-0.5">今月の目標収入</div>
+            {editingTarget ? (
+              <input type="number" defaultValue={targetEarnings} autoFocus
+                className="w-40 border-2 border-emerald-400 rounded-lg px-3 py-1 text-sm outline-none font-bold"
+                onBlur={e => { setTarget(Number(e.target.value)); setEditing(false) }}
+                onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }}
+              />
+            ) : (
+              <button onClick={() => setEditing(true)} className="text-xl font-bold text-gray-900 hover:text-emerald-700">
+                ¥{targetEarnings.toLocaleString()}
+                <span className="text-xs font-normal text-emerald-500 ml-1">タップして編集</span>
+              </button>
+            )}
+          </div>
+          <div className="text-xs text-emerald-600 text-right leading-relaxed">
+            マネージャーがシフト作成時に<br/>参考にします
+          </div>
         </div>
       </div>
 
-      {/* Mode selector */}
-      <div className="flex gap-2 mb-3 flex-wrap items-center">
-        <span className="text-xs text-gray-500 font-medium">入力モード:</span>
-        {SHIFT_OPTIONS.map(opt => (
-          <button key={opt.value ?? 'clear'} onClick={() => setMode(opt.value)}
-            className={`text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition-all ${
-              mode === opt.value ? `${opt.btn} border-transparent shadow` : 'bg-white border-gray-200 text-gray-600'
-            }`}>
-            {opt.label}
-          </button>
+      {/* ── Summary ── */}
+      <div className="grid grid-cols-3 gap-3 mb-4">
+        {[
+          { label: '出勤可能', value: `${availCount}日`,      color: 'bg-emerald-50 border-emerald-200 text-emerald-800' },
+          { label: '第一希望', value: `${preferCount}日`,     color: 'bg-blue-50 border-blue-200 text-blue-800' },
+          { label: '休み',     value: `${15 - availCount}日`, color: 'bg-gray-50 border-gray-200 text-gray-600' },
+        ].map((k, i) => (
+          <div key={i} className={`border rounded-xl p-3 ${k.color}`}>
+            <div className="text-xs opacity-70 mb-0.5">{k.label}</div>
+            <div className="text-xl font-bold">{k.value}</div>
+          </div>
         ))}
-        <span className="ml-auto text-xs text-gray-400">希望可能: <strong className="text-emerald-600">{availCount}</strong> スロット</span>
       </div>
 
-      {/* Week navigation */}
-      <div className="flex items-center justify-between mb-3">
-        <button onClick={() => setWeekPage(p => Math.max(0, p - 1))} disabled={weekPage === 0}
-          className="text-sm px-3 py-1.5 border border-gray-300 rounded-lg disabled:opacity-30 hover:bg-gray-50">
-          ← 前の週
+      {/* ── Bulk actions ── */}
+      <div className="flex gap-2 mb-3 flex-wrap items-center">
+        <span className="text-xs text-gray-500">一括設定:</span>
+        <button onClick={() => applyAll('off')}
+          className="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 font-medium">
+          全日 休み
         </button>
-        <span className="text-sm font-semibold text-gray-700">
-          {visibleDays[0]?.day}日〜{visibleDays[visibleDays.length - 1]?.day}日
-        </span>
-        <button onClick={() => setWeekPage(p => Math.min(totalWeeks - 1, p + 1))} disabled={weekPage >= totalWeeks - 1}
-          className="text-sm px-3 py-1.5 border border-gray-300 rounded-lg disabled:opacity-30 hover:bg-gray-50">
-          次の週 →
+        <button onClick={() => applyAll('available')}
+          className="text-xs px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 hover:bg-emerald-200 font-medium">
+          全日 出勤可
+        </button>
+        <button onClick={() => setExpandAll(v => !v)}
+          className="ml-auto text-xs px-3 py-1.5 rounded-full bg-white text-gray-600 border border-gray-300 hover:bg-gray-50 font-medium">
+          {expandAll ? '時刻を折りたたむ' : '全日 時刻を展開'}
         </button>
       </div>
 
-      {/* Grid */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-auto">
-        <table className="border-collapse text-xs" style={{ tableLayout: 'fixed', width: '100%' }}>
-          <thead className="sticky top-0 z-10">
-            <tr className="bg-gray-900 text-white">
-              <th className="py-2 px-2 text-left font-medium sticky left-0 bg-gray-900 w-14">時間帯</th>
-              {visibleDays.map(d => (
-                <th key={d.day} className={`py-2 text-center font-medium ${d.isWeekend ? 'text-red-300' : ''}`} style={{ minWidth: 52 }}>
-                  <div>{d.day}日</div>
-                  <div className="text-[9px] font-normal opacity-70">{d.dow}</div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {TIME_SLOTS.map((slot, si) => (
-              <tr key={slot} className="border-b border-gray-100">
-                <td className="py-0 px-2 text-gray-500 font-semibold sticky left-0 bg-white border-r border-gray-200 whitespace-nowrap text-[10px]">
-                  {slot}
-                </td>
-                {visibleDays.map(d => {
-                  const val = cells[cellKey(d.day, si)]
-                  return (
-                    <td key={d.day}
-                      className={getCellCls(val, d.isWeekend)}
-                      onMouseDown={() => handleMouseDown(d.day, si)}
-                      onMouseEnter={() => handleMouseEnter(d.day, si)}
-                    >
-                      {val === 'prefer' && <div className="flex items-center justify-center h-full text-white text-[9px] font-bold">★</div>}
-                    </td>
-                  )
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* ── Day cards ── */}
+      <div className="space-y-2">
+        {daysConfig.map(d => {
+          const p = prefs[d.day]
+          const isWorking = p.status !== 'off'
+          const showTime  = isWorking || expandAll
+
+          return (
+            <div key={d.day}
+              className={`rounded-xl border transition-all overflow-hidden ${
+                p.status === 'prefer'    ? 'border-blue-300 bg-blue-50/50' :
+                p.status === 'available' ? 'border-emerald-200 bg-emerald-50/30' :
+                'border-gray-200 bg-white'
+              }`}>
+
+              {/* Top row */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <div className={`flex-shrink-0 w-12 text-center rounded-lg py-1.5 ${d.isWeekend ? 'bg-red-100' : 'bg-gray-100'}`}>
+                  <div className={`text-base font-bold leading-tight ${d.isWeekend ? 'text-red-700' : 'text-gray-800'}`}>{d.day}</div>
+                  <div className={`text-[10px] ${d.isWeekend ? 'text-red-500' : 'text-gray-500'}`}>{d.dow}</div>
+                </div>
+                <div className="flex gap-1.5 flex-1 flex-wrap">
+                  {STATUS_OPTIONS.map(opt => (
+                    <button key={opt.value} onClick={() => setStatus(d.day, opt.value)}
+                      className={`flex-1 min-w-[68px] text-xs font-semibold px-2 py-2 rounded-lg transition-all ${
+                        p.status === opt.value ? opt.active : opt.inactive
+                      }`}>
+                      <span className="mr-1">{opt.icon}</span>{opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Time range */}
+              {showTime && (
+                <div className={`px-4 pb-3 flex items-center gap-2 flex-wrap ${!isWorking ? 'opacity-40 pointer-events-none' : ''}`}>
+                  <span className="text-xs text-gray-500 flex-shrink-0">時間帯</span>
+                  <select value={p.startH} onChange={e => setTime(d.day, 'startH', Number(e.target.value))}
+                    className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
+                    {HOURS.map(h => <option key={h} value={h}>{h}時</option>)}
+                  </select>
+                  <select value={p.startM} onChange={e => setTime(d.day, 'startM', e.target.value)}
+                    className="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
+                    {MINS.map(m => <option key={m} value={m}>{m}分</option>)}
+                  </select>
+                  <span className="text-gray-400">〜</span>
+                  <select value={p.endH} onChange={e => setTime(d.day, 'endH', Number(e.target.value))}
+                    className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
+                    {HOURS.map(h => <option key={h} value={h}>{h}時</option>)}
+                  </select>
+                  <select value={p.endM} onChange={e => setTime(d.day, 'endM', e.target.value)}
+                    className="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
+                    {MINS.map(m => <option key={m} value={m}>{m}分</option>)}
+                  </select>
+                  {isWorking && (
+                    <span className="text-xs text-gray-400">
+                      ({Math.max(0, p.endH - p.startH)}h)
+                    </span>
+                  )}
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
 
-      {/* Legend */}
-      <div className="mt-3 flex gap-4 text-xs text-gray-500 flex-wrap">
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded border-2 border-emerald-400 bg-emerald-200 inline-block"/>希望あり</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded border-2 border-blue-600 bg-blue-400 inline-block"/>第一希望（★）</span>
-        <span className="flex items-center gap-1"><span className="w-4 h-4 rounded border-2 border-red-400 bg-red-200 inline-block"/>出勤不可</span>
-        <div className="ml-auto text-gray-400">ドラッグで範囲一括入力</div>
+      {/* ── Bottom save ── */}
+      <div className="mt-6 pb-6">
+        <button onClick={handleSave}
+          className="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-base hover:bg-emerald-700 shadow-sm">
+          {saved ? '✓ 送信済み' : '希望シフトを送信する'}
+        </button>
+        <p className="text-xs text-center text-gray-400 mt-2">マネージャーに通知されます</p>
       </div>
     </div>
   )
