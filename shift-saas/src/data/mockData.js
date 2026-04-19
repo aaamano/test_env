@@ -55,15 +55,15 @@ export const shiftData = {
   9:  [SP.X,   SP['13L'],SP['13L'],SP['11L'],SP['14L'],SP.X,   SP.X,   SP['13L'],SP['13L'],SP['13L'],SP['11L'],SP['11L'],SP.X,SP.X,SP['13L']],
   10: [SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X],
   11: [SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X],
-  12: [SP.X,   SP.X,   SP.X,   SP.O14, SP.X,   SP.X,   SP.X,   SP.O15, SP.O14, SP.X,   SP['1218'],SP.X,SP.X,   SP.X,   SP.X],
-  13: [SP['1020'],SP.X,SP['1020'],SP.X,SP.X,    SP.X,   SP.X,   SP['1020'],SP.X,SP['1020'],SP.X,SP.X,   SP.X,   SP['1019'],SP['1020']],
-  14: [SP.X,   SP.X,   SP.X,   SP['921'],SP['917'],SP.X,SP['916'],SP.X,SP['921'],SP['916'],SP['9175'],SP['921'],SP.X,SP['918'],SP.X],
+  12: [SP.X,   SP.X,   SP.X,   SP.O14, SP.X,   SP.X,   SP.X,   SP.O16, SP.O14, SP.X,   SP['1116'],SP.X,SP.X,   SP.X,   SP.X],
+  13: [SP['1020'],SP.X,SP['1020'],SP.X,SP.X,    SP.X,   SP.X,   SP['1020'],SP.X,SP['1020'],SP.X,SP.X,   SP.X,   SP['1116'],SP['1020']],
+  14: [SP.X,   SP.X,   SP.X,   SP['913'],SP['918'],SP.X,SP['918'],SP.X,SP['913'],SP['918'],SP['1116'],SP['913'],SP.X,SP['918'],SP.X],
   15: [SP['1116'],SP.X,SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP['1116'],SP['1116'],SP.X,SP.X,  SP.X],
   16: [SP.X,   SP['175L'],SP.X,SP['175L'],SP.X,SP['175L'],SP.X,SP['175L'],SP.X,  SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X],
   17: [SP.X,   SP['11L'],SP['11L'],SP.X,SP.X,   SP.X,   SP.X,   SP['14L'],SP['14L'],SP['14L'],SP.X,SP.X,  SP.X,   SP['14L'],SP['14L']],
   18: [SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X,   SP.X],
-  19: [SP.X,   SP['1820'],SP.X,SP['1820'],SP['1820'],SP['15L'],SP.X,SP['1820'],SP['1520'],SP.X,SP['1820'],SP.X,SP['15L'],SP['1520'],SP.X],
-  20: [SP.X,   SP.X,   SP.X,   SP.X,   SP['17L'],SP.X, SP.X,   SP.X,   SP.X,   SP['17L'],SP['17L'],SP.X,SP['17L'],SP.X,  SP.X],
+  19: [SP.X,   SP['1820'],SP.X,SP['1820'],SP['1820'],SP['13L'],SP.X,SP['1820'],SP['1519'],SP.X,SP['1820'],SP.X,SP['13L'],SP['1519'],SP.X],
+  20: [SP.X,   SP.X,   SP.X,   SP.X,   SP['14L'],SP.X, SP.X,   SP.X,   SP.X,   SP['14L'],SP['14L'],SP.X,SP['14L'],SP.X,  SP.X],
   21: [SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.X,   SP.F,   SP.F,   SP.F],
 }
 
@@ -122,4 +122,117 @@ export const skillLabels = {
   barista: 'バリスタ',
   cashier: 'レジ',
   floor:   'フロア',
+}
+
+// ─── New additions ──────────────────────────────────────────────────────────
+
+export const storeConfig = {
+  openHour: 9,
+  closeHour: 23,
+  slotInterval: 60, // minutes
+  avgProductivity: 8, // orders processed per staff per hour
+  specialTasks: [
+    { id: 1, name: '搬入',  startTime: '9:00',  endTime: '9:45',  requiredStaff: 2, color: 'bg-orange-200 border-orange-400', enabled: true },
+    { id: 2, name: '掃除',  startTime: '22:00', endTime: '22:45', requiredStaff: 2, color: 'bg-purple-200 border-purple-400', enabled: true },
+  ],
+}
+
+export const staffConstraints = {
+  1:  { incompatible: [], targetEarnings: 0, retentionPriority: 1 },
+  2:  { incompatible: [], targetEarnings: 0, retentionPriority: 2 },
+  3:  { incompatible: [{ staffId: 7, severity: 3 }], targetEarnings: 120000, retentionPriority: 3 },
+  4:  { incompatible: [], targetEarnings: 80000, retentionPriority: 5 },
+  5:  { incompatible: [{ staffId: 9, severity: 1 }], targetEarnings: 60000, retentionPriority: 8 },
+  6:  { incompatible: [], targetEarnings: 100000, retentionPriority: 3 },
+  7:  { incompatible: [{ staffId: 3, severity: 3 }, { staffId: 12, severity: 2 }], targetEarnings: 70000, retentionPriority: 7 },
+  8:  { incompatible: [], targetEarnings: 80000, retentionPriority: 6 },
+  9:  { incompatible: [{ staffId: 5, severity: 1 }], targetEarnings: 50000, retentionPriority: 9 },
+  10: { incompatible: [], targetEarnings: 90000, retentionPriority: 4 },
+  11: { incompatible: [], targetEarnings: 60000, retentionPriority: 10 },
+  12: { incompatible: [{ staffId: 7, severity: 2 }], targetEarnings: 75000, retentionPriority: 7 },
+  13: { incompatible: [], targetEarnings: 100000, retentionPriority: 4 },
+  14: { incompatible: [], targetEarnings: 80000, retentionPriority: 6 },
+  15: { incompatible: [], targetEarnings: 70000, retentionPriority: 8 },
+  16: { incompatible: [], targetEarnings: 65000, retentionPriority: 9 },
+  17: { incompatible: [], targetEarnings: 70000, retentionPriority: 7 },
+  18: { incompatible: [], targetEarnings: 60000, retentionPriority: 10 },
+  19: { incompatible: [], targetEarnings: 90000, retentionPriority: 5 },
+  20: { incompatible: [], targetEarnings: 75000, retentionPriority: 8 },
+  21: { incompatible: [], targetEarnings: 0, retentionPriority: 2 },
+}
+
+// Fraction of daily orders occurring each hour (9-22, values sum to 1.0)
+export const ORDER_DISTRIBUTION = {
+  9:  0.05,
+  10: 0.07,
+  11: 0.09,
+  12: 0.13,
+  13: 0.12,
+  14: 0.08,
+  15: 0.07,
+  16: 0.07,
+  17: 0.08,
+  18: 0.09,
+  19: 0.08,
+  20: 0.05,
+  21: 0.02,
+  22: 0.00,
+}
+
+export const allStores = [
+  { id: 1, name: '新宿三丁目店', status: 'active' },
+  { id: 2, name: '渋谷店',       status: 'soon' },
+  { id: 3, name: '原宿店',       status: 'soon' },
+]
+
+/**
+ * Generate time slot labels for a given interval (minutes) and hour range.
+ * Returns array like ['9:00', '9:30', '10:00', ...]
+ */
+export function generateSlots(interval = 60, startHour = 9, endHour = 23) {
+  const slots = []
+  const totalMinutes = (endHour - startHour) * 60
+  const steps = totalMinutes / interval
+  for (let i = 0; i < steps; i++) {
+    const totalMins = startHour * 60 + i * interval
+    const h = Math.floor(totalMins / 60)
+    const m = totalMins % 60
+    slots.push(`${h}:${m === 0 ? '00' : m < 10 ? '0' + m : m}`)
+  }
+  return slots
+}
+
+/**
+ * Parse a shift code like '9-18', '13-L', 'O-16', 'F' into {start, end} hours.
+ * Returns null for 'X' or unknown codes.
+ */
+export function parseShiftTimes(code) {
+  if (!code || code === 'X') return null
+  if (code === 'F') return { start: 9, end: 23 }
+  // Open shifts like O-16, O-18, O-14 → start at 9, end at the number
+  const openMatch = code.match(/^O-(\d+(?:\.\d+)?)$/)
+  if (openMatch) return { start: 9, end: parseFloat(openMatch[1]) }
+  // Time range like '9-18', '13-L', '17.5-L', '11-16'
+  const rangeMatch = code.match(/^(\d+(?:\.\d+)?)[.-](\d+(?:\.\d+)?|L)$/)
+  if (rangeMatch) {
+    return {
+      start: parseFloat(rangeMatch[1]),
+      end: rangeMatch[2] === 'L' ? 23 : parseFloat(rangeMatch[2]),
+    }
+  }
+  return { start: 9, end: 18 }
+}
+
+/**
+ * Calculate required staff count for a given hour slot.
+ * @param {number} dailyOrders - total orders for the day
+ * @param {number} hour - hour of day (e.g. 12 for 12:00)
+ * @param {number} avgProductivity - orders per staff per hour
+ * @param {number} extraStaff - additional staff from special tasks
+ */
+export function calcRequiredStaff(dailyOrders, hour, avgProductivity = 8, extraStaff = 0) {
+  const fraction = ORDER_DISTRIBUTION[hour] ?? 0
+  const ordersThisHour = dailyOrders * fraction
+  const base = Math.ceil(ordersThisHour / avgProductivity)
+  return Math.max(1, base) + extraStaff
 }

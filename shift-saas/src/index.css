@@ -30,3 +30,13 @@ body {
 .shift-mid  { @apply bg-amber-100 text-amber-800; }
 
 .drag-selecting { @apply bg-blue-200 border-2 border-blue-400; }
+
+.shift-stripe {
+  background: repeating-linear-gradient(
+    45deg,
+    #fed7aa,
+    #fed7aa 3px,
+    #fff7ed 3px,
+    #fff7ed 9px
+  );
+}
