@@ -123,3 +123,28 @@ export const skillLabels = {
   cashier: 'レジ',
   floor:   'フロア',
 }
+
+// staffId -> { incompatible: [{staffId, severity}], targetEarnings: number, retentionPriority: 1-10 }
+export const staffConstraints = {
+  1:  { incompatible: [],                                            targetEarnings: 250000, retentionPriority: 1 },
+  2:  { incompatible: [],                                            targetEarnings: 220000, retentionPriority: 2 },
+  3:  { incompatible: [{ staffId: 4, severity: 2 }],                targetEarnings: 85000,  retentionPriority: 3 },
+  4:  { incompatible: [{ staffId: 3, severity: 2 }],                targetEarnings: 70000,  retentionPriority: 7 },
+  5:  { incompatible: [],                                            targetEarnings: 60000,  retentionPriority: 6 },
+  6:  { incompatible: [],                                            targetEarnings: 110000, retentionPriority: 2 },
+  7:  { incompatible: [{ staffId: 16, severity: 1 }],               targetEarnings: 55000,  retentionPriority: 8 },
+  8:  { incompatible: [],                                            targetEarnings: 75000,  retentionPriority: 5 },
+  9:  { incompatible: [],                                            targetEarnings: 50000,  retentionPriority: 9 },
+  10: { incompatible: [{ staffId: 13, severity: 3 }],               targetEarnings: 80000,  retentionPriority: 4 },
+  11: { incompatible: [],                                            targetEarnings: 45000,  retentionPriority: 10 },
+  12: { incompatible: [],                                            targetEarnings: 65000,  retentionPriority: 7 },
+  13: { incompatible: [{ staffId: 10, severity: 3 }],               targetEarnings: 72000,  retentionPriority: 4 },
+  14: { incompatible: [],                                            targetEarnings: 68000,  retentionPriority: 6 },
+  15: { incompatible: [],                                            targetEarnings: 58000,  retentionPriority: 8 },
+  16: { incompatible: [{ staffId: 7, severity: 1 }],                targetEarnings: 42000,  retentionPriority: 9 },
+  17: { incompatible: [],                                            targetEarnings: 55000,  retentionPriority: 7 },
+  18: { incompatible: [],                                            targetEarnings: 40000,  retentionPriority: 10 },
+  19: { incompatible: [],                                            targetEarnings: 90000,  retentionPriority: 3 },
+  20: { incompatible: [],                                            targetEarnings: 60000,  retentionPriority: 8 },
+  21: { incompatible: [],                                            targetEarnings: 120000, retentionPriority: 2 },
+}

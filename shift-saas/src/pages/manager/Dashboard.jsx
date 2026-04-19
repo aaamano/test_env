@@ -1,36 +1,30 @@
 import { Link } from 'react-router-dom'
 import { staff, shiftData, daysConfig, dailyTargets, STORE_NAME, YEAR_MONTH } from '../../data/mockData'
 
-const SHIFT_COLORS = {
-  'F':     'bg-green-100 text-green-800',
-  'X':     'bg-gray-100 text-gray-400',
-  'O-16':  'bg-blue-100 text-blue-800',
-  'O-14':  'bg-blue-100 text-blue-800',
-  'O-18':  'bg-blue-100 text-blue-800',
-  'O-15':  'bg-blue-100 text-blue-800',
-  '9-18':  'bg-amber-100 text-amber-800',
-  '9-13':  'bg-amber-100 text-amber-800',
-  '9-17':  'bg-amber-100 text-amber-800',
-  '9-16':  'bg-amber-100 text-amber-800',
-  '9-21':  'bg-amber-100 text-amber-800',
-  '9-17.5':'bg-amber-100 text-amber-800',
-  '10-18': 'bg-amber-100 text-amber-800',
-  '10-20': 'bg-amber-100 text-amber-800',
-  '10-19': 'bg-amber-100 text-amber-800',
-  '11-16': 'bg-orange-100 text-orange-800',
-  '13-L':  'bg-purple-100 text-purple-800',
-  '11-L':  'bg-purple-100 text-purple-800',
-  '14-L':  'bg-purple-100 text-purple-800',
-  '15-L':  'bg-purple-100 text-purple-800',
-  '17-L':  'bg-purple-100 text-purple-800',
-  '17.5-L':'bg-purple-100 text-purple-800',
-  '18-L':  'bg-purple-100 text-purple-800',
-  '15-19': 'bg-purple-100 text-purple-800',
-  '15-20': 'bg-purple-100 text-purple-800',
-  '12-18': 'bg-amber-100 text-amber-800',
+/**
+ * Returns className and display label for a shift code (bar-style visualization).
+ * F = diagonal stripe (orange/salmon CSS pattern)
+ * X = gray bg, gray text
+ * O-* = solid teal-500
+ * *-L = solid rose-500
+ * others (mid shifts) = solid teal-400
+ */
+const getShiftStyle = (code) => {
+  if (!code || code === 'X') {
+    return { className: 'bg-gray-100 text-gray-400', label: '×' }
+  }
+  if (code === 'F') {
+    return { className: 'shift-stripe text-orange-700 font-bold', label: 'F' }
+  }
+  if (code.startsWith('O-')) {
+    return { className: 'bg-teal-500 text-white', label: code }
+  }
+  if (code.endsWith('-L')) {
+    return { className: 'bg-rose-500 text-white', label: code }
+  }
+  // mid shifts like 9-18, 10-16, etc.
+  return { className: 'bg-teal-400 text-white', label: code }
 }
-
-const getColor = (code) => SHIFT_COLORS[code] || 'bg-gray-50 text-gray-600'
 
 const totalMonth = dailyTargets.reduce((s, d) => s + d.sales, 0)
 const totalCust  = dailyTargets.reduce((s, d) => s + d.customers, 0)
@@ -70,17 +64,34 @@ export default function Dashboard() {
         ))}
       </div>
 
+      {/* Legend */}
+      <div className="flex gap-4 text-xs mb-3">
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded shift-stripe inline-block border border-orange-200" />
+          <span className="text-gray-600">正社員(F) ストライプ</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded bg-teal-500 inline-block" />
+          <span className="text-gray-600">オープン</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded bg-rose-500 inline-block" />
+          <span className="text-gray-600">遅番(-L)</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded bg-teal-400 inline-block" />
+          <span className="text-gray-600">中番</span>
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="w-4 h-4 rounded bg-gray-100 inline-block border" />
+          <span className="text-gray-600">休み</span>
+        </span>
+      </div>
+
       {/* Shift Matrix */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-auto">
         <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
           <h2 className="font-semibold text-gray-800 text-sm">シフト一覧マトリクス — 4月前半（1〜15日）</h2>
-          <div className="flex gap-3 text-xs">
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-100 inline-block"/>正社員(F)</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-blue-100 inline-block"/>オープン</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-purple-100 inline-block"/>遅番</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-amber-100 inline-block"/>中番</span>
-            <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 inline-block"/>休み</span>
-          </div>
         </div>
         <table className="w-full text-xs border-collapse">
           <thead>
@@ -89,7 +100,7 @@ export default function Dashboard() {
               <th className="text-left px-3 py-2 font-medium text-gray-500 sticky left-8 bg-gray-50 border-r border-gray-100 min-w-[120px]">スタッフ名</th>
               <th className="text-center px-1 py-2 font-medium text-gray-500 min-w-[36px]">種別</th>
               {daysConfig.map(d => (
-                <th key={d.day} className={`text-center px-0.5 py-2 font-medium min-w-[40px] ${d.isWeekend ? 'text-red-500' : 'text-gray-500'}`}>
+                <th key={d.day} className={`text-center px-0.5 py-2 font-medium min-w-[52px] ${d.isWeekend ? 'text-red-500' : 'text-gray-500'}`}>
                   <div>{d.day}</div>
                   <div className="text-[9px]">{d.dow}</div>
                 </th>
@@ -115,11 +126,12 @@ export default function Dashboard() {
                     </span>
                   </td>
                   {daysConfig.map((d, di) => {
-                    const code = row[di] || '-'
+                    const code = row[di] || 'X'
+                    const { className, label } = getShiftStyle(code)
                     return (
                       <td key={d.day} className="py-1 px-0.5">
-                        <div className={`shift-cell ${getColor(code)}`}>
-                          {code === 'X' ? '×' : code}
+                        <div className={`shift-cell ${className}`}>
+                          {label}
                         </div>
                       </td>
                     )
