@@ -7,6 +7,7 @@ import Targets from './pages/manager/Targets'
 import ShiftDecision from './pages/manager/ShiftDecision'
 import Members from './pages/manager/Members'
 import MemberDetail from './pages/manager/MemberDetail'
+import StoreSettings from './pages/manager/StoreSettings'
 import ShiftView from './pages/employee/ShiftView'
 import ShiftEdit from './pages/employee/ShiftEdit'
 
@@ -22,6 +23,7 @@ export default function App() {
           <Route path="shift" element={<ShiftDecision />} />
           <Route path="members" element={<Members />} />
           <Route path="members/:id" element={<MemberDetail />} />
+          <Route path="settings" element={<StoreSettings />} />
         </Route>
 
         <Route path="/employee" element={<EmployeeLayout />}>

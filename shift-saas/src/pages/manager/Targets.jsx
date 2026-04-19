@@ -1,10 +1,25 @@
-import { useState } from 'react'
-import { dailyTargets, YEAR_MONTH } from '../../data/mockData'
+import { useState, useRef } from 'react'
+import { dailyTargets, YEAR_MONTH, storeConfig, calcRequiredStaff, ORDER_DISTRIBUTION } from '../../data/mockData'
+
+// Calculate peak required staff for a day (max across all hours)
+const calcDayPeakStaff = (orders, productivity) => {
+  const hours = Object.keys(ORDER_DISTRIBUTION).map(Number)
+  return Math.max(...hours.map(h => calcRequiredStaff(orders, h, productivity, 0)))
+}
+
+// Calculate average required staff for a day
+const calcDayAvgStaff = (orders, productivity) => {
+  const hours = Object.keys(ORDER_DISTRIBUTION).map(Number)
+  const vals = hours.map(h => calcRequiredStaff(orders, h, productivity, 0))
+  return Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 10) / 10
+}
 
 export default function Targets() {
   const [targets, setTargets] = useState(dailyTargets)
   const [editingCell, setEditingCell] = useState(null) // { day, field }
   const [saved, setSaved] = useState(false)
+  const [csvMsg, setCsvMsg] = useState('')
+  const fileInputRef = useRef(null)
 
   const update = (day, field, value) => {
     setTargets(prev => prev.map(d => {
@@ -23,9 +38,54 @@ export default function Targets() {
     setTimeout(() => setSaved(false), 2000)
   }
 
+  const handleCsvUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      try {
+        const text = ev.target.result
+        const lines = text.trim().split('\n')
+        // Skip header row if it starts with 日 or non-numeric
+        const dataLines = lines.filter(l => {
+          const first = l.split(',')[0].trim()
+          return /^\d+$/.test(first)
+        })
+        const parsed = dataLines.map(line => {
+          const parts = line.split(',').map(s => s.trim())
+          const day = parseInt(parts[0])
+          const dow = parts[1] || ''
+          const sales = parseFloat(parts[2]) || 0
+          const customers = Math.round(sales * 1000 / 3000)
+          const orders = parseInt(parts[4]) || Math.round(customers * 1.5)
+          const avgSpend = customers > 0 ? Math.round(sales * 1000 / customers) : 3000
+          return { day, dow, sales, customers, avgSpend, orders }
+        }).filter(d => d.day >= 1 && d.day <= 31)
+
+        if (parsed.length === 0) {
+          setCsvMsg('CSVの形式が正しくありません。')
+          return
+        }
+
+        setTargets(prev => prev.map(d => {
+          const found = parsed.find(p => p.day === d.day)
+          return found ? { ...d, ...found } : d
+        }))
+        setCsvMsg(`✓ ${parsed.length}日分のデータを読み込みました`)
+        setTimeout(() => setCsvMsg(''), 3000)
+      } catch {
+        setCsvMsg('CSVの読み込みに失敗しました。')
+      }
+    }
+    reader.readAsText(file, 'UTF-8')
+    e.target.value = ''
+  }
+
   const totalSales = targets.reduce((s, d) => s + d.sales, 0)
   const totalCust  = targets.reduce((s, d) => s + d.customers, 0)
   const avgSpend   = totalCust > 0 ? Math.round((totalSales * 1000) / totalCust) : 0
+
+  const { avgProductivity } = storeConfig
 
   const FIELDS = [
     { key: 'sales',     label: '売上目標(千円)',  unit: '千円', color: 'text-blue-700' },
@@ -41,12 +101,40 @@ export default function Targets() {
           <div className="text-xs text-gray-400 mb-1">{YEAR_MONTH} 前半</div>
           <h1 className="text-2xl font-bold text-gray-900">目標計画 — デイリー設定</h1>
         </div>
-        <button
-          onClick={handleSave}
-          className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
-        >
-          {saved ? '✓ 保存しました' : '保存する'}
-        </button>
+        <div className="flex items-center gap-3">
+          {/* CSV Upload */}
+          <div className="flex items-center gap-2">
+            {csvMsg && (
+              <span className={`text-xs ${csvMsg.startsWith('✓') ? 'text-emerald-600' : 'text-red-500'}`}>
+                {csvMsg}
+              </span>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium border border-gray-300 transition-colors flex items-center gap-2"
+            >
+              📂 CSVアップロード
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".csv"
+              className="hidden"
+              onChange={handleCsvUpload}
+            />
+          </div>
+          <button
+            onClick={handleSave}
+            className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors"
+          >
+            {saved ? '✓ 保存しました' : '保存する'}
+          </button>
+        </div>
+      </div>
+
+      {/* CSV format hint */}
+      <div className="mb-4 text-xs text-gray-400 bg-gray-50 border border-gray-200 rounded-lg px-4 py-2">
+        CSVフォーマット: <code className="bg-gray-100 px-1 rounded">日,曜日,売上(千円),客数,注文数</code> — ヘッダー行は自動でスキップします
       </div>
 
       {/* Summary KPIs */}
@@ -91,7 +179,7 @@ export default function Targets() {
         <table className="w-full text-sm border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-4 py-3 font-semibold text-gray-600 min-w-[100px]">項目</th>
+              <th className="text-left px-4 py-3 font-semibold text-gray-600 min-w-[140px]">項目</th>
               {targets.map(d => (
                 <th key={d.day} className={`text-center px-2 py-3 font-semibold min-w-[72px] ${
                   d.dow === '土' || d.dow === '日' ? 'text-red-500 bg-red-50/50' : 'text-gray-600'
@@ -145,10 +233,32 @@ export default function Targets() {
                 </td>
               </tr>
             ))}
+
+            {/* Required staffing row */}
+            <tr className="border-b border-indigo-100 bg-indigo-50">
+              <td className="px-4 py-2.5 font-semibold text-indigo-700 text-xs">
+                <div>必要人員数（推定）</div>
+                <div className="font-normal text-indigo-400 mt-0.5">ピーク最大 / 平均</div>
+              </td>
+              {targets.map(d => {
+                const peak = calcDayPeakStaff(d.orders, avgProductivity)
+                const avg = calcDayAvgStaff(d.orders, avgProductivity)
+                return (
+                  <td key={d.day} className={`text-center py-2 px-1 ${d.dow === '土' || d.dow === '日' ? 'bg-indigo-100/50' : ''}`}>
+                    <div className="text-sm font-bold text-indigo-700">{peak}<span className="text-[10px] font-normal ml-0.5">名</span></div>
+                    <div className="text-[10px] text-indigo-400">avg {avg}</div>
+                  </td>
+                )
+              })}
+              <td className="text-center py-2 px-3 bg-indigo-100 font-bold text-indigo-700 text-sm">
+                {Math.round(targets.reduce((s, d) => s + calcDayPeakStaff(d.orders, avgProductivity), 0) / targets.length)}
+                <span className="text-xs font-normal ml-0.5">名/日avg</span>
+              </td>
+            </tr>
           </tbody>
         </table>
         <div className="px-4 py-2 text-xs text-gray-400">
-          ※ セルをクリックして編集。客単価は売上÷客数で自動計算。
+          ※ セルをクリックして編集。客単価は売上÷客数で自動計算。必要人員は注文数÷時間生産性({avgProductivity}件/h)で推定。
         </div>
       </div>
     </div>
