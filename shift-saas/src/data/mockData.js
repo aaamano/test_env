@@ -132,8 +132,8 @@ export const storeConfig = {
   slotInterval: 60, // minutes
   avgProductivity: 8, // orders processed per staff per hour
   specialTasks: [
-    { id: 1, name: '搬入',  startTime: '9:00',  endTime: '9:45',  requiredStaff: 2, color: 'bg-orange-200 border-orange-400', enabled: true },
-    { id: 2, name: '掃除',  startTime: '22:00', endTime: '22:45', requiredStaff: 2, color: 'bg-purple-200 border-purple-400', enabled: true },
+    { id: 1, name: '搬入',  startTime: '9:00',  endTime: '9:45',  requiredStaff: 2, colorKey: 'orange', enabled: true },
+    { id: 2, name: '掃除',  startTime: '22:00', endTime: '22:45', requiredStaff: 2, colorKey: 'purple', enabled: true },
   ],
 }
 
