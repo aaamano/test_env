@@ -129,7 +129,7 @@ export const skillLabels = {
 export const storeConfig = {
   openHour: 9,
   closeHour: 23,
-  slotInterval: 60, // minutes
+  slotInterval: 15, // minutes
   avgProductivity: 8, // orders processed per staff per hour
   specialTasks: [
     { id: 1, name: '搬入',  startTime: '9:00',  endTime: '9:45',  requiredStaff: 2, colorKey: 'orange', enabled: true },

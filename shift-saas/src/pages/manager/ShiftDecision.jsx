@@ -74,7 +74,6 @@ const SUMM = [
 ]
 
 export default function ShiftDecision() {
-  const [slotInterval, setSlotInterval] = useState(60)
   const [selectedDay,  setSelectedDay]  = useState(1)
   const [assigned,     setAssigned]     = useState(assignedShifts)
   const [specialTasks, setSpecialTasks] = useState(storeConfig.specialTasks)
@@ -85,10 +84,11 @@ export default function ShiftDecision() {
   const [aiResult, setAIResult] = useState(null)
 
   const slots = useMemo(
-    () => generateSlots(slotInterval, storeConfig.openHour, storeConfig.closeHour),
-    [slotInterval]
+    () => generateSlots(15, storeConfig.openHour, storeConfig.closeHour),
+    []
   )
-  const slotW = slotInterval === 15 ? 20 : slotInterval === 30 ? 28 : 40
+  const slotW = 20
+  const hours = [...new Set(slots.map(s => parseInt(s.split(':')[0])))]
 
   const dayTarget   = dailyTargets.find(t => t.day === selectedDay)
   const dailyOrders = dayTarget?.orders ?? 200
@@ -187,17 +187,6 @@ export default function ShiftDecision() {
           <h1 style={{ fontSize:18, fontWeight:700, color:'var(--pita-text)', margin:0 }}>シフト決定 — 時間帯人員配置</h1>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <div style={{ display:'flex', background:'var(--pita-bg-subtle)', borderRadius:8, padding:2, gap:2 }}>
-            {[15, 30, 60].map(v => (
-              <button key={v} onClick={() => setSlotInterval(v)} style={{
-                padding:'4px 10px', borderRadius:6, border:'none', cursor:'pointer',
-                fontSize:11, fontFamily:'var(--font-mono)', fontWeight:600,
-                background: slotInterval === v ? 'var(--pita-panel)' : 'transparent',
-                color: slotInterval === v ? 'var(--pita-text)' : 'var(--pita-muted)',
-                boxShadow: slotInterval === v ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-              }}>{v}分</button>
-            ))}
-          </div>
           <button onClick={openAI} style={{
             display:'flex', alignItems:'center', gap:6, border:'none', borderRadius:8,
             padding:'6px 14px', fontSize:12, fontWeight:600, cursor:'pointer', color:'white',
@@ -245,10 +234,13 @@ export default function ShiftDecision() {
           </colgroup>
           <thead>
             <tr>
-              <th style={th({ ...sH0, textAlign:'left' })}>指標</th>
-              <th style={th({ ...sH1 })}></th>
-              {slots.map(slot => <th key={slot} style={th()}>{slot}</th>)}
-              <th style={th({ background:'var(--pita-accent)' })}>合計</th>
+              <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>指標</th>
+              <th rowSpan={2} style={th({ ...sH1 })}></th>
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
+              <th rowSpan={2} style={th({ background:'var(--pita-accent)' })}>合計</th>
+            </tr>
+            <tr>
+              {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -319,10 +311,13 @@ export default function ShiftDecision() {
           </colgroup>
           <thead>
             <tr>
-              <th style={th({ ...sH0, textAlign:'left' })}>STAFF</th>
-              <th colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
-              {slots.map(slot => <th key={slot} style={th()}>{slot}</th>)}
-              {SUMM.map(s => <th key={s.k} style={th({ background:'oklch(0.30 0.05 180)' })}>{s.l}</th>)}
+              <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>STAFF</th>
+              <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
+              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'oklch(0.30 0.05 180)' })}>{s.l}</th>)}
+            </tr>
+            <tr>
+              {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
             </tr>
           </thead>
           <tbody>
