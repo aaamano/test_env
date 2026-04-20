@@ -3,11 +3,11 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { STORE_NAME, YEAR_MONTH, allStores } from '../data/mockData'
 
 const nav = [
-  { to: '/manager',          label: '計画一覧',     icon: '📊', end: true },
-  { to: '/manager/targets',  label: '目標計画',     icon: '🎯', end: false },
-  { to: '/manager/shift',    label: 'シフト決定',   icon: '📅', end: false },
-  { to: '/manager/members',  label: 'メンバー管理', icon: '👥', end: false },
-  { to: '/manager/settings', label: '店舗設定',     icon: '⚙️', end: false },
+  { to: '/manager',          label: 'ダッシュボード', icon: '◈', end: true },
+  { to: '/manager/targets',  label: '目標計画',       icon: '◎', end: false },
+  { to: '/manager/shift',    label: 'シフト決定',     icon: '▦', end: false },
+  { to: '/manager/members',  label: 'メンバー管理',   icon: '◉', end: false },
+  { to: '/manager/settings', label: '店舗設定',       icon: '◌', end: false },
 ]
 
 export default function ManagerLayout() {

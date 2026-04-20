@@ -236,3 +236,30 @@ export function calcRequiredStaff(dailyOrders, hour, avgProductivity = 8, extraS
   const base = Math.ceil(ordersThisHour / avgProductivity)
   return Math.max(1, base) + extraStaff
 }
+
+export const shiftSubmissions = [
+  {
+    id: 1,
+    period: '2026年4月 前半',
+    submittedAt: '2026-03-25 14:32',
+    lastEditedAt: '2026-03-25 14:32',
+    status: 'confirmed',
+    shiftRow: [...shiftData[1]],
+  },
+  {
+    id: 2,
+    period: '2026年4月 後半',
+    submittedAt: '2026-04-05 09:15',
+    lastEditedAt: '2026-04-05 09:15',
+    status: 'submitted',
+    shiftRow: [...shiftData[2]],
+  },
+  {
+    id: 3,
+    period: '2026年5月 前半',
+    submittedAt: null,
+    lastEditedAt: '2026-04-18 22:01',
+    status: 'draft',
+    shiftRow: Array.from({ length: 15 }, () => 'X'),
+  },
+]
