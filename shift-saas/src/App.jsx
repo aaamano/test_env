@@ -8,8 +8,10 @@ import ShiftDecision from './pages/manager/ShiftDecision'
 import Members from './pages/manager/Members'
 import MemberDetail from './pages/manager/MemberDetail'
 import StoreSettings from './pages/manager/StoreSettings'
+import ManagerNotifications from './pages/manager/Notifications'
 import Schedule from './pages/employee/Schedule'
 import ShiftSubmit from './pages/employee/ShiftSubmit'
+import EmployeeNotifications from './pages/employee/Notifications'
 
 export default function App() {
   return (
@@ -24,11 +26,13 @@ export default function App() {
           <Route path="members" element={<Members />} />
           <Route path="members/:id" element={<MemberDetail />} />
           <Route path="settings" element={<StoreSettings />} />
+          <Route path="notifications" element={<ManagerNotifications />} />
         </Route>
 
         <Route path="/employee" element={<EmployeeLayout />}>
           <Route index element={<Schedule />} />
           <Route path="submit" element={<ShiftSubmit />} />
+          <Route path="notifications" element={<EmployeeNotifications />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

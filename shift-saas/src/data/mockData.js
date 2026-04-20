@@ -263,3 +263,17 @@ export const shiftSubmissions = [
     shiftRow: Array.from({ length: 15 }, () => 'X'),
   },
 ]
+
+export const managerNotifications = [
+  { id: 1, type: 'submit',  text: '金子 光男 さんからシフト提出がありました',              sub: '2026年5月 前半',    time: '5分前',        read: false },
+  { id: 2, type: 'alert',   text: 'シフト確定前日です。シフト確定がまだ完了していません。', sub: '4月前半シフト',     time: '1時間前',      read: false },
+  { id: 3, type: 'warning', text: '必要工数が不足している日があります（4/8, 4/12）',        sub: '4月前半シフト',     time: '本日 9:00',    read: false },
+  { id: 4, type: 'submit',  text: '山田 太郎 さんからシフト提出がありました',              sub: '2026年5月 前半',    time: '昨日 18:32',   read: true  },
+  { id: 5, type: 'info',    text: '2026年5月 前半のシフト提出期限が3日後です',             sub: '期限: 4月23日',     time: '昨日 10:00',   read: true  },
+]
+
+export const employeeNotifications = [
+  { id: 1, type: 'reminder',   text: 'シフト確定前日です。シフト提出がまだです。',  sub: '2026年5月 前半',              time: '2時間前',     read: false },
+  { id: 2, type: 'confirmed',  text: '2026年4月 前半のシフトが確定しました',      sub: 'マネージャーが確定しました',   time: '昨日 14:30',  read: false },
+  { id: 3, type: 'info',       text: '2026年5月 前半のシフト提出期限は4月23日です', sub: 'あと3日',                    time: '3日前',       read: true  },
+]

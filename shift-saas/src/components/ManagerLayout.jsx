@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
-import { STORE_NAME, YEAR_MONTH, allStores } from '../data/mockData'
+import { STORE_NAME, YEAR_MONTH, allStores, managerNotifications } from '../data/mockData'
 
 const nav = [
-  { to: '/manager',          label: 'ダッシュボード', icon: '◈', end: true },
-  { to: '/manager/targets',  label: '目標計画',       icon: '◎', end: false },
-  { to: '/manager/shift',    label: 'シフト決定',     icon: '▦', end: false },
-  { to: '/manager/members',  label: 'メンバー管理',   icon: '◉', end: false },
-  { to: '/manager/settings', label: '店舗設定',       icon: '◌', end: false },
+  { to: '/manager',                label: 'ダッシュボード', icon: '◈', end: true },
+  { to: '/manager/targets',        label: '目標計画',       icon: '◎', end: false },
+  { to: '/manager/shift',          label: 'シフト決定',     icon: '▦', end: false },
+  { to: '/manager/members',        label: 'メンバー管理',   icon: '◉', end: false },
+  { to: '/manager/settings',       label: '店舗設定',       icon: '◌', end: false },
+  { to: '/manager/notifications',  label: '通知',           icon: '◍', end: false, badge: true },
 ]
+
+const UNREAD = managerNotifications.filter(n => !n.read).length
 
 export default function ManagerLayout() {
   const [showStoreDropdown, setShowStoreDropdown] = useState(false)
@@ -63,7 +66,7 @@ export default function ManagerLayout() {
           </div>
         </div>
         <nav className="flex-1 p-3 space-y-1">
-          {nav.map(({ to, label, icon, end }) => (
+          {nav.map(({ to, label, icon, end, badge }) => (
             <NavLink
               key={to}
               to={to}
@@ -77,7 +80,12 @@ export default function ManagerLayout() {
               }
             >
               <span>{icon}</span>
-              {label}
+              <span className="flex-1">{label}</span>
+              {badge && UNREAD > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-bold leading-none px-1.5 py-0.5 rounded-full min-w-[18px] text-center">
+                  {UNREAD}
+                </span>
+              )}
             </NavLink>
           ))}
         </nav>

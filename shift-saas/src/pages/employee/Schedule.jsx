@@ -95,6 +95,10 @@ export default function Schedule() {
         <Link to="/employee/submit" className="pita-tab-item">
           <span className="pita-tab-ico">📝</span>シフト提出
         </Link>
+        <Link to="/employee/notifications" className="pita-tab-item" style={{ position:'relative' }}>
+          <span className="pita-tab-ico">🔔</span>通知
+          <span style={{ position:'absolute', top:6, right:'calc(50% - 14px)', width:7, height:7, background:'#ef4444', borderRadius:'50%' }} />
+        </Link>
         <Link to="/" className="pita-tab-item">
           <span className="pita-tab-ico">🏠</span>TOP
         </Link>

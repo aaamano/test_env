@@ -1,0 +1,103 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { employeeNotifications } from '../../data/mockData'
+
+const TYPE_CONFIG = {
+  reminder:  { bg: 'bg-amber-100',   icon: '⏰', label: 'リマインダー' },
+  confirmed: { bg: 'bg-emerald-100', icon: '✅', label: '確定通知' },
+  info:      { bg: 'bg-slate-100',   icon: 'ℹ️', label: 'お知らせ' },
+}
+
+export default function EmployeeNotifications() {
+  const [items, setItems] = useState(employeeNotifications)
+
+  const markRead = (id) => setItems(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
+  const markAllRead = () => setItems(prev => prev.map(n => ({ ...n, read: true })))
+  const unread = items.filter(n => !n.read).length
+
+  return (
+    <>
+      <div className="pita-phone-header">
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:14, fontWeight:700, color:'var(--pita-text)' }}>通知</div>
+          <div style={{ fontSize:10, color:'var(--pita-muted)', marginTop:1 }}>
+            {unread > 0 ? `未読 ${unread}件` : 'すべて既読'}
+          </div>
+        </div>
+        {unread > 0 && (
+          <button onClick={markAllRead}
+            style={{ fontSize:11, color:'var(--pita-accent)', background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>
+            すべて既読
+          </button>
+        )}
+      </div>
+
+      <div className="pita-phone-body">
+        <div style={{ padding:'6px 0' }}>
+          {items.length === 0 && (
+            <div style={{ textAlign:'center', padding:'40px 16px', color:'var(--pita-faint)', fontSize:12 }}>
+              通知はありません
+            </div>
+          )}
+          {items.map(n => {
+            const cfg = TYPE_CONFIG[n.type] || TYPE_CONFIG.info
+            return (
+              <div
+                key={n.id}
+                onClick={() => markRead(n.id)}
+                style={{
+                  display:'flex', alignItems:'flex-start', gap:10,
+                  padding:'11px 14px',
+                  borderBottom:'1px solid var(--pita-border)',
+                  background: !n.read ? 'oklch(0.97 0.02 220)' : 'var(--pita-bg)',
+                  cursor:'pointer',
+                }}
+              >
+                <div style={{
+                  width:34, height:34, borderRadius:'50%', flexShrink:0,
+                  display:'flex', alignItems:'center', justifyContent:'center',
+                  fontSize:16, background: !n.read ? 'white' : 'var(--pita-bg-subtle)',
+                  boxShadow: !n.read ? '0 1px 4px rgba(0,0,0,0.08)' : 'none',
+                }}>
+                  {cfg.icon}
+                </div>
+                <div style={{ flex:1, minWidth:0 }}>
+                  <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:6 }}>
+                    <p style={{
+                      fontSize:12, lineHeight:1.4, margin:0,
+                      fontWeight: !n.read ? 700 : 400,
+                      color: !n.read ? 'var(--pita-text)' : 'var(--pita-muted)',
+                    }}>
+                      {n.text}
+                    </p>
+                    {!n.read && (
+                      <span style={{ width:7, height:7, background:'oklch(0.55 0.15 240)', borderRadius:'50%', flexShrink:0, marginTop:4 }} />
+                    )}
+                  </div>
+                  <p style={{ fontSize:10, color:'var(--pita-faint)', margin:'3px 0 0' }}>
+                    {n.sub} · {n.time}
+                  </p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+
+      <div className="pita-phone-tabbar">
+        <Link to="/employee" className="pita-tab-item">
+          <span className="pita-tab-ico">📅</span>スケジュール
+        </Link>
+        <Link to="/employee/submit" className="pita-tab-item">
+          <span className="pita-tab-ico">📝</span>シフト提出
+        </Link>
+        <Link to="/employee/notifications" className="pita-tab-item active">
+          <span className="pita-tab-ico">🔔</span>通知
+        </Link>
+        <Link to="/" className="pita-tab-item">
+          <span className="pita-tab-ico">🏠</span>TOP
+        </Link>
+      </div>
+    </>
+  )
+}
