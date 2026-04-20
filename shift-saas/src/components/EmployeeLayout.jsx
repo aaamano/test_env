@@ -3,8 +3,8 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { STORE_NAME, YEAR_MONTH } from '../data/mockData'
 
 const nav = [
-  { to: '/employee',       label: 'シフト確認',   icon: '📋' },
-  { to: '/employee/edit',  label: 'シフト入力',   icon: '✏️' },
+  { to: '/employee',        label: 'スケジュール', icon: '📅', end: true },
+  { to: '/employee/submit', label: 'シフト提出',   icon: '📝', end: false },
 ]
 
 export default function EmployeeLayout() {
@@ -46,11 +46,11 @@ export default function EmployeeLayout() {
           <div className="text-sm font-semibold">金子 光男</div>
         </div>
         <nav className="flex-1 p-3 space-y-1">
-          {nav.map(({ to, label, icon }) => (
+          {nav.map(({ to, label, icon, end }) => (
             <NavLink
               key={to}
               to={to}
-              end={to === '/employee'}
+              end={end}
               onClick={() => setSidebarOpen(false)}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${

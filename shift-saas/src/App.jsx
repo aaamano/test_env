@@ -8,8 +8,8 @@ import ShiftDecision from './pages/manager/ShiftDecision'
 import Members from './pages/manager/Members'
 import MemberDetail from './pages/manager/MemberDetail'
 import StoreSettings from './pages/manager/StoreSettings'
-import ShiftView from './pages/employee/ShiftView'
-import ShiftEdit from './pages/employee/ShiftEdit'
+import Schedule from './pages/employee/Schedule'
+import ShiftSubmit from './pages/employee/ShiftSubmit'
 
 export default function App() {
   return (
@@ -27,8 +27,8 @@ export default function App() {
         </Route>
 
         <Route path="/employee" element={<EmployeeLayout />}>
-          <Route index element={<ShiftView />} />
-          <Route path="edit" element={<ShiftEdit />} />
+          <Route index element={<Schedule />} />
+          <Route path="submit" element={<ShiftSubmit />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />
