@@ -130,9 +130,9 @@ export default function StoreSettings() {
                   onClick={() => toggleTask(task.id)}
                   role="switch"
                   aria-checked={task.enabled}
-                  className={`relative flex-shrink-0 w-11 h-6 rounded-full overflow-hidden transition-colors duration-200 focus:outline-none ${task.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}
+                  className={`flex-shrink-0 inline-flex items-center w-11 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${task.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}
                 >
-                  <span className={`absolute top-1 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${task.enabled ? 'translate-x-6' : 'translate-x-1'}`} />
+                  <span className={`inline-block w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${task.enabled ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
                 <div className="flex-1">
                   <div className="font-semibold text-sm">{task.name}</div>
