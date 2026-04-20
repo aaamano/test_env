@@ -19,6 +19,58 @@ const FIELDS = [
   { key: 'orders',    label: '注文数(件)',      unit: '件',  color: 'text-purple-700' },
 ]
 
+const ACTUAL_RATIO = [0.98, 0.93, 1.04, 1.06, 0.97, 1.01, 1.05, 0.99, 1.03, 0.95, 1.00, 1.07, 0.98, 1.02, 0.96]
+
+function SVGLineChart({ targets, meta }) {
+  const planVals   = targets.map(d => meta.getValue(d))
+  const actualVals = targets.map((d, i) => Math.round(meta.getValue(d) * ACTUAL_RATIO[i]))
+
+  const allVals = [...planVals, ...actualVals]
+  const dataMin = Math.min(...allVals)
+  const dataMax = Math.max(...allVals)
+  const yMin = dataMin * 0.88
+  const yMax = dataMax * 1.08
+
+  const W = 700, H = 188
+  const L = 62, R = 16, T = 12, B = 40
+  const PW = W - L - R
+  const PH = H - T - B
+
+  const xp = i => L + (i / (targets.length - 1)) * PW
+  const yp = v => T + PH - ((v - yMin) / (yMax - yMin || 1)) * PH
+
+  const planPts = planVals.map((v, i) => `${xp(i).toFixed(1)},${yp(v).toFixed(1)}`).join(' ')
+  const actPts  = actualVals.map((v, i) => `${xp(i).toFixed(1)},${yp(v).toFixed(1)}`).join(' ')
+
+  const gridVals = Array.from({ length: 5 }, (_, i) => yMin + (yMax - yMin) * i / 4)
+
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width:'100%', height:'100%' }}>
+      {gridVals.map((v, i) => (
+        <g key={i}>
+          <line x1={L} y1={yp(v).toFixed(1)} x2={W - R} y2={yp(v).toFixed(1)} stroke="#f1f5f9" strokeWidth="1" />
+          <text x={L - 5} y={yp(v) + 3.5} textAnchor="end" fontSize="9" fill="#94a3b8" fontFamily="system-ui, sans-serif">
+            {Math.round(v).toLocaleString('ja-JP')}
+          </text>
+        </g>
+      ))}
+      <polyline points={planPts}  fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="6 3" strokeLinejoin="round" />
+      <polyline points={actPts}   fill="none" stroke="#10b981" strokeWidth="2"   strokeLinejoin="round" />
+      {planVals.map((v, i) => (
+        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="2.8" fill="white" stroke="#818cf8" strokeWidth="1.5" />
+      ))}
+      {actualVals.map((v, i) => (
+        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="3"   fill="white" stroke="#10b981" strokeWidth="2" />
+      ))}
+      {targets.map((d, i) => (
+        <text key={d.day} x={xp(i).toFixed(1)} y={T + PH + 15} textAnchor="middle" fontSize="9" fill={d.isWeekend ? '#f87171' : '#94a3b8'} fontFamily="system-ui, sans-serif">
+          {d.day}日
+        </text>
+      ))}
+    </svg>
+  )
+}
+
 export default function Targets() {
   const [targets, setTargets] = useState(dailyTargets)
   const [editingCell, setEditingCell] = useState(null)
@@ -61,18 +113,24 @@ export default function Targets() {
     e.target.value = ''
   }
 
-  const totalSales = targets.reduce((s, d) => s + d.sales, 0)
-  const totalCust  = targets.reduce((s, d) => s + d.customers, 0)
-  const avgSpend   = totalCust > 0 ? Math.round((totalSales * 1000) / totalCust) : 0
+  const totalSales  = targets.reduce((s, d) => s + d.sales, 0)
+  const totalCust   = targets.reduce((s, d) => s + d.customers, 0)
+  const totalOrders = targets.reduce((s, d) => s + d.orders, 0)
+  const avgSpend    = totalCust > 0 ? Math.round((totalSales * 1000) / totalCust) : 0
   const { avgProductivity } = storeConfig
 
   const chartMeta = {
-    sales:     { label: '売上目標(千円)', color: '#3b82f6', getValue: d => d.sales },
-    customers: { label: '客数目標(名)',   color: '#10b981', getValue: d => d.customers },
-    avgSpend:  { label: '客単価(円)',     color: '#f59e0b', getValue: d => d.avgSpend },
+    sales:     { label: '売上(千円)', color: '#818cf8', getValue: d => d.sales },
+    customers: { label: '客数(名)',   color: '#10b981', getValue: d => d.customers },
+    avgSpend:  { label: '客単価(円)', color: '#f59e0b', getValue: d => d.avgSpend },
   }
-  const chart = chartMeta[activeChart]
-  const chartMax = Math.max(...targets.map(chart.getValue), 1)
+
+  const kpiCards = [
+    { label: '前半 売上目標合計', value: `¥${totalSales.toLocaleString()}千`,  sub: `1日平均 ¥${Math.round(totalSales/15).toLocaleString()}千`, bg:'bg-blue-50',   border:'border-blue-100',   val:'text-blue-800',   sub2:'text-blue-400' },
+    { label: '前半 客数目標',     value: `${totalCust.toLocaleString()}名`,    sub: `1日平均 ${Math.round(totalCust/15)}名`,                   bg:'bg-emerald-50', border:'border-emerald-100', val:'text-emerald-800', sub2:'text-emerald-400' },
+    { label: '平均客単価',        value: `¥${avgSpend.toLocaleString()}`,      sub: `目標 ¥3,000`,                                             bg:'bg-amber-50',   border:'border-amber-100',   val:'text-amber-800',  sub2:'text-amber-400' },
+    { label: '注文数目標',        value: `${totalOrders.toLocaleString()}件`,  sub: `1日平均 ${Math.round(totalOrders/15)}件`,                  bg:'bg-violet-50',  border:'border-violet-100',  val:'text-violet-800', sub2:'text-violet-400' },
+  ]
 
   return (
     <div className="p-6 bg-slate-50 min-h-full">
@@ -95,46 +153,42 @@ export default function Targets() {
         </div>
       </div>
 
-      {/* KPI cards */}
-      <div className="grid grid-cols-4 gap-3 mb-5">
-        {[
-          { label: '売上合計目標',   value: `¥${totalSales.toLocaleString()}千`, border: 'border-blue-200',    bg: 'bg-blue-50',    text: 'text-blue-900' },
-          { label: '客数合計目標',   value: `${totalCust.toLocaleString()}名`,   border: 'border-emerald-200', bg: 'bg-emerald-50', text: 'text-emerald-900' },
-          { label: '平均客単価',     value: `¥${avgSpend.toLocaleString()}`,     border: 'border-amber-200',   bg: 'bg-amber-50',   text: 'text-amber-900' },
-          { label: '1日平均売上',    value: `¥${Math.round(totalSales/15).toLocaleString()}千`, border: 'border-purple-200', bg: 'bg-purple-50', text: 'text-purple-900' },
-        ].map((k, i) => (
-          <div key={i} className={`border ${k.border} ${k.bg} rounded-xl p-4 shadow-sm`}>
-            <div className="text-xs text-slate-500 mb-1">{k.label}</div>
-            <div className={`text-2xl font-bold ${k.text}`}>{k.value}</div>
+      {/* KPI Cards */}
+      <div className="grid grid-cols-4 gap-4 mb-5">
+        {kpiCards.map((k, i) => (
+          <div key={i} className={`${k.bg} border ${k.border} rounded-2xl px-5 py-4`}>
+            <div className="text-xs text-slate-400 mb-2 font-medium">{k.label}</div>
+            <div className={`text-[1.6rem] font-bold leading-tight ${k.val} mb-1`}>{k.value}</div>
+            <div className={`text-xs ${k.sub2}`}>{k.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Chart */}
-      <div className="bg-white border border-slate-200 rounded-xl p-5 mb-5 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-slate-700">目標グラフ</h2>
+      <div className="bg-white border border-slate-100 rounded-2xl px-5 pt-5 pb-4 mb-5 shadow-sm">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="text-sm font-semibold text-slate-700">目標グラフ <span className="text-xs font-normal text-slate-400 ml-1">— 計画 vs 参考実績</span></h2>
           <div className="flex gap-1">
             {Object.entries(chartMeta).map(([key, m]) => (
               <button key={key} onClick={() => setActiveChart(key)}
-                className={`px-3 py-1 rounded-md text-xs font-medium transition-colors ${activeChart === key ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${activeChart === key ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
                 {m.label}
               </button>
             ))}
           </div>
         </div>
-        <div className="flex items-end gap-1 h-28">
-          {targets.map(d => {
-            const val = chart.getValue(d)
-            const h = Math.round((val / chartMax) * 100)
-            return (
-              <div key={d.day} className="flex-1 flex flex-col items-center gap-0.5">
-                <div className="w-full rounded-t-sm transition-all" style={{ height: `${h}%`, background: d.isWeekend ? chart.color : chart.color + 'bb' }} title={`${d.day}日: ${val.toLocaleString()}`} />
-                <div className="text-[9px] text-slate-500">{d.day}</div>
-                <div className={`text-[9px] font-medium ${d.dow === '土' || d.dow === '日' ? 'text-red-500' : 'text-slate-400'}`}>{d.dow}</div>
-              </div>
-            )
-          })}
+        <div style={{ height: 188 }}>
+          <SVGLineChart targets={targets} meta={chartMeta[activeChart]} />
+        </div>
+        <div style={{ display:'flex', gap:20, fontSize:11, color:'#64748b', marginTop:4, paddingLeft:62 }}>
+          <span style={{ display:'flex', alignItems:'center', gap:6 }}>
+            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
+            計画
+          </span>
+          <span style={{ display:'flex', alignItems:'center', gap:6 }}>
+            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#10b981" strokeWidth="2" /><circle cx="10" cy="5" r="3" fill="white" stroke="#10b981" strokeWidth="2" /></svg>
+            実績（参考）
+          </span>
         </div>
       </div>
 
