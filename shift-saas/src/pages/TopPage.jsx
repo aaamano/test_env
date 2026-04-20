@@ -39,12 +39,11 @@ export default function TopPage() {
           <div className="text-5xl mb-4">👤</div>
           <div className="text-white text-xl font-bold mb-2">Employee Portal</div>
           <div className="text-slate-400 text-sm mb-4">
-            シフト確認・希望入力
+            スケジュール確認・シフト提出
           </div>
           <div className="space-y-1 text-xs text-slate-500 text-left">
-            <div className="flex items-center gap-2"><span className="text-emerald-400">→</span> 月間シフト表示</div>
-            <div className="flex items-center gap-2"><span className="text-emerald-400">→</span> 希望シフト入力（ドラッグ操作）</div>
-            <div className="flex items-center gap-2"><span className="text-emerald-400">→</span> 確定シフト確認</div>
+            <div className="flex items-center gap-2"><span className="text-emerald-400">→</span> スケジュール（確定/提出済み/下書きを色分け表示）</div>
+            <div className="flex items-center gap-2"><span className="text-emerald-400">→</span> シフト提出（ドラッグ入力・保存・提出）</div>
           </div>
           <div className="mt-6 inline-block bg-emerald-600 group-hover:bg-emerald-500 text-white text-sm font-semibold px-5 py-2 rounded-full transition-colors">
             従業員として入る →
