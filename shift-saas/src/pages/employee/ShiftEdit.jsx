@@ -4,187 +4,324 @@ import { daysConfig, YEAR_MONTH, staff } from '../../data/mockData'
 
 const ME = staff[0]
 
-const STATUS_OPTIONS = [
-  { value: 'off',       label: '休み',      icon: '✕', inactive: 'bg-gray-100 text-gray-500 border border-gray-200', active: 'bg-gray-500 text-white border border-gray-500' },
-  { value: 'available', label: '出勤可',    icon: '○', inactive: 'bg-emerald-50 text-emerald-600 border border-emerald-200', active: 'bg-emerald-500 text-white border border-emerald-500' },
-  { value: 'prefer',    label: '★第一希望', icon: '★', inactive: 'bg-blue-50 text-blue-600 border border-blue-200', active: 'bg-blue-600 text-white border border-blue-600' },
-]
-
-const HOURS = Array.from({ length: 15 }, (_, i) => i + 8)  // 8〜22
-const MINS  = ['00', '15', '30', '45']
+const HOURS = Array.from({ length: 15 }, (_, i) => i + 8) // 8 to 22
+const MINS = ['00', '15', '30', '45']
 
 const defaultPref = { status: 'off', startH: 9, startM: '00', endH: 18, endM: '00' }
 
-export default function ShiftEdit() {
-  const [prefs, setPrefs]           = useState(() => Object.fromEntries(daysConfig.map(d => [d.day, { ...defaultPref }])))
-  const [targetEarnings, setTarget] = useState(ME.wage * 80)
-  const [editingTarget, setEditing] = useState(false)
-  const [saved, setSaved]           = useState(false)
-  const [expandAll, setExpandAll]   = useState(false)
+const statusLabel = (s) =>
+  s === 'prefer' ? '★ 第一希望' : s === 'available' ? '出勤可' : '休み希望'
 
-  const setStatus = (day, status) =>
-    setPrefs(prev => ({ ...prev, [day]: { ...prev[day], status } }))
+const statusStyle = (s) =>
+  s === 'prefer'
+    ? { background: 'var(--pita-accent-soft)', color: 'var(--pita-accent-text)' }
+    : s === 'available'
+    ? { background: 'oklch(0.93 0.05 150)', color: 'oklch(0.35 0.07 150)' }
+    : { background: 'var(--pita-bg-subtle)', color: 'var(--pita-muted)' }
+
+export default function ShiftEdit() {
+  const [prefs, setPrefs] = useState(() =>
+    Object.fromEntries(daysConfig.map(d => [d.day, { ...defaultPref }]))
+  )
+  const [saved, setSaved] = useState(false)
 
   const setTime = (day, field, val) =>
     setPrefs(prev => ({ ...prev, [day]: { ...prev[day], [field]: val } }))
 
-  const applyAll = (status) =>
-    setPrefs(prev => Object.fromEntries(
-      Object.entries(prev).map(([day, p]) => [day, { ...p, status }])
-    ))
+  const handleSave = () => {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2500)
+  }
 
-  const handleSave = () => { setSaved(true); setTimeout(() => setSaved(false), 2500) }
-
-  const availCount  = Object.values(prefs).filter(p => p.status === 'available' || p.status === 'prefer').length
+  const availCount = Object.values(prefs).filter(p => p.status === 'available' || p.status === 'prefer').length
   const preferCount = Object.values(prefs).filter(p => p.status === 'prefer').length
 
   return (
-    <div className="p-4 max-w-2xl mx-auto">
+    <div className="pita-phone-stage">
+      {/* Left: phone */}
+      <div>
+        <div className="pita-phone">
+          <div className="pita-phone-inner">
+            <div className="pita-notch" />
+            <div className="pita-status-bar">
+              <span>9:41</span>
+              <span>●●● 5G 100%</span>
+            </div>
 
-      {/* ── Header ── */}
-      <div className="mb-4 flex items-start justify-between gap-3">
-        <div>
-          <div className="text-xs text-gray-400 mb-0.5">{YEAR_MONTH} 前半</div>
-          <h1 className="text-xl font-bold text-gray-900">希望シフト入力</h1>
-          <p className="text-sm text-gray-500">{ME.name} さん</p>
-        </div>
-        <div className="flex gap-2 flex-shrink-0">
-          <Link to="/employee" className="text-sm border border-gray-300 text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50">← 戻る</Link>
-          <button onClick={handleSave}
-            className="text-sm bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-emerald-700">
-            {saved ? '✓ 送信済み' : '送信する'}
-          </button>
-        </div>
-      </div>
-
-      {/* ── Target earnings ── */}
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3 mb-4">
-        <div className="flex items-center gap-4">
-          <div className="flex-1">
-            <div className="text-xs font-semibold text-emerald-700 mb-0.5">今月の目標収入</div>
-            {editingTarget ? (
-              <input type="number" defaultValue={targetEarnings} autoFocus
-                className="w-40 border-2 border-emerald-400 rounded-lg px-3 py-1 text-sm outline-none font-bold"
-                onBlur={e => { setTarget(Number(e.target.value)); setEditing(false) }}
-                onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }}
-              />
-            ) : (
-              <button onClick={() => setEditing(true)} className="text-xl font-bold text-gray-900 hover:text-emerald-700">
-                ¥{targetEarnings.toLocaleString()}
-                <span className="text-xs font-normal text-emerald-500 ml-1">タップして編集</span>
-              </button>
-            )}
-          </div>
-          <div className="text-xs text-emerald-600 text-right leading-relaxed">
-            マネージャーがシフト作成時に<br/>参考にします
-          </div>
-        </div>
-      </div>
-
-      {/* ── Summary ── */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        {[
-          { label: '出勤可能', value: `${availCount}日`,      color: 'bg-emerald-50 border-emerald-200 text-emerald-800' },
-          { label: '第一希望', value: `${preferCount}日`,     color: 'bg-blue-50 border-blue-200 text-blue-800' },
-          { label: '休み',     value: `${15 - availCount}日`, color: 'bg-gray-50 border-gray-200 text-gray-600' },
-        ].map((k, i) => (
-          <div key={i} className={`border rounded-xl p-3 ${k.color}`}>
-            <div className="text-xs opacity-70 mb-0.5">{k.label}</div>
-            <div className="text-xl font-bold">{k.value}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* ── Bulk actions ── */}
-      <div className="flex gap-2 mb-3 flex-wrap items-center">
-        <span className="text-xs text-gray-500">一括設定:</span>
-        <button onClick={() => applyAll('off')}
-          className="text-xs px-3 py-1.5 rounded-full bg-gray-100 text-gray-600 border border-gray-200 hover:bg-gray-200 font-medium">
-          全日 休み
-        </button>
-        <button onClick={() => applyAll('available')}
-          className="text-xs px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-700 border border-emerald-200 hover:bg-emerald-200 font-medium">
-          全日 出勤可
-        </button>
-        <button onClick={() => setExpandAll(v => !v)}
-          className="ml-auto text-xs px-3 py-1.5 rounded-full bg-white text-gray-600 border border-gray-300 hover:bg-gray-50 font-medium">
-          {expandAll ? '時刻を折りたたむ' : '全日 時刻を展開'}
-        </button>
-      </div>
-
-      {/* ── Day cards ── */}
-      <div className="space-y-2">
-        {daysConfig.map(d => {
-          const p = prefs[d.day]
-          const isWorking = p.status !== 'off'
-          const showTime  = isWorking || expandAll
-
-          return (
-            <div key={d.day}
-              className={`rounded-xl border transition-all overflow-hidden ${
-                p.status === 'prefer'    ? 'border-blue-300 bg-blue-50/50' :
-                p.status === 'available' ? 'border-emerald-200 bg-emerald-50/30' :
-                'border-gray-200 bg-white'
-              }`}>
-
-              {/* Top row */}
-              <div className="flex items-center gap-3 px-4 py-3">
-                <div className={`flex-shrink-0 w-12 text-center rounded-lg py-1.5 ${d.isWeekend ? 'bg-red-100' : 'bg-gray-100'}`}>
-                  <div className={`text-base font-bold leading-tight ${d.isWeekend ? 'text-red-700' : 'text-gray-800'}`}>{d.day}</div>
-                  <div className={`text-[10px] ${d.isWeekend ? 'text-red-500' : 'text-gray-500'}`}>{d.dow}</div>
+            {/* Header */}
+            <div className="pita-phone-header">
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'var(--pita-accent)', color: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 13, fontWeight: 700, flexShrink: 0,
+              }}>
+                {ME.name[0]}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--pita-text)', lineHeight: 1.2 }}>
+                  希望提出
                 </div>
-                <div className="flex gap-1.5 flex-1 flex-wrap">
-                  {STATUS_OPTIONS.map(opt => (
-                    <button key={opt.value} onClick={() => setStatus(d.day, opt.value)}
-                      className={`flex-1 min-w-[68px] text-xs font-semibold px-2 py-2 rounded-lg transition-all ${
-                        p.status === opt.value ? opt.active : opt.inactive
-                      }`}>
-                      <span className="mr-1">{opt.icon}</span>{opt.label}
-                    </button>
-                  ))}
+                <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginTop: 1 }}>
+                  4月 前半
                 </div>
               </div>
-
-              {/* Time range */}
-              {showTime && (
-                <div className={`px-4 pb-3 flex items-center gap-2 flex-wrap ${!isWorking ? 'opacity-40 pointer-events-none' : ''}`}>
-                  <span className="text-xs text-gray-500 flex-shrink-0">時間帯</span>
-                  <select value={p.startH} onChange={e => setTime(d.day, 'startH', Number(e.target.value))}
-                    className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
-                    {HOURS.map(h => <option key={h} value={h}>{h}時</option>)}
-                  </select>
-                  <select value={p.startM} onChange={e => setTime(d.day, 'startM', e.target.value)}
-                    className="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
-                    {MINS.map(m => <option key={m} value={m}>{m}分</option>)}
-                  </select>
-                  <span className="text-gray-400">〜</span>
-                  <select value={p.endH} onChange={e => setTime(d.day, 'endH', Number(e.target.value))}
-                    className="border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
-                    {HOURS.map(h => <option key={h} value={h}>{h}時</option>)}
-                  </select>
-                  <select value={p.endM} onChange={e => setTime(d.day, 'endM', e.target.value)}
-                    className="w-16 border border-gray-300 rounded-lg px-2 py-1.5 text-sm outline-none focus:border-emerald-400 bg-white">
-                    {MINS.map(m => <option key={m} value={m}>{m}分</option>)}
-                  </select>
-                  {isWorking && (
-                    <span className="text-xs text-gray-400">
-                      ({Math.max(0, p.endH - p.startH)}h)
-                    </span>
-                  )}
-                </div>
-              )}
+              <button className="pita-btn accent" style={{ fontSize: 10, height: 24 }}>
+                + 新規
+              </button>
             </div>
-          )
-        })}
+
+            {/* Deadline banner */}
+            <div style={{
+              padding: '8px 14px',
+              background: 'var(--pita-accent-soft)',
+              color: 'var(--pita-accent-text)',
+              fontSize: 11,
+              borderBottom: '1px solid var(--pita-border)',
+              flexShrink: 0,
+            }}>
+              提出期限: <strong>3/25</strong> まで　|
+              出勤可 <strong>{availCount}日</strong>　★ <strong>{preferCount}日</strong>
+            </div>
+
+            {/* Day list - scrollable */}
+            <div className="pita-phone-body">
+              {daysConfig.map(d => {
+                const p = prefs[d.day]
+                return (
+                  <div
+                    key={d.day}
+                    style={{
+                      padding: '10px 14px',
+                      borderBottom: '1px solid var(--pita-border)',
+                      background: 'var(--pita-panel)',
+                    }}
+                  >
+                    {/* Top row: date + status badge */}
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      marginBottom: p.status !== 'off' ? 6 : 0,
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: 5 }}>
+                        <span style={{
+                          fontSize: 13, fontWeight: 700,
+                          color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)',
+                          fontFamily: 'var(--font-mono)',
+                        }}>
+                          4/{d.day}
+                        </span>
+                        <span style={{
+                          fontSize: 10,
+                          color: d.dow === '日' ? 'oklch(0.50 0.12 20)'
+                            : d.dow === '土' ? 'oklch(0.40 0.10 250)'
+                            : 'var(--pita-muted)',
+                        }}>
+                          ({d.dow})
+                        </span>
+                      </div>
+                      <span style={{
+                        fontSize: 9, padding: '2px 7px', borderRadius: 10,
+                        fontWeight: 600,
+                        ...statusStyle(p.status),
+                      }}>
+                        {statusLabel(p.status)}
+                      </span>
+                    </div>
+
+                    {/* Time selects (only when available or prefer) */}
+                    {p.status !== 'off' && (
+                      <div style={{ display: 'flex', gap: 4, alignItems: 'center', fontSize: 11, marginBottom: 6, flexWrap: 'wrap' }}>
+                        <span style={{ fontSize: 9, color: 'var(--pita-muted)', flexShrink: 0 }}>時間</span>
+                        <select
+                          value={p.startH}
+                          onChange={e => setTime(d.day, 'startH', Number(e.target.value))}
+                          style={{
+                            border: '1px solid var(--pita-border)', borderRadius: 4,
+                            padding: '1px 3px', fontSize: 10, background: 'var(--pita-bg)',
+                            color: 'var(--pita-text)', fontFamily: 'var(--font-mono)',
+                            cursor: 'pointer', outline: 'none',
+                          }}
+                        >
+                          {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
+                        </select>
+                        <span style={{ color: 'var(--pita-muted)', fontSize: 10 }}>:</span>
+                        <select
+                          value={p.startM}
+                          onChange={e => setTime(d.day, 'startM', e.target.value)}
+                          style={{
+                            border: '1px solid var(--pita-border)', borderRadius: 4,
+                            padding: '1px 3px', fontSize: 10, background: 'var(--pita-bg)',
+                            color: 'var(--pita-text)', fontFamily: 'var(--font-mono)',
+                            cursor: 'pointer', outline: 'none',
+                          }}
+                        >
+                          {MINS.map(m => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                        <span style={{ color: 'var(--pita-muted)', fontSize: 10, padding: '0 1px' }}>〜</span>
+                        <select
+                          value={p.endH}
+                          onChange={e => setTime(d.day, 'endH', Number(e.target.value))}
+                          style={{
+                            border: '1px solid var(--pita-border)', borderRadius: 4,
+                            padding: '1px 3px', fontSize: 10, background: 'var(--pita-bg)',
+                            color: 'var(--pita-text)', fontFamily: 'var(--font-mono)',
+                            cursor: 'pointer', outline: 'none',
+                          }}
+                        >
+                          {HOURS.map(h => <option key={h} value={h}>{h}</option>)}
+                        </select>
+                        <span style={{ color: 'var(--pita-muted)', fontSize: 10 }}>:</span>
+                        <select
+                          value={p.endM}
+                          onChange={e => setTime(d.day, 'endM', e.target.value)}
+                          style={{
+                            border: '1px solid var(--pita-border)', borderRadius: 4,
+                            padding: '1px 3px', fontSize: 10, background: 'var(--pita-bg)',
+                            color: 'var(--pita-text)', fontFamily: 'var(--font-mono)',
+                            cursor: 'pointer', outline: 'none',
+                          }}
+                        >
+                          {MINS.map(m => <option key={m} value={m}>{m}</option>)}
+                        </select>
+                        <span style={{ color: 'var(--pita-faint)', fontSize: 9, marginLeft: 2 }}>
+                          ({Math.max(0, p.endH - p.startH)}h)
+                        </span>
+                      </div>
+                    )}
+
+                    {/* 3-way status toggle */}
+                    <div style={{ display: 'flex', gap: 4 }}>
+                      {['off', 'available', 'prefer'].map(s => (
+                        <button
+                          key={s}
+                          onClick={() => setPrefs(prev => ({ ...prev, [d.day]: { ...prev[d.day], status: s } }))}
+                          style={{
+                            fontSize: 9, padding: '2px 6px', borderRadius: 10,
+                            cursor: 'pointer', fontFamily: 'inherit',
+                            border: p.status === s ? 'none' : '1px solid var(--pita-border)',
+                            background: p.status === s
+                              ? (s === 'prefer' ? 'var(--pita-accent)' : s === 'available' ? 'oklch(0.62 0.09 150)' : 'var(--pita-text)')
+                              : 'var(--pita-bg)',
+                            color: p.status === s ? 'white' : 'var(--pita-muted)',
+                          }}
+                        >
+                          {s === 'prefer' ? '★希望' : s === 'available' ? '出勤可' : '休み'}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+
+              {/* Save button inside scroll area at bottom */}
+              <div style={{ padding: '12px 14px', background: 'var(--pita-bg)' }}>
+                <button
+                  onClick={handleSave}
+                  style={{
+                    width: '100%',
+                    padding: '10px 0',
+                    borderRadius: 10,
+                    border: 'none',
+                    background: saved ? 'var(--pita-ok)' : 'var(--pita-text)',
+                    color: 'white',
+                    fontFamily: 'inherit',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  {saved ? '✓ 送信済み' : '希望シフトを送信する'}
+                </button>
+                <div style={{ fontSize: 9, textAlign: 'center', color: 'var(--pita-faint)', marginTop: 5 }}>
+                  マネージャーに通知されます
+                </div>
+              </div>
+            </div>
+
+            {/* Tab bar */}
+            <div className="pita-phone-tabbar">
+              <Link to="/employee" className="pita-tab-item">
+                <span className="pita-tab-ico">📅</span>
+                シフト
+              </Link>
+              <Link to="/employee/edit" className="pita-tab-item active">
+                <span className="pita-tab-ico">✏️</span>
+                希望
+              </Link>
+              <span className="pita-tab-item">
+                <span className="pita-tab-ico">👤</span>
+                アカウント
+              </span>
+            </div>
+          </div>
+        </div>
+        <div style={{
+          textAlign: 'center', marginTop: 12,
+          fontFamily: 'var(--font-mono)', fontSize: 11,
+          color: 'var(--pita-faint)',
+        }}>
+          URL: /employee/edit
+        </div>
       </div>
 
-      {/* ── Bottom save ── */}
-      <div className="mt-6 pb-6">
-        <button onClick={handleSave}
-          className="w-full bg-emerald-600 text-white py-3.5 rounded-xl font-bold text-base hover:bg-emerald-700 shadow-sm">
-          {saved ? '✓ 送信済み' : '希望シフトを送信する'}
-        </button>
-        <p className="text-xs text-center text-gray-400 mt-2">マネージャーに通知されます</p>
+      {/* Right: side notes */}
+      <div>
+        <div className="pita-side-note">
+          <div style={{
+            fontFamily: 'var(--font-mono)', fontWeight: 600,
+            marginBottom: 10, color: 'var(--pita-text)',
+          }}>
+            操作ガイド
+          </div>
+          <ul style={{ paddingLeft: 16, margin: '0 0 12px' }}>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>休み希望</strong>
+              <br />「休み」ボタンを選択すると、その日はシフト不可として登録されます。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>出勤可</strong>
+              <br />「出勤可」を選択し、希望時間帯を入力してください。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>★ 第一希望</strong>
+              <br />特に入りたい日は「★希望」を選択。マネージャーが優先的に考慮します。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>送信</strong>
+              <br />提出期限（3/25）までに「希望シフトを送信する」を押してください。
+            </li>
+          </ul>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--pita-border)', margin: '10px 0' }} />
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--pita-text)', marginBottom: 6, fontFamily: 'var(--font-mono)' }}>
+              ステータス凡例
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              {[
+                { label: '休み希望', background: 'var(--pita-bg-subtle)', color: 'var(--pita-muted)' },
+                { label: '出勤可', background: 'oklch(0.93 0.05 150)', color: 'oklch(0.35 0.07 150)' },
+                { label: '★ 第一希望', background: 'var(--pita-accent-soft)', color: 'var(--pita-accent-text)' },
+              ].map(({ label, background, color }) => (
+                <div key={label} style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                  <span style={{
+                    display: 'inline-block', width: 48, height: 16, borderRadius: 8,
+                    background, flexShrink: 0,
+                  }} />
+                  <span style={{ fontSize: 11, color: 'var(--pita-muted)' }}>{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--pita-border)', margin: '10px 0' }} />
+          <Link to="/" style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11,
+            color: 'var(--pita-muted)', textDecoration: 'none',
+          }}>
+            ← TOPへ
+          </Link>
+        </div>
       </div>
     </div>
   )

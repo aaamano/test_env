@@ -1,163 +1,393 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { staff, shiftData, daysConfig, dailyTargets, STORE_NAME, YEAR_MONTH } from '../../data/mockData'
 
-/**
- * Returns className and display label for a shift code (bar-style visualization).
- * F = diagonal stripe (orange/salmon CSS pattern)
- * X = gray bg, gray text
- * O-* = solid teal-500
- * *-L = solid rose-500
- * others (mid shifts) = solid teal-400
- */
-const getShiftStyle = (code) => {
-  if (!code || code === 'X') {
-    return { className: 'bg-gray-100 text-gray-400', label: '×' }
-  }
-  if (code === 'F') {
-    return { className: 'shift-stripe text-orange-700 font-bold', label: 'F' }
-  }
-  if (code.startsWith('O-')) {
-    return { className: 'bg-teal-500 text-white', label: code }
-  }
-  if (code.endsWith('-L')) {
-    return { className: 'bg-rose-500 text-white', label: code }
-  }
-  // mid shifts like 9-18, 10-16, etc.
-  return { className: 'bg-teal-400 text-white', label: code }
+// ── helpers ──────────────────────────────────────────────────────────────────
+function parseShiftTimes(code) {
+  if (!code || code === 'X') return null
+  if (code === 'F') return { start: 9, end: 18 }
+  const m = code.match(/^O-(\d+(?:\.\d+)?)$/)
+  if (m) return { start: 9, end: parseFloat(m[1]) }
+  const m2 = code.match(/^(\d+(?:\.\d+)?)[.-](\d+(?:\.\d+)?|L)$/)
+  if (m2) return { start: parseFloat(m2[1]), end: m2[2] === 'L' ? 22 : parseFloat(m2[2]) }
+  return null
 }
 
-const totalMonth = dailyTargets.reduce((s, d) => s + d.sales, 0)
-const totalCust  = dailyTargets.reduce((s, d) => s + d.customers, 0)
+function getBarProps(code) {
+  if (!code || code === 'X') return null
+  if (code === 'F') return { type: 'full', left: 2, width: 96 }
+  const t = parseShiftTimes(code)
+  if (!t) return null
+  const left  = Math.max(2, ((t.start - 7) / 16) * 100)
+  const width = Math.max(6, ((t.end - t.start) / 16) * 100)
+  return { type: t.end >= 22 ? 'closer' : 'normal', left, width }
+}
 
+// ── module-level constants ────────────────────────────────────────────────────
+const totalMonth  = dailyTargets.reduce((s, d) => s + d.sales, 0)
+const totalCust   = dailyTargets.reduce((s, d) => s + d.customers, 0)
+const totalOrders = dailyTargets.reduce((s, d) => s + d.orders, 0)
+const avgUnit     = Math.round(dailyTargets.reduce((s, d) => s + d.avgSpend, 0) / dailyTargets.length)
+const ACTUAL_DAYS = 5
+// Simulated actuals for first 5 days (90-110% of target)
+const actualSales = dailyTargets.slice(0, ACTUAL_DAYS).map(
+  (d, i) => Math.round(d.sales * [1.02, 0.95, 1.08, 0.97, 1.05][i])
+)
+
+// ── component ─────────────────────────────────────────────────────────────────
 export default function Dashboard() {
+  const [view, setView] = useState('A')
+
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
+    <div style={{ padding: '20px', maxWidth: 1400, margin: '0 auto' }}>
+
+      {/* Top bar */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
-          <div className="text-xs text-gray-400 mb-1">{STORE_NAME}</div>
-          <h1 className="text-2xl font-bold text-gray-900">{YEAR_MONTH} 前半　計画一覧</h1>
+          <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 3 }}>{STORE_NAME}</div>
+          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--pita-text)' }}>{YEAR_MONTH} 前半　ダッシュボード</div>
         </div>
-        <div className="flex gap-3">
-          <Link to="/manager/targets" className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+        <div style={{ display: 'flex', gap: 8 }}>
+          <Link to="/manager/targets" className="pita-btn primary" style={{ textDecoration: 'none', padding: '5px 14px', borderRadius: 6, fontSize: 12 }}>
             目標設定 →
           </Link>
-          <Link to="/manager/shift" className="text-sm bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+          <Link to="/manager/shift" className="pita-btn primary" style={{ textDecoration: 'none', padding: '5px 14px', borderRadius: 6, fontSize: 12 }}>
             シフト決定 →
           </Link>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
-        {[
-          { label: '前半 売上目標合計', value: `¥${totalMonth.toLocaleString()}千`, sub: '前年比 +3.2%', color: 'bg-blue-50 border-blue-200' },
-          { label: '前半 客数目標', value: `${totalCust.toLocaleString()}名`, sub: '1日平均 ' + Math.round(totalCust/15) + '名', color: 'bg-emerald-50 border-emerald-200' },
-          { label: '平均客単価', value: '¥3,006', sub: '目標 ¥3,000', color: 'bg-amber-50 border-amber-200' },
-          { label: 'スタッフ数', value: `${staff.length}名`, sub: `正社員${staff.filter(s=>s.type==='F').length}名 / P${staff.filter(s=>s.type==='P').length}名`, color: 'bg-purple-50 border-purple-200' },
-        ].map((k, i) => (
-          <div key={i} className={`border rounded-xl p-4 ${k.color}`}>
-            <div className="text-xs text-gray-500 mb-1">{k.label}</div>
-            <div className="text-2xl font-bold text-gray-900">{k.value}</div>
-            <div className="text-xs text-gray-400 mt-1">{k.sub}</div>
-          </div>
+      {/* View toggle */}
+      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+        {[['A', '計画一覧 + バー'], ['B', 'ダッシュボード']].map(([key, label]) => (
+          <button
+            key={key}
+            onClick={() => setView(key)}
+            className="pita-btn"
+            style={{
+              padding: '4px 14px',
+              borderRadius: 6,
+              fontSize: 12,
+              border: '1px solid var(--pita-border)',
+              background: view === key ? 'var(--pita-text)' : 'var(--pita-panel)',
+              color: view === key ? 'var(--pita-bg)' : 'var(--pita-muted)',
+              cursor: 'pointer',
+            }}
+          >
+            {label}
+          </button>
         ))}
       </div>
 
-      {/* Legend */}
-      <div className="flex gap-4 text-xs mb-3">
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded shift-stripe inline-block border border-orange-200" />
-          <span className="text-gray-600">正社員(F) ストライプ</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded bg-teal-500 inline-block" />
-          <span className="text-gray-600">オープン</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded bg-rose-500 inline-block" />
-          <span className="text-gray-600">遅番(-L)</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded bg-teal-400 inline-block" />
-          <span className="text-gray-600">中番</span>
-        </span>
-        <span className="flex items-center gap-1.5">
-          <span className="w-4 h-4 rounded bg-gray-100 inline-block border" />
-          <span className="text-gray-600">休み</span>
-        </span>
-      </div>
+      {/* ── View A ──────────────────────────────────────────────────────────── */}
+      {view === 'A' && (
+        <>
+          {/* KPI chips */}
+          <div style={{ display: 'flex', gap: 10, marginBottom: 16, flexWrap: 'wrap' }}>
+            {[
+              { label: '売上合計', value: `¥${totalMonth.toLocaleString()}千` },
+              { label: '客数',     value: `${totalCust.toLocaleString()}名` },
+              { label: '客単価',   value: `¥${avgUnit.toLocaleString()}` },
+              { label: 'スタッフ数', value: `${staff.length}名` },
+            ].map((k, i) => (
+              <div
+                key={i}
+                className="pita-chip accent"
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: 6,
+                  fontSize: 12,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 7,
+                  background: 'var(--pita-accent-soft)',
+                  color: 'var(--pita-accent-text)',
+                }}
+              >
+                <span style={{ fontSize: 10, opacity: 0.75 }}>{k.label}</span>
+                <span style={{ fontWeight: 700 }}>{k.value}</span>
+              </div>
+            ))}
+          </div>
 
-      {/* Shift Matrix */}
-      <div className="bg-white rounded-xl border border-gray-200 overflow-auto">
-        <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-          <h2 className="font-semibold text-gray-800 text-sm">シフト一覧マトリクス — 4月前半（1〜15日）</h2>
-        </div>
-        <table className="w-full text-xs border-collapse">
-          <thead>
-            <tr className="bg-gray-50">
-              <th className="text-left px-3 py-2 font-medium text-gray-500 sticky left-0 bg-gray-50 border-r border-gray-100 min-w-[40px]">No</th>
-              <th className="text-left px-3 py-2 font-medium text-gray-500 sticky left-8 bg-gray-50 border-r border-gray-100 min-w-[120px]">スタッフ名</th>
-              <th className="text-center px-1 py-2 font-medium text-gray-500 min-w-[36px]">種別</th>
-              {daysConfig.map(d => (
-                <th key={d.day} className={`text-center px-0.5 py-2 font-medium min-w-[52px] ${d.isWeekend ? 'text-red-500' : 'text-gray-500'}`}>
-                  <div>{d.day}</div>
-                  <div className="text-[9px]">{d.dow}</div>
-                </th>
-              ))}
-              <th className="text-center px-2 py-2 font-medium text-gray-500 min-w-[50px]">出勤日数</th>
-            </tr>
-          </thead>
-          <tbody>
-            {staff.map((s, idx) => {
-              const row = shiftData[s.id] || []
-              const workDays = row.filter(c => c && c !== 'X').length
-              return (
-                <tr key={s.id} className={idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
-                  <td className="px-3 py-1.5 text-gray-400 sticky left-0 bg-inherit border-r border-gray-100">{s.id}</td>
-                  <td className="px-3 py-1.5 font-medium text-gray-800 sticky left-8 bg-inherit border-r border-gray-100 whitespace-nowrap">
-                    <Link to={`/manager/members/${s.id}`} className="hover:text-blue-600 hover:underline">
-                      {s.name}
-                    </Link>
-                  </td>
-                  <td className="text-center py-1.5">
-                    <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${s.type === 'F' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {s.type}
-                    </span>
-                  </td>
-                  {daysConfig.map((d, di) => {
-                    const code = row[di] || 'X'
-                    const { className, label } = getShiftStyle(code)
+          {/* Plan table panel */}
+          <div className="pita-panel" style={{ marginBottom: 16 }}>
+            <div className="pita-panel-head">
+              計画一覧 — {YEAR_MONTH}前半
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="pita-plan-table">
+                <thead>
+                  <tr>
+                    <th style={{ textAlign: 'left' }}>指標</th>
+                    {daysConfig.map(d => (
+                      <th
+                        key={d.day}
+                        className={d.dow === '土' ? 'pita-dow-sat' : d.dow === '日' ? 'pita-dow-sun' : ''}
+                      >
+                        {d.day}<br />
+                        <span style={{ fontSize: 9 }}>{d.dow}</span>
+                      </th>
+                    ))}
+                    <th className="total">合計</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* 売上目標 */}
+                  <tr>
+                    <th>売上目標 (千円)</th>
+                    {dailyTargets.map(d => (
+                      <td key={d.day}>{d.sales}</td>
+                    ))}
+                    <td className="total">{totalMonth.toLocaleString()}</td>
+                  </tr>
+                  <tr className="sub-row">
+                    <td>└ 実績 (初日〜{ACTUAL_DAYS}日)</td>
+                    {dailyTargets.map((d, i) => {
+                      if (i >= ACTUAL_DAYS) return <td key={d.day}>—</td>
+                      const act = actualSales[i]
+                      const up  = act >= d.sales
+                      return (
+                        <td key={d.day}>
+                          {act}
+                          <span className={up ? 'pita-delta-up' : 'pita-delta-down'}>
+                            {' '}{up ? '▲' : '▼'}
+                          </span>
+                        </td>
+                      )
+                    })}
+                    <td>{actualSales.reduce((s, v) => s + v, 0)}</td>
+                  </tr>
+
+                  {/* 客数 */}
+                  <tr>
+                    <th>客数 (名)</th>
+                    {dailyTargets.map(d => (
+                      <td key={d.day}>{d.customers}</td>
+                    ))}
+                    <td className="total">{totalCust.toLocaleString()}</td>
+                  </tr>
+                  <tr className="sub-row">
+                    <td>└ 実績 (初日〜{ACTUAL_DAYS}日)</td>
+                    {dailyTargets.map((d, i) => {
+                      if (i >= ACTUAL_DAYS) return <td key={d.day}>—</td>
+                      const actC = Math.round(d.customers * [1.02, 0.95, 1.08, 0.97, 1.05][i])
+                      const up   = actC >= d.customers
+                      return (
+                        <td key={d.day}>
+                          {actC}
+                          <span className={up ? 'pita-delta-up' : 'pita-delta-down'}>
+                            {' '}{up ? '▲' : '▼'}
+                          </span>
+                        </td>
+                      )
+                    })}
+                    <td>
+                      {dailyTargets.slice(0, ACTUAL_DAYS).reduce((s, d, i) =>
+                        s + Math.round(d.customers * [1.02, 0.95, 1.08, 0.97, 1.05][i]), 0
+                      )}
+                    </td>
+                  </tr>
+
+                  {/* 必要人時 */}
+                  <tr>
+                    <th>必要人時</th>
+                    {dailyTargets.map(d => (
+                      <td key={d.day}>{Math.ceil(d.orders / 8)}</td>
+                    ))}
+                    <td className="total">{Math.ceil(totalOrders / 8)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Shift bar panel */}
+          <div className="pita-panel">
+            <div className="pita-panel-head">
+              シフトバー — スタッフ別
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+              <table className="pita-mgr-grid">
+                <thead>
+                  <tr>
+                    <th className="name-col">スタッフ</th>
+                    <th className="meta-col">種別</th>
+                    <th className="meta-col">出勤</th>
+                    {daysConfig.map(d => (
+                      <th
+                        key={d.day}
+                        className={d.dow === '土' ? 'pita-dow-sat' : d.dow === '日' ? 'pita-dow-sun' : ''}
+                        style={{ minWidth: 52 }}
+                      >
+                        {d.day}<br />{d.dow}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {staff.map(s => {
+                    const row      = shiftData[s.id] || []
+                    const workDays = row.filter(c => c && c !== 'X').length
                     return (
-                      <td key={d.day} className="py-1 px-0.5">
-                        <div className={`shift-cell ${className}`}>
-                          {label}
-                        </div>
-                      </td>
+                      <tr key={s.id}>
+                        <td className="name-col">
+                          {s.name}
+                          {s.skills.slice(0, 2).map(sk => (
+                            <span key={sk} className="pita-skill-tag" style={{ marginLeft: 4 }}>
+                              {sk === 'barista' ? 'バリスタ' : sk === 'cashier' ? 'レジ' : 'フロア'}
+                            </span>
+                          ))}
+                        </td>
+                        <td className="meta-col">
+                          <span style={{
+                            fontSize: 10,
+                            padding: '1px 5px',
+                            borderRadius: 3,
+                            background: s.type === 'F' ? 'oklch(0.93 0.08 150)' : 'var(--pita-bg-subtle)',
+                            color:      s.type === 'F' ? 'oklch(0.40 0.10 150)' : 'var(--pita-muted)',
+                            fontWeight: 600,
+                          }}>
+                            {s.type}
+                          </span>
+                        </td>
+                        <td className="meta-col">{workDays}</td>
+                        {daysConfig.map((d, di) => {
+                          const code = row[di] || 'X'
+                          const bar  = getBarProps(code)
+                          if (!bar) {
+                            return <td key={d.day} className="pita-cell-off-bar">×</td>
+                          }
+                          return (
+                            <td key={d.day} className="pita-cell-bar">
+                              <div
+                                className={'pita-bar ' + bar.type}
+                                style={{ left: bar.left + '%', width: bar.width + '%' }}
+                              />
+                              <span className="pita-code">{code}</span>
+                            </td>
+                          )
+                        })}
+                      </tr>
                     )
                   })}
-                  <td className="text-center py-1.5 font-semibold text-gray-700">{workDays}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-          <tfoot>
-            <tr className="bg-blue-50 border-t-2 border-blue-200">
-              <td colSpan={3} className="px-3 py-2 text-xs font-bold text-blue-800">日別 出勤人数</td>
-              {daysConfig.map((d, di) => {
-                const count = staff.filter(s => {
-                  const row = shiftData[s.id] || []
-                  return row[di] && row[di] !== 'X'
-                }).length
-                return (
-                  <td key={d.day} className="text-center py-2 font-bold text-blue-800 text-xs">{count}</td>
-                )
-              })}
-              <td />
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* ── View B ──────────────────────────────────────────────────────────── */}
+      {view === 'B' && (
+        <>
+          {/* KPI cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
+            {[
+              { label: '前半 売上目標合計', value: `¥${totalMonth.toLocaleString()}千`, sub: '前年比 +3.2%',
+                bg: 'oklch(0.96 0.03 250)', border: 'oklch(0.88 0.06 250)', txt: 'oklch(0.35 0.10 250)' },
+              { label: '前半 客数目標', value: `${totalCust.toLocaleString()}名`, sub: `1日平均 ${Math.round(totalCust / 15)}名`,
+                bg: 'oklch(0.96 0.04 155)', border: 'oklch(0.88 0.07 155)', txt: 'oklch(0.38 0.10 155)' },
+              { label: '平均客単価', value: `¥${avgUnit.toLocaleString()}`, sub: '目標 ¥3,000',
+                bg: 'oklch(0.97 0.04 70)',  border: 'oklch(0.88 0.08 70)',  txt: 'oklch(0.42 0.10 70)' },
+              { label: 'スタッフ数', value: `${staff.length}名`,
+                sub: `正社員${staff.filter(s => s.type === 'F').length}名 / P${staff.filter(s => s.type === 'P').length}名`,
+                bg: 'oklch(0.96 0.03 300)', border: 'oklch(0.88 0.06 300)', txt: 'oklch(0.38 0.08 300)' },
+            ].map((k, i) => (
+              <div key={i} style={{
+                background: k.bg,
+                border: `1px solid ${k.border}`,
+                borderRadius: 10,
+                padding: '14px 16px',
+              }}>
+                <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 4 }}>{k.label}</div>
+                <div style={{ fontSize: 22, fontWeight: 700, color: k.txt }}>{k.value}</div>
+                <div style={{ fontSize: 10, color: 'var(--pita-faint)', marginTop: 4 }}>{k.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Line chart */}
+          <div className="pita-panel" style={{ marginBottom: 16 }}>
+            <div className="pita-panel-head">
+              売上実績 vs 計画（前半 {ACTUAL_DAYS}日間）
+            </div>
+            <div style={{ padding: '16px 20px' }}>
+              <svg viewBox="0 0 300 140" width="100%" style={{ maxWidth: 600, display: 'block' }}>
+                {/* Grid lines */}
+                {[0, 1, 2, 3, 4].map(i => (
+                  <line key={i} x1={0} y1={20 + i * 24} x2={300} y2={20 + i * 24}
+                    stroke="var(--pita-border)" strokeWidth={0.5} />
+                ))}
+
+                {/* Axes labels */}
+                {dailyTargets.slice(0, ACTUAL_DAYS).map((d, i) => {
+                  const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
+                  return (
+                    <text key={i} x={x} y={132} textAnchor="middle"
+                      style={{ fontSize: 8, fill: 'var(--pita-muted)', fontFamily: 'var(--font-mono)' }}>
+                      {d.day}日
+                    </text>
+                  )
+                })}
+
+                {/* Plan + actual lines */}
+                {(() => {
+                  const maxVal = Math.max(...dailyTargets.slice(0, ACTUAL_DAYS).map(d => d.sales), ...actualSales) * 1.1
+                  const minVal = Math.min(...dailyTargets.slice(0, ACTUAL_DAYS).map(d => d.sales), ...actualSales) * 0.9
+                  const toY = v => 20 + (1 - (v - minVal) / (maxVal - minVal)) * 96
+
+                  const planPts = dailyTargets.slice(0, ACTUAL_DAYS).map((d, i) => {
+                    const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
+                    return `${x},${toY(d.sales)}`
+                  }).join(' ')
+
+                  const actPts = actualSales.map((v, i) => {
+                    const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
+                    return `${x},${toY(v)}`
+                  }).join(' ')
+
+                  return (
+                    <>
+                      <polyline points={planPts} fill="none" stroke="oklch(0.55 0.12 250)" strokeWidth={1.5} strokeDasharray="4 2" />
+                      <polyline points={actPts}  fill="none" stroke="oklch(0.55 0.13 175)" strokeWidth={2} />
+
+                      {/* Dots – plan */}
+                      {dailyTargets.slice(0, ACTUAL_DAYS).map((d, i) => {
+                        const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
+                        return <circle key={i} cx={x} cy={toY(d.sales)} r={2.5}
+                          fill="oklch(0.55 0.12 250)" />
+                      })}
+                      {/* Dots – actual */}
+                      {actualSales.map((v, i) => {
+                        const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
+                        return <circle key={i} cx={x} cy={toY(v)} r={2.5}
+                          fill="oklch(0.55 0.13 175)" />
+                      })}
+                    </>
+                  )
+                })()}
+              </svg>
+
+              {/* Legend */}
+              <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--pita-muted)' }}>
+                  <svg width={20} height={4} viewBox="0 0 20 4">
+                    <line x1={0} y1={2} x2={20} y2={2} stroke="oklch(0.55 0.12 250)" strokeWidth={1.5} strokeDasharray="4 2" />
+                  </svg>
+                  計画
+                </span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--pita-muted)' }}>
+                  <svg width={20} height={4} viewBox="0 0 20 4">
+                    <line x1={0} y1={2} x2={20} y2={2} stroke="oklch(0.55 0.13 175)" strokeWidth={2} />
+                  </svg>
+                  実績
+                </span>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

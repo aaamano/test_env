@@ -1,144 +1,329 @@
+import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { staff, shiftData, daysConfig, YEAR_MONTH } from '../../data/mockData'
 
 const ME = staff[0]
 const myRow = shiftData[ME.id] || []
 
-const parseHours = (code) => {
+const HOURS = Array.from({ length: 15 }, (_, i) => i + 8) // 8 to 22
+
+function parseShiftTimes(code) {
   if (!code || code === 'X') return null
   if (code === 'F') return { start: 9, end: 18 }
   const m = code.match(/^O-(\d+(?:\.\d+)?)$/)
   if (m) return { start: 9, end: parseFloat(m[1]) }
   const m2 = code.match(/^(\d+(?:\.\d+)?)[.-](\d+(?:\.\d+)?|L)$/)
   if (m2) return { start: parseFloat(m2[1]), end: m2[2] === 'L' ? 22 : parseFloat(m2[2]) }
-  return { start: 9, end: 18 }
+  return null
 }
 
-const getShiftBadge = (code) => {
-  if (!code || code === 'X') return { cls: 'bg-gray-100 text-gray-400', label: '休み' }
-  if (code === 'F') return { cls: 'bg-green-100 text-green-700', label: 'フル' }
-  if (code.startsWith('O')) return { cls: 'bg-blue-100 text-blue-700', label: code }
-  if (code.endsWith('L')) return { cls: 'bg-purple-100 text-purple-700', label: code }
-  return { cls: 'bg-amber-100 text-amber-700', label: code }
-}
-
-const timeRange = Array.from({ length: 14 }, (_, i) => i + 8)
-
-export default function ShiftView() {
-  const workDays = myRow.filter(c => c && c !== 'X').length
-  const totalH = myRow.reduce((sum, code) => {
-    const h = parseHours(code)
+function computeSummary(rowData) {
+  const workDays = rowData.filter(c => c && c !== 'X').length
+  const workHours = rowData.reduce((sum, code) => {
+    const h = parseShiftTimes(code)
     return h ? sum + Math.max(0, h.end - h.start - 1) : sum
   }, 0)
+  const estPay = workHours * ME.wage
+  return { workDays, workHours, estPay }
+}
+
+export default function ShiftView() {
+  const [editing, setEditing] = useState(false)
+  const [localRow, setLocalRow] = useState(() => [...myRow])
+  const [previewRange, setPreviewRange] = useState(null) // { dayIdx, startH, endH } during drag
+
+  const dragging = useRef(false)
+  const startCell = useRef(null)  // { dayIdx, hour }
+  const selectVal = useRef(null)  // 'draw' or 'erase'
+
+  const { workDays, workHours, estPay } = computeSummary(localRow)
+
+  const isInPreview = (dayIdx, hour) => {
+    if (!previewRange || previewRange.dayIdx !== dayIdx) return false
+    const lo = Math.min(previewRange.startH, previewRange.endH)
+    const hi = Math.max(previewRange.startH, previewRange.endH)
+    return hour >= lo && hour <= hi
+  }
+
+  const handleMouseDown = (dayIdx, hour) => {
+    if (!editing) return
+    dragging.current = true
+    startCell.current = { dayIdx, hour }
+    const existing = parseShiftTimes(localRow[dayIdx])
+    const isWork = existing && hour >= existing.start && hour < existing.end
+    selectVal.current = isWork ? 'erase' : 'draw'
+    setPreviewRange({ dayIdx, startH: hour, endH: hour })
+  }
+
+  const handleMouseEnter = (dayIdx, hour) => {
+    if (!editing || !dragging.current) return
+    if (startCell.current && startCell.current.dayIdx === dayIdx) {
+      setPreviewRange({ dayIdx, startH: startCell.current.hour, endH: hour })
+    }
+  }
+
+  const handleMouseUp = (dayIdx, hour) => {
+    if (!editing || !dragging.current) return
+    dragging.current = false
+
+    const pr = previewRange
+    if (!pr || pr.dayIdx !== dayIdx) {
+      setPreviewRange(null)
+      return
+    }
+
+    const lo = Math.min(pr.startH, pr.endH)
+    const hi = Math.max(pr.startH, pr.endH)
+
+    if (selectVal.current === 'erase') {
+      setLocalRow(prev => {
+        const next = [...prev]
+        next[dayIdx] = 'X'
+        return next
+      })
+    } else {
+      const startH = lo
+      const endH = hi + 1
+      let code
+      if (startH === 9 && endH === 18) code = 'F'
+      else if (startH === 9) code = `O-${endH}`
+      else if (endH === 22) code = `${startH}-L`
+      else code = `${startH}-${endH}`
+
+      setLocalRow(prev => {
+        const next = [...prev]
+        next[dayIdx] = code
+        return next
+      })
+    }
+
+    setPreviewRange(null)
+    startCell.current = null
+    selectVal.current = null
+  }
+
+  const handleMouseLeaveTable = () => {
+    if (dragging.current) {
+      dragging.current = false
+      setPreviewRange(null)
+      startCell.current = null
+      selectVal.current = null
+    }
+  }
 
   return (
-    <div className="p-4 max-w-2xl mx-auto md:max-w-none">
-      {/* Header */}
-      <div className="mb-5 flex items-start justify-between gap-3">
-        <div>
-          <div className="text-xs text-gray-400 mb-1">{YEAR_MONTH} 前半</div>
-          <h1 className="text-xl font-bold text-gray-900">シフト確認</h1>
-          <p className="text-sm text-gray-500">{ME.name} さんの確定シフト</p>
-        </div>
-        <Link to="/employee/edit"
-          className="flex-shrink-0 bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-emerald-700">
-          ✏️ 希望入力
-        </Link>
-      </div>
+    <div className="pita-phone-stage">
+      {/* Left: phone */}
+      <div>
+        <div className="pita-phone">
+          <div className="pita-phone-inner">
+            <div className="pita-notch" />
+            <div className="pita-status-bar">
+              <span>9:41</span>
+              <span>●●● 5G 100%</span>
+            </div>
 
-      {/* KPI */}
-      <div className="grid grid-cols-3 gap-3 mb-5">
-        {[
-          { label: '出勤日数', value: `${workDays}日`, sub: '前半 15日中', color: 'bg-emerald-50 border-emerald-200' },
-          { label: '労働時間', value: `${totalH}h`, sub: '休憩除く想定', color: 'bg-blue-50 border-blue-200' },
-          { label: '想定給与', value: `¥${(totalH * ME.wage / 10000).toFixed(1)}万`, sub: '税引前概算', color: 'bg-amber-50 border-amber-200' },
-        ].map((k, i) => (
-          <div key={i} className={`border rounded-xl p-3 ${k.color}`}>
-            <div className="text-xs text-gray-500 mb-0.5">{k.label}</div>
-            <div className="text-xl font-bold text-gray-900">{k.value}</div>
-            <div className="text-xs text-gray-400">{k.sub}</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Shift list (mobile-friendly card view) */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden mb-5">
-        <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-          <h2 className="font-semibold text-gray-800 text-sm">日別シフト</h2>
-        </div>
-        <div className="divide-y divide-gray-100">
-          {daysConfig.map((d, di) => {
-            const code = myRow[di] || 'X'
-            const badge = getShiftBadge(code)
-            const hours = parseHours(code)
-            return (
-              <div key={d.day} className={`flex items-center px-4 py-3 ${d.isWeekend ? 'bg-red-50/30' : ''}`}>
-                <div className="w-16 flex-shrink-0">
-                  <span className={`text-sm font-bold ${d.isWeekend ? 'text-red-600' : 'text-gray-700'}`}>{d.day}日</span>
-                  <span className={`ml-1.5 text-xs ${d.isWeekend ? 'text-red-400' : 'text-gray-400'}`}>{d.dow}</span>
+            {/* Header */}
+            <div className="pita-phone-header">
+              <div style={{
+                width: 32, height: 32, borderRadius: '50%',
+                background: 'var(--pita-accent)', color: 'white',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontSize: 13, fontWeight: 700, flexShrink: 0,
+              }}>
+                {ME.name[0]}
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--pita-text)', lineHeight: 1.2 }}>
+                  シフト確認
                 </div>
-                <div className="flex-1">
-                  {hours ? (
-                    <div className="flex items-center gap-3">
-                      <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${badge.cls}`}>{badge.label}</span>
-                      <span className="text-xs text-gray-500">{hours.start}:00 〜 {hours.end === 22 ? '閉店' : `${hours.end}:00`}</span>
-                      <span className="text-xs text-gray-400">{Math.max(0, hours.end - hours.start - 1)}h</span>
-                    </div>
-                  ) : (
-                    <span className="text-xs text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">休み</span>
-                  )}
+                <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginTop: 1 }}>
+                  {YEAR_MONTH} 前半
                 </div>
               </div>
-            )
-          })}
+              <button
+                className="pita-btn accent"
+                style={{ fontSize: 10, height: 24 }}
+                onClick={() => setEditing(v => !v)}
+              >
+                {editing ? '閲覧に戻る' : '編集'}
+              </button>
+            </div>
+
+            {/* Mode bar */}
+            <div className="pita-mode-bar">
+              <span className={`pita-mode-chip${editing ? ' editing' : ''}`}>
+                {editing ? '編集' : '閲覧'}
+              </span>
+              {editing && (
+                <span style={{ fontSize: 9, color: 'var(--pita-muted)' }}>
+                  セルをドラッグしてシフトを変更
+                </span>
+              )}
+            </div>
+
+            {/* Summary row */}
+            <div className="pita-summary-row">
+              <span>
+                出勤 <strong>{workDays}日</strong>
+              </span>
+              <span>
+                {workHours}h
+              </span>
+              <span>
+                想定 <strong>¥{estPay.toLocaleString('ja-JP')}</strong>
+              </span>
+            </div>
+
+            {/* Scrollable body */}
+            <div className="pita-phone-body" onMouseLeave={handleMouseLeaveTable}>
+              <div style={{ overflowX: 'auto' }}>
+                <table
+                  className="pita-shift-grid"
+                  style={{ userSelect: 'none' }}
+                >
+                  <thead>
+                    <tr>
+                      <th className="pita-time-col">日</th>
+                      {HOURS.map(h => (
+                        <th key={h}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {daysConfig.map((d, di) => {
+                      const code = localRow[di] || 'X'
+                      const shift = parseShiftTimes(code)
+                      return (
+                        <tr key={d.day}>
+                          <td
+                            className="pita-time-col"
+                            style={{
+                              color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)',
+                              fontSize: 9,
+                            }}
+                          >
+                            {d.day}/{d.dow}
+                          </td>
+                          {HOURS.map(h => {
+                            const inShift = shift && h >= shift.start && h < shift.end
+                            const inPreview = editing && isInPreview(di, h)
+                            let cellClass = 'pita-cell-off'
+                            if (inPreview) {
+                              cellClass = selectVal.current === 'erase' ? 'pita-cell-off' : 'pita-cell-select'
+                            } else if (inShift) {
+                              cellClass = 'pita-cell-work'
+                            }
+                            return (
+                              <td
+                                key={h}
+                                className={cellClass}
+                                style={{ cursor: editing ? 'crosshair' : 'default' }}
+                                onMouseDown={() => handleMouseDown(di, h)}
+                                onMouseEnter={() => handleMouseEnter(di, h)}
+                                onMouseUp={() => handleMouseUp(di, h)}
+                              />
+                            )
+                          })}
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Tab bar */}
+            <div className="pita-phone-tabbar">
+              <Link to="/employee" className="pita-tab-item active">
+                <span className="pita-tab-ico">📅</span>
+                シフト
+              </Link>
+              <Link to="/employee/edit" className="pita-tab-item">
+                <span className="pita-tab-ico">✏️</span>
+                希望
+              </Link>
+              <span className="pita-tab-item">
+                <span className="pita-tab-ico">👤</span>
+                アカウント
+              </span>
+            </div>
+          </div>
+        </div>
+        <div style={{
+          textAlign: 'center', marginTop: 12,
+          fontFamily: 'var(--font-mono)', fontSize: 11,
+          color: 'var(--pita-faint)',
+        }}>
+          URL: /employee
         </div>
       </div>
 
-      {/* Gantt timeline (scrollable on mobile) */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-        <div className="px-4 py-3 border-b bg-gray-50">
-          <h2 className="font-semibold text-gray-800 text-sm">タイムライン表示</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="border-collapse text-xs" style={{ minWidth: 700 }}>
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="px-3 py-2 text-left font-medium text-gray-500 sticky left-0 bg-gray-100 w-16 border-r border-gray-200">日付</th>
-                {timeRange.map(h => (
-                  <th key={h} className="text-center font-medium text-gray-400 py-2 border-l border-gray-100" style={{ minWidth: 44 }}>{h}:00</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {daysConfig.map((d, di) => {
-                const code = myRow[di] || 'X'
-                const hours = parseHours(code)
-                return (
-                  <tr key={d.day} className={`border-b border-gray-100 ${d.isWeekend ? 'bg-red-50/20' : ''}`}>
-                    <td className="px-3 py-1.5 sticky left-0 bg-inherit border-r border-gray-200 whitespace-nowrap">
-                      <span className={`font-semibold ${d.isWeekend ? 'text-red-500' : 'text-gray-700'}`}>{d.day}</span>
-                      <span className={`ml-1 text-[10px] ${d.isWeekend ? 'text-red-400' : 'text-gray-400'}`}>{d.dow}</span>
-                    </td>
-                    {timeRange.map(h => {
-                      const inShift = hours && h >= hours.start && h < hours.end
-                      const isStart = hours && h === Math.floor(hours.start)
-                      const isEnd   = hours && h === Math.floor(hours.end) - 1
-                      return (
-                        <td key={h} className="py-1 border-l border-gray-100" style={{ minWidth: 44 }}>
-                          {inShift ? (
-                            <div className={`h-6 mx-0.5 ${code === 'F' ? 'bg-green-400' : code.startsWith('O') ? 'bg-blue-400' : code.endsWith('L') ? 'bg-purple-400' : 'bg-amber-400'}
-                              ${isStart ? 'rounded-l-md' : ''} ${isEnd ? 'rounded-r-md' : ''}`}>
-                              {isStart && <span className="text-white text-[9px] px-1 font-medium leading-6 block overflow-hidden whitespace-nowrap">{code}</span>}
-                            </div>
-                          ) : <div className="h-6" />}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
+      {/* Right: side notes */}
+      <div>
+        <div className="pita-side-note">
+          <div style={{
+            fontFamily: 'var(--font-mono)', fontWeight: 600,
+            marginBottom: 10, color: 'var(--pita-text)',
+          }}>
+            閲覧ガイド
+          </div>
+          <ul style={{ paddingLeft: 16, margin: '0 0 12px' }}>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>シフトの見方</strong>
+              <br />横軸が時間（8〜22時）、縦軸が日付です。色のついたセルがあなたのシフト時間です。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>編集モード</strong>
+              <br />右上の「編集」ボタンを押すと編集モードになります。グリッドをドラッグしてシフト範囲を変更できます。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>ドラッグ操作</strong>
+              <br />セルを押したままドラッグすると選択範囲（黄色）がプレビュー表示されます。離すと確定します。
+            </li>
+            <li style={{ marginBottom: 6 }}>
+              <strong style={{ color: 'var(--pita-text)' }}>消去</strong>
+              <br />すでに勤務中のセルからドラッグすると、その日のシフトを消去できます。
+            </li>
+          </ul>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--pita-border)', margin: '10px 0' }} />
+          <div style={{ marginBottom: 10 }}>
+            <div style={{ fontSize: 10, fontWeight: 600, color: 'var(--pita-text)', marginBottom: 6, fontFamily: 'var(--font-mono)' }}>
+              色凡例
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{
+                  display: 'inline-block', width: 48, height: 16, borderRadius: 3,
+                  background: 'var(--pita-shift-work)', flexShrink: 0,
+                }} />
+                <span style={{ fontSize: 11, color: 'var(--pita-muted)' }}>勤務時間</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{
+                  display: 'inline-block', width: 48, height: 16, borderRadius: 3,
+                  background: 'oklch(0.75 0.15 60)', flexShrink: 0,
+                }} />
+                <span style={{ fontSize: 11, color: 'var(--pita-muted)' }}>ドラッグ選択中</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                <span style={{
+                  display: 'inline-block', width: 48, height: 16, borderRadius: 3,
+                  background: 'var(--pita-bg)',
+                  border: '1px solid var(--pita-border)',
+                  flexShrink: 0,
+                }} />
+                <span style={{ fontSize: 11, color: 'var(--pita-muted)' }}>休み</span>
+              </div>
+            </div>
+          </div>
+          <hr style={{ border: 'none', borderTop: '1px solid var(--pita-border)', margin: '10px 0' }} />
+          <Link to="/" style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11,
+            color: 'var(--pita-muted)', textDecoration: 'none',
+          }}>
+            ← TOPへ
+          </Link>
         </div>
       </div>
     </div>
