@@ -87,6 +87,50 @@ export default function ShiftSubmit() {
     setPreviewRange(null); startCell.current = null; selectVal.current = null
   }
 
+  if (mode === 'edit' && active.status === 'confirmed') return (
+    <>
+      <div className="pita-phone-header">
+        <button onClick={() => setMode('list')} style={{ fontSize:12, color:'var(--pita-accent)', background:'none', border:'none', cursor:'pointer', padding:'0 4px', fontWeight:600 }}>← 戻る</button>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:'var(--pita-text)' }}>{active.period}</div>
+          <div style={{ fontSize:9, color:'var(--pita-muted)' }}>シフト確認（編集不可）</div>
+        </div>
+        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[active.status]}`}>{STATUS_LABEL[active.status]}</span>
+      </div>
+      <div className="pita-mode-bar">
+        <span className="pita-mode-chip" style={{ background:'oklch(0.93 0.06 150)', color:'oklch(0.30 0.09 150)' }}>確定済み</span>
+        <span style={{ fontSize:9, color:'var(--pita-muted)' }}>マネージャーが確定したシフトです</span>
+      </div>
+      <div className="pita-phone-body">
+        <div style={{ overflowX:'auto' }}>
+          <table className="pita-shift-grid" style={{ userSelect:'none' }}>
+            <thead><tr><th className="pita-time-col">日</th>{HOURS.map(h => <th key={h}>{h}</th>)}</tr></thead>
+            <tbody>
+              {daysConfig.map((d, di) => {
+                const shift = parseCode(editRow[di])
+                return (
+                  <tr key={d.day}>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
+                    {HOURS.map(h => {
+                      const inShift = shift && h >= shift.start && h < shift.end
+                      return <td key={h} className={inShift ? 'pita-cell-work' : 'pita-cell-off'} style={{ cursor:'default' }} />
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="pita-phone-tabbar">
+        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
+        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
+        <Link to="/employee/notifications" className="pita-tab-item" style={{ position:'relative' }}><span className="pita-tab-ico">🔔</span>通知<span style={{ position:'absolute', top:6, right:'calc(50% - 14px)', width:7, height:7, background:'#ef4444', borderRadius:'50%' }} /></Link>
+        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+      </div>
+    </>
+  )
+
   if (mode === 'edit') return (
     <>
       <div className="pita-phone-header">

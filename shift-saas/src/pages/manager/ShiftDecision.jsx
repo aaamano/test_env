@@ -305,11 +305,11 @@ export default function ShiftDecision() {
             <tr>
               {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
             </tr>
-            {staff.map((s, idx) => {
+            {workingStaff.map((s, idx) => {
               const summ = getShiftSummary(s.id)
               const rowBg = idx % 2 === 0 ? 'var(--pita-panel)' : 'var(--pita-bg-subtle)'
               return (
-                <tr key={s.id} style={{ opacity: summ ? 1 : 0.35 }}>
+                <tr key={s.id}>
                   <td style={td({ ...sL0, textAlign:'left', background:rowBg, fontWeight:600, borderRight:BB })}>{s.name}</td>
                   <td style={td({ ...sL1, background:rowBg, textAlign:'center', color:'var(--pita-muted)' })}>{summ ? summ.start.toFixed(2) : ''}</td>
                   <td style={td({ ...sL2, background:rowBg, textAlign:'center', color:'var(--pita-muted)' })}>{summ ? summ.end.toFixed(2) : ''}</td>
