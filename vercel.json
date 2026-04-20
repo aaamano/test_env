@@ -1,5 +1,9 @@
 {
-  "buildCommand": "cd shift-saas && npm install && npm run build",
-  "outputDirectory": "shift-saas/dist",
-  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }],
+  "github": {
+    "silent": false,
+    "deploymentEnabled": {
+      "gh-pages": false
+    }
+  }
 }
