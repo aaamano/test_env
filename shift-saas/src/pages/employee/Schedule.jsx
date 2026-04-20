@@ -20,7 +20,8 @@ const STATUS = {
   draft:     { label: '下書き',   cellBg: 'oklch(0.88 0.07 60)',    badgeBg: 'oklch(0.93 0.05 60)',  badgeColor: 'oklch(0.45 0.08 60)'  },
 }
 
-const latest = shiftSubmissions.slice().sort((a, b) => b.id - a.id)[0]
+const STATUS_PRIORITY = { confirmed: 0, submitted: 1, draft: 2 }
+const latest = shiftSubmissions.slice().sort((a, b) => STATUS_PRIORITY[a.status] - STATUS_PRIORITY[b.status])[0]
 
 export default function Schedule() {
   const sub = latest
