@@ -228,14 +228,15 @@ export default function ShiftDecision() {
         <table style={{ borderCollapse:'collapse', tableLayout:'fixed', minWidth:'max-content', fontSize:10, fontFamily:'var(--font-mono)' }}>
           <colgroup>
             <col style={{ width:LW }} />
-            <col style={{ width:SW }} />
+            <col style={{ width:STW }} />
+            <col style={{ width:ETW }} />
             {slots.map((_, i) => <col key={i} style={{ width:slotW }} />)}
             <col style={{ width:52 }} />
           </colgroup>
           <thead>
             <tr>
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>指標</th>
-              <th rowSpan={2} style={th({ ...sH1 })}></th>
+              <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}></th>
               {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
               <th rowSpan={2} style={th({ background:'var(--pita-accent)' })}>合計</th>
             </tr>
@@ -249,12 +250,12 @@ export default function ShiftDecision() {
               <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.94 0.03 220)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>
                 実行計画売上<br/><span style={{ fontSize:9 }}>(千円)</span>
               </td>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
               {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{v > 0 ? v : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
             </tr>
             <tr>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
               {cumSales.map((v, i) => <td key={i} style={td({ color:'var(--pita-muted)', fontSize:9 })}>{v}</td>)}
               <td style={td()} />
             </tr>
@@ -264,12 +265,12 @@ export default function ShiftDecision() {
               <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.95 0.02 150)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>
                 売上ACTUAL<br/><span style={{ fontSize:9 }}>(千円)</span>
               </td>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>ACTUAL</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>ACTUAL</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
             </tr>
             <tr>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
             </tr>
@@ -277,7 +278,7 @@ export default function ShiftDecision() {
             {/* 必要人員数 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>必要人員数</td>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? 'oklch(0.93 0.03 200)' : 'var(--pita-bg)', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
             </tr>
@@ -285,7 +286,7 @@ export default function ShiftDecision() {
             {/* 配置済み人数 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>配置済み人数</td>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>実績</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>実績</td>
               {slots.map(slot => { const cnt = getAssignedList(slot).length; const req = getRequired(slot); return <td key={slot} style={td({ ...reqColor(cnt, req), fontWeight:600 })}>{cnt > 0 ? cnt : ''}</td> })}
               <td style={td()} />
             </tr>
@@ -293,7 +294,7 @@ export default function ShiftDecision() {
             {/* 合計時間 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 180)', fontWeight:600, borderRight:BB, borderBottom:'2px solid var(--pita-border-strong)' })}>合計時間</td>
-              <td style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9, borderBottom:'2px solid var(--pita-border-strong)' })}>PLAN</td>
+              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9, borderBottom:'2px solid var(--pita-border-strong)' })}>PLAN</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)', borderBottom:'2px solid var(--pita-border-strong)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700, borderBottom:'2px solid var(--pita-border-strong)' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
             </tr>
