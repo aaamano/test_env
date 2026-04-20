@@ -1,16 +1,36 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { staff as initialStaff, shiftData, daysConfig, skillLabels, YEAR_MONTH, staffConstraints as initialConstraints } from '../../data/mockData'
 
-const getShiftColor = (code) => {
-  if (!code || code === 'X') return 'bg-gray-100 text-gray-400'
-  if (code === 'F') return 'bg-green-100 text-green-700'
-  if (code.startsWith('O')) return 'bg-blue-100 text-blue-700'
-  if (code.endsWith('L')) return 'bg-purple-100 text-purple-700'
-  return 'bg-amber-100 text-amber-700'
+// ── helpers ──────────────────────────────────────────────────────────────────
+function parseShiftTimes(code) {
+  if (!code || code === 'X') return null
+  if (code === 'F') return { start: 9, end: 18 }
+  const m = code.match(/^O-(\d+(?:\.\d+)?)$/)
+  if (m) return { start: 9, end: parseFloat(m[1]) }
+  const m2 = code.match(/^(\d+(?:\.\d+)?)[.-](\d+(?:\.\d+)?|L)$/)
+  if (m2) return { start: parseFloat(m2[1]), end: m2[2] === 'L' ? 22 : parseFloat(m2[2]) }
+  return null
 }
 
-// Retention priority: 1=most important (red), 10=least (gray)
+function getBarProps(code) {
+  if (!code || code === 'X') return null
+  if (code === 'F') return { type: 'full', left: 2, width: 96 }
+  const t = parseShiftTimes(code)
+  if (!t) return null
+  const left  = Math.max(2, ((t.start - 7) / 16) * 100)
+  const width = Math.max(6, ((t.end - t.start) / 16) * 100)
+  return { type: t.end >= 22 ? 'closer' : 'normal', left, width }
+}
+
+// Retention priority badge inline styles
+function retentionStyle(p) {
+  if (p <= 2) return { background: 'oklch(0.93 0.05 20)', color: 'oklch(0.40 0.10 20)' }
+  if (p <= 4) return { background: 'oklch(0.93 0.06 45)', color: 'oklch(0.45 0.10 45)' }
+  if (p <= 6) return { background: 'oklch(0.94 0.05 80)', color: 'oklch(0.45 0.08 80)' }
+  return { background: 'var(--pita-bg-subtle)', color: 'var(--pita-muted)' }
+}
+
+// ── Tailwind-based retention class kept only for the modal slider badge ──────
 const retentionCls = (p) => {
   if (p <= 2) return 'bg-red-100 text-red-700 border border-red-300'
   if (p <= 4) return 'bg-orange-100 text-orange-700 border border-orange-300'
@@ -81,141 +101,190 @@ export default function Members() {
   const compatOptions = members.filter(m => m.id !== form.id && !constraintForm.incompatible.some(i => i.staffId === m.id))
 
   return (
-    <div className="p-6">
-      <div className="mb-6 flex items-start justify-between">
+    <div style={{ padding: '20px', maxWidth: 1600, margin: '0 auto' }}>
+
+      {/* Page header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
         <div>
-          <div className="text-xs text-gray-400 mb-1">{YEAR_MONTH} 前半</div>
-          <h1 className="text-2xl font-bold text-gray-900">メンバー管理</h1>
+          <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 3 }}>{YEAR_MONTH} 前半</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--pita-text)' }}>メンバー管理</div>
         </div>
-        <button onClick={openNew} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 flex items-center gap-2">
-          + メンバー追加
+        <button onClick={openNew} className="pita-btn primary" style={{ padding: '6px 16px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+          + スタッフを追加
         </button>
       </div>
 
-      <div className="flex gap-3 mb-5 flex-wrap">
-        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="名前で検索..."
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm w-48 outline-none focus:border-blue-400" />
-        <select value={filterSkill} onChange={e => setFilterSkill(e.target.value)}
-          className="border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400">
+      {/* Search + filter controls */}
+      <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+        <input
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="名前で検索..."
+          style={{
+            border: '1px solid var(--pita-border)',
+            borderRadius: 6,
+            padding: '5px 10px',
+            fontSize: 12,
+            width: 180,
+            outline: 'none',
+            background: 'var(--pita-panel)',
+            color: 'var(--pita-text)',
+          }}
+        />
+        <select
+          value={filterSkill}
+          onChange={e => setFilterSkill(e.target.value)}
+          style={{
+            border: '1px solid var(--pita-border)',
+            borderRadius: 6,
+            padding: '5px 10px',
+            fontSize: 12,
+            outline: 'none',
+            background: 'var(--pita-panel)',
+            color: 'var(--pita-text)',
+          }}
+        >
           <option value="">全スキル</option>
           {Object.entries(skillLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        <div className="ml-auto text-sm text-gray-500 flex items-center">{filtered.length}名 / {members.length}名</div>
+        <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--pita-muted)' }}>
+          {filtered.length}名 / {members.length}名
+        </div>
       </div>
 
-      {/* Legend for priority */}
-      <div className="flex gap-3 mb-3 text-xs text-gray-500 flex-wrap">
+      {/* Retention priority legend */}
+      <div style={{ display: 'flex', gap: 12, marginBottom: 12, fontSize: 10, color: 'var(--pita-muted)', flexWrap: 'wrap', alignItems: 'center' }}>
         <span>残留優先度:</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-red-200 inline-block border border-red-300" />1〜2 最優先</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-orange-200 inline-block border border-orange-300" />3〜4 高</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-yellow-100 inline-block border border-yellow-300" />5〜6 中</span>
-        <span className="flex items-center gap-1"><span className="w-3 h-3 rounded-full bg-gray-100 inline-block border border-gray-200" />7〜10 低</span>
-        <span className="ml-4 text-gray-400">※ AI配置の優先順位に影響します</span>
+        {[
+          { label: '1〜2 最優先', style: retentionStyle(1) },
+          { label: '3〜4 高',     style: retentionStyle(3) },
+          { label: '5〜6 中',     style: retentionStyle(5) },
+          { label: '7〜10 低',    style: retentionStyle(7) },
+        ].map((item, i) => (
+          <span key={i} style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <span style={{ width: 10, height: 10, borderRadius: '50%', display: 'inline-block', ...item.style }} />
+            {item.label}
+          </span>
+        ))}
+        <span style={{ marginLeft: 8, color: 'var(--pita-faint)' }}>※ AI配置の優先順位に影響します</span>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl overflow-auto mb-6">
-        <table className="w-full text-sm border-collapse">
-          <thead>
-            <tr className="bg-gray-50 border-b border-gray-200">
-              <th className="text-left px-4 py-3 font-semibold text-gray-600 min-w-[140px]">名前</th>
-              <th className="text-center px-3 py-3 font-semibold text-gray-600">種別</th>
-              <th className="text-left px-3 py-3 font-semibold text-gray-600">スキル</th>
-              <th className="text-center px-3 py-3 font-semibold text-gray-600">生産性</th>
-              <th className="text-center px-3 py-3 font-semibold text-gray-600 min-w-[80px]">残留優先度</th>
-              <th className="text-center px-3 py-3 font-semibold text-gray-600">目標収入</th>
-              <th className="text-center px-3 py-3 font-semibold text-orange-600 min-w-[100px]">⚠ 相性注意</th>
-              {daysConfig.slice(0, 7).map(d => (
-                <th key={d.day} className={`text-center px-1 py-3 font-semibold min-w-[36px] ${d.isWeekend ? 'text-red-400' : 'text-gray-500'}`}>
-                  {d.day}<div className="text-[9px] font-normal">{d.dow}</div>
-                </th>
-              ))}
-              <th className="text-center px-3 py-3 text-gray-500 text-xs">操作</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((m, idx) => {
-              const row = shiftData[m.id] || []
-              const c = constraints[m.id] || BLANK_CONSTRAINT
-              const hasIncompat = c.incompatible.length > 0
-              return (
-                <tr key={m.id} className={`border-b border-gray-100 hover:bg-blue-50/20 transition-colors ${
-                  hasIncompat ? 'bg-orange-50/30' : idx % 2 === 1 ? 'bg-gray-50/30' : ''
-                }`}>
-                  <td className="px-4 py-2.5">
-                    <div className="flex items-center gap-2">
-                      <Link to={`/manager/members/${m.id}`} className="font-semibold text-gray-800 hover:text-blue-600 hover:underline">
+      {/* Staff table */}
+      <div className="pita-panel" style={{ marginBottom: 24 }}>
+        <div style={{ overflowX: 'auto' }}>
+          <table className="pita-mgr-grid">
+            <thead>
+              <tr>
+                <th className="name-col">スタッフ名</th>
+                <th className="meta-col">種別</th>
+                <th style={{ textAlign: 'left', background: 'var(--pita-bg-subtle)', fontSize: 10, color: 'var(--pita-muted)', fontWeight: 500, padding: '3px 5px' }}>スキル</th>
+                <th className="meta-col">時給</th>
+                <th className="meta-col">優先</th>
+                {daysConfig.map(d => (
+                  <th
+                    key={d.day}
+                    className={d.dow === '土' ? 'pita-dow-sat' : d.dow === '日' ? 'pita-dow-sun' : ''}
+                    style={{ minWidth: 52 }}
+                  >
+                    {d.day}<br />{d.dow}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(m => {
+                const row = shiftData[m.id] || []
+                const c   = constraints[m.id] || BLANK_CONSTRAINT
+                const pStyle = retentionStyle(c.retentionPriority)
+                return (
+                  <tr key={m.id}>
+                    {/* Name col */}
+                    <td className="name-col">
+                      <span
+                        onClick={() => openEdit(m)}
+                        style={{ cursor: 'pointer', color: 'var(--pita-text)', fontWeight: 500 }}
+                      >
                         {m.name}
-                      </Link>
-                      {hasIncompat && (
-                        <span className="text-[10px] bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded-full border border-orange-200 font-medium">
-                          相性注意
+                      </span>
+                      {m.role !== 'スタッフ' && (
+                        <span style={{
+                          marginLeft: 6,
+                          fontSize: 9,
+                          padding: '1px 4px',
+                          borderRadius: 3,
+                          background: 'var(--pita-accent-soft)',
+                          color: 'var(--pita-accent-text)',
+                        }}>
+                          {m.role}
                         </span>
                       )}
-                    </div>
-                  </td>
-                  <td className="text-center px-3 py-2.5">
-                    <span className={`px-2 py-0.5 rounded text-xs font-semibold ${m.type === 'F' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {m.type}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2.5">
-                    <div className="flex gap-1 flex-wrap">
+                    </td>
+
+                    {/* Type */}
+                    <td className="meta-col">
+                      <span style={{
+                        fontSize: 10,
+                        padding: '1px 5px',
+                        borderRadius: 3,
+                        fontWeight: 600,
+                        background: m.type === 'F' ? 'oklch(0.93 0.08 150)' : 'var(--pita-bg-subtle)',
+                        color:      m.type === 'F' ? 'oklch(0.40 0.10 150)' : 'var(--pita-muted)',
+                      }}>
+                        {m.type}
+                      </span>
+                    </td>
+
+                    {/* Skills */}
+                    <td style={{ background: 'var(--pita-panel)', padding: '3px 5px', textAlign: 'left', whiteSpace: 'nowrap' }}>
                       {m.skills.map(sk => (
-                        <span key={sk} className={`text-[10px] px-1.5 py-0.5 rounded font-medium ${
-                          sk === 'barista' ? 'bg-amber-100 text-amber-700' : sk === 'cashier' ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-600'
-                        }`}>{skillLabels[sk]}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="text-center px-3 py-2.5 font-semibold text-gray-700">
-                    {m.hourlyOrders}<span className="text-xs font-normal text-gray-400"> 件/h</span>
-                  </td>
-                  <td className="text-center px-3 py-2.5">
-                    <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${retentionCls(c.retentionPriority)}`}>
-                      P{c.retentionPriority}
-                    </span>
-                  </td>
-                  <td className="text-center px-3 py-2.5 text-sm">
-                    {c.targetEarnings > 0
-                      ? <span className="font-medium text-gray-700">¥{(c.targetEarnings / 10000).toFixed(0)}万</span>
-                      : <span className="text-gray-300">—</span>
-                    }
-                  </td>
-                  <td className="text-center px-3 py-2.5">
-                    {hasIncompat ? (
-                      <div className="space-y-1">
-                        {c.incompatible.map(({ staffId, severity }) => {
-                          const s = members.find(x => x.id === staffId)
-                          return s ? (
-                            <div key={staffId} className="inline-flex items-center gap-1 bg-red-100 border border-red-200 text-red-700 text-[10px] rounded-full px-2 py-0.5">
-                              <span>{s.name}</span>
-                              <span className={`rounded-full px-1 font-bold text-[9px] ${
-                                severity >= 4 ? 'bg-red-600 text-white' : severity >= 2 ? 'bg-red-300 text-red-900' : 'bg-red-200 text-red-800'
-                              }`}>Lv{severity}</span>
-                            </div>
-                          ) : null
-                        })}
-                      </div>
-                    ) : <span className="text-gray-300 text-xs">—</span>}
-                  </td>
-                  {daysConfig.slice(0, 7).map((d, di) => {
-                    const code = row[di] || 'X'
-                    return (
-                      <td key={d.day} className="text-center py-1.5 px-0.5">
-                        <span className={`text-[10px] px-1 py-0.5 rounded font-medium ${getShiftColor(code)}`}>
-                          {code === 'X' ? '×' : code}
+                        <span key={sk} className="pita-skill-tag" style={{ marginRight: 3 }}>
+                          {skillLabels[sk] || sk}
                         </span>
-                      </td>
-                    )
-                  })}
-                  <td className="text-center px-2 py-2.5">
-                    <button onClick={() => openEdit(m)} className="text-xs text-blue-600 hover:underline font-medium">編集</button>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+                      ))}
+                    </td>
+
+                    {/* Wage */}
+                    <td className="meta-col">
+                      ¥{m.wage.toLocaleString()}
+                    </td>
+
+                    {/* Retention priority */}
+                    <td className="meta-col">
+                      <span style={{
+                        display: 'inline-block',
+                        fontSize: 9,
+                        padding: '1px 5px',
+                        borderRadius: 3,
+                        fontWeight: 700,
+                        ...pStyle,
+                      }}>
+                        P{c.retentionPriority}
+                      </span>
+                    </td>
+
+                    {/* Day columns */}
+                    {daysConfig.map((d, di) => {
+                      const code = row[di] || 'X'
+                      const bar  = getBarProps(code)
+                      if (!bar) {
+                        return <td key={d.day} className="pita-cell-off-bar">×</td>
+                      }
+                      return (
+                        <td key={d.day} className="pita-cell-bar">
+                          <div
+                            className={'pita-bar ' + bar.type}
+                            style={{ left: bar.left + '%', width: bar.width + '%' }}
+                          />
+                          <span className="pita-code">{code}</span>
+                        </td>
+                      )
+                    })}
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* ── Modal ── */}
