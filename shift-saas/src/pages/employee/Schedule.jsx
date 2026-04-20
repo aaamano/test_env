@@ -33,99 +33,71 @@ export default function Schedule() {
   }, 0)
 
   return (
-    <div className="pita-phone-stage">
-      <div>
-        <div className="pita-phone">
-          <div className="pita-phone-inner">
-            <div className="pita-notch" />
-            <div className="pita-status-bar"><span>9:41</span><span>●●● 5G 100%</span></div>
+    <>
+      <div className="pita-phone-header">
+        <div style={{ width:32, height:32, borderRadius:'50%', background:'var(--pita-accent)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0 }}>
+          {ME.name[0]}
+        </div>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:14, fontWeight:700, color:'var(--pita-text)', lineHeight:1.2 }}>スケジュール</div>
+          <div style={{ fontSize:10, color:'var(--pita-muted)', marginTop:1 }}>{YEAR_MONTH} 前半</div>
+        </div>
+        <span style={{ fontSize:10, fontWeight:600, padding:'2px 8px', borderRadius:10, background:cfg.badgeBg, color:cfg.badgeColor }}>
+          {cfg.label}
+        </span>
+      </div>
 
-            <div className="pita-phone-header">
-              <div style={{ width:32, height:32, borderRadius:'50%', background:'var(--pita-accent)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0 }}>
-                {ME.name[0]}
-              </div>
-              <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:14, fontWeight:700, color:'var(--pita-text)', lineHeight:1.2 }}>スケジュール</div>
-                <div style={{ fontSize:10, color:'var(--pita-muted)', marginTop:1 }}>{YEAR_MONTH} 前半</div>
-              </div>
-              <span style={{ fontSize:10, fontWeight:600, padding:'2px 8px', borderRadius:10, background:cfg.badgeBg, color:cfg.badgeColor }}>
-                {cfg.label}
-              </span>
-            </div>
+      <div className="pita-summary-row">
+        <span>出勤 <strong>{workDays}日</strong></span>
+        <span>{workHours}h</span>
+        <span>想定 <strong>¥{(workHours * ME.wage).toLocaleString('ja-JP')}</strong></span>
+      </div>
 
-            <div className="pita-summary-row">
-              <span>出勤 <strong>{workDays}日</strong></span>
-              <span>{workHours}h</span>
-              <span>想定 <strong>¥{(workHours * ME.wage).toLocaleString('ja-JP')}</strong></span>
-            </div>
-
-            <div className="pita-phone-body">
-              <div style={{ overflowX:'auto' }}>
-                <table className="pita-shift-grid" style={{ userSelect:'none' }}>
-                  <thead>
-                    <tr>
-                      <th className="pita-time-col">日</th>
-                      {HOURS.map(h => <th key={h}>{h}</th>)}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {daysConfig.map((d, di) => {
-                      const shift = parseCode(shiftRow[di])
+      <div className="pita-phone-body">
+        <div style={{ overflowX:'auto' }}>
+          <table className="pita-shift-grid" style={{ userSelect:'none' }}>
+            <thead>
+              <tr>
+                <th className="pita-time-col">日</th>
+                {HOURS.map(h => <th key={h}>{h}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {daysConfig.map((d, di) => {
+                const shift = parseCode(shiftRow[di])
+                return (
+                  <tr key={d.day}>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>
+                      {d.day}/{d.dow}
+                    </td>
+                    {HOURS.map(h => {
+                      const inShift = shift && h >= shift.start && h < shift.end
                       return (
-                        <tr key={d.day}>
-                          <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>
-                            {d.day}/{d.dow}
-                          </td>
-                          {HOURS.map(h => {
-                            const inShift = shift && h >= shift.start && h < shift.end
-                            return (
-                              <td key={h} style={{
-                                background: inShift ? cfg.cellBg : 'var(--pita-bg)',
-                                cursor: 'default',
-                              }} />
-                            )
-                          })}
-                        </tr>
+                        <td key={h} style={{
+                          background: inShift ? cfg.cellBg : 'var(--pita-bg)',
+                          cursor: 'default',
+                        }} />
                       )
                     })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div className="pita-phone-tabbar">
-              <Link to="/employee" className="pita-tab-item active">
-                <span className="pita-tab-ico">📅</span>スケジュール
-              </Link>
-              <Link to="/employee/submit" className="pita-tab-item">
-                <span className="pita-tab-ico">📝</span>シフト提出
-              </Link>
-              <span className="pita-tab-item">
-                <span className="pita-tab-ico">👤</span>アカウント
-              </span>
-            </div>
-          </div>
-        </div>
-        <div style={{ textAlign:'center', marginTop:12, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--pita-faint)' }}>URL: /employee</div>
-      </div>
-
-      <div>
-        <div className="pita-side-note">
-          <div style={{ fontFamily:'var(--font-mono)', fontWeight:600, marginBottom:10, color:'var(--pita-text)' }}>色凡例</div>
-          {Object.entries(STATUS).map(([key, s]) => (
-            <div key={key} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-              <span style={{ display:'inline-block', width:48, height:14, borderRadius:3, background:s.cellBg, flexShrink:0 }} />
-              <span style={{ fontSize:11, color:'var(--pita-muted)' }}>{s.label}</span>
-            </div>
-          ))}
-          <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
-            <span style={{ display:'inline-block', width:48, height:14, borderRadius:3, background:'var(--pita-bg)', border:'1px solid var(--pita-border)', flexShrink:0 }} />
-            <span style={{ fontSize:11, color:'var(--pita-muted)' }}>休み</span>
-          </div>
-          <hr style={{ border:'none', borderTop:'1px solid var(--pita-border)', margin:'10px 0' }} />
-          <Link to="/" style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--pita-muted)', textDecoration:'none' }}>← TOPへ</Link>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
+
+      <div className="pita-phone-tabbar">
+        <Link to="/employee" className="pita-tab-item active">
+          <span className="pita-tab-ico">📅</span>スケジュール
+        </Link>
+        <Link to="/employee/submit" className="pita-tab-item">
+          <span className="pita-tab-ico">📝</span>シフト提出
+        </Link>
+        <Link to="/" className="pita-tab-item">
+          <span className="pita-tab-ico">🏠</span>TOP
+        </Link>
+      </div>
+    </>
   )
 }

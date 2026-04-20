@@ -24,8 +24,8 @@ const STATUS_STYLE = {
 
 export default function ShiftSubmit() {
   const [submissions, setSubmissions] = useState(initialSubmissions)
-  const [mode, setMode] = useState('list') // 'list' | 'edit'
-  const [active, setActive] = useState(null) // submission being edited
+  const [mode, setMode] = useState('list')
+  const [active, setActive] = useState(null)
   const [editRow, setEditRow] = useState([])
   const [previewRange, setPreviewRange] = useState(null)
   const dragging = useRef(false)
@@ -88,123 +88,95 @@ export default function ShiftSubmit() {
   }
 
   if (mode === 'edit') return (
-    <div className="pita-phone-stage">
-      <div>
-        <div className="pita-phone">
-          <div className="pita-phone-inner">
-            <div className="pita-notch" />
-            <div className="pita-status-bar"><span>9:41</span><span>●●● 5G 100%</span></div>
-            <div className="pita-phone-header">
-              <button onClick={() => setMode('list')} style={{ fontSize:12, color:'var(--pita-accent)', background:'none', border:'none', cursor:'pointer', padding:'0 4px', fontWeight:600 }}>← 戻る</button>
-              <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:13, fontWeight:700, color:'var(--pita-text)' }}>{active.period}</div>
-                <div style={{ fontSize:9, color:'var(--pita-muted)' }}>シフト提出</div>
-              </div>
-              <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[active.status]}`}>{STATUS_LABEL[active.status]}</span>
-            </div>
-            <div className="pita-mode-bar">
-              <span className="pita-mode-chip editing">編集中</span>
-              <span style={{ fontSize:9, color:'var(--pita-muted)' }}>ドラッグでシフト入力</span>
-            </div>
-            <div className="pita-phone-body" onMouseLeave={() => { if (dragging.current) { dragging.current = false; setPreviewRange(null) } }}>
-              <div style={{ overflowX:'auto' }}>
-                <table className="pita-shift-grid" style={{ userSelect:'none' }}>
-                  <thead><tr><th className="pita-time-col">日</th>{HOURS.map(h => <th key={h}>{h}</th>)}</tr></thead>
-                  <tbody>
-                    {daysConfig.map((d, di) => {
-                      const shift = parseCode(editRow[di])
-                      return (
-                        <tr key={d.day}>
-                          <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
-                          {HOURS.map(h => {
-                            const inShift = shift && h >= shift.start && h < shift.end
-                            const inPrev = isInPreview(di, h)
-                            let cls = 'pita-cell-off'
-                            if (inPrev) cls = selectVal.current === 'erase' ? 'pita-cell-off' : 'pita-cell-select'
-                            else if (inShift) cls = 'pita-cell-work'
-                            return <td key={h} className={cls} style={{ cursor:'crosshair' }} onMouseDown={() => onDown(di, h)} onMouseEnter={() => onEnter(di, h)} onMouseUp={() => onUp(di, h)} />
-                          })}
-                        </tr>
-                      )
+    <>
+      <div className="pita-phone-header">
+        <button onClick={() => setMode('list')} style={{ fontSize:12, color:'var(--pita-accent)', background:'none', border:'none', cursor:'pointer', padding:'0 4px', fontWeight:600 }}>← 戻る</button>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:13, fontWeight:700, color:'var(--pita-text)' }}>{active.period}</div>
+          <div style={{ fontSize:9, color:'var(--pita-muted)' }}>シフト提出</div>
+        </div>
+        <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[active.status]}`}>{STATUS_LABEL[active.status]}</span>
+      </div>
+      <div className="pita-mode-bar">
+        <span className="pita-mode-chip editing">編集中</span>
+        <span style={{ fontSize:9, color:'var(--pita-muted)' }}>ドラッグでシフト入力</span>
+      </div>
+      <div className="pita-phone-body" onMouseLeave={() => { if (dragging.current) { dragging.current = false; setPreviewRange(null) } }}>
+        <div style={{ overflowX:'auto' }}>
+          <table className="pita-shift-grid" style={{ userSelect:'none' }}>
+            <thead><tr><th className="pita-time-col">日</th>{HOURS.map(h => <th key={h}>{h}</th>)}</tr></thead>
+            <tbody>
+              {daysConfig.map((d, di) => {
+                const shift = parseCode(editRow[di])
+                return (
+                  <tr key={d.day}>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
+                    {HOURS.map(h => {
+                      const inShift = shift && h >= shift.start && h < shift.end
+                      const inPrev = isInPreview(di, h)
+                      let cls = 'pita-cell-off'
+                      if (inPrev) cls = selectVal.current === 'erase' ? 'pita-cell-off' : 'pita-cell-select'
+                      else if (inShift) cls = 'pita-cell-work'
+                      return <td key={h} className={cls} style={{ cursor:'crosshair' }} onMouseDown={() => onDown(di, h)} onMouseEnter={() => onEnter(di, h)} onMouseUp={() => onUp(di, h)} />
                     })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div style={{ padding:'8px 12px', borderTop:'1px solid var(--pita-border)', display:'flex', gap:8, background:'var(--pita-panel)', flexShrink:0 }}>
-              <button onClick={saveDraft} style={{ flex:1, padding:'8px 0', borderRadius:8, border:'1px solid var(--pita-border)', background:'var(--pita-panel)', color:'var(--pita-text)', fontSize:12, fontWeight:600, cursor:'pointer' }}>下書き保存</button>
-              {active.status !== 'confirmed' && (
-                <button onClick={submitShift} style={{ flex:1, padding:'8px 0', borderRadius:8, border:'none', background:'var(--pita-accent)', color:'white', fontSize:12, fontWeight:600, cursor:'pointer' }}>提出する</button>
-              )}
-            </div>
-            <div className="pita-phone-tabbar">
-              <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
-              <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
-              <span className="pita-tab-item"><span className="pita-tab-ico">👤</span>アカウント</span>
-            </div>
-          </div>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
         </div>
       </div>
-      <div><div className="pita-side-note" style={{ fontSize:11 }}>グリッドをドラッグしてシフト範囲を入力。すでに入力済みのセルからドラッグすると消去できます。</div></div>
-    </div>
+      <div style={{ padding:'8px 12px', borderTop:'1px solid var(--pita-border)', display:'flex', gap:8, background:'var(--pita-panel)', flexShrink:0 }}>
+        <button onClick={saveDraft} style={{ flex:1, padding:'8px 0', borderRadius:8, border:'1px solid var(--pita-border)', background:'var(--pita-panel)', color:'var(--pita-text)', fontSize:12, fontWeight:600, cursor:'pointer' }}>下書き保存</button>
+        {active.status !== 'confirmed' && (
+          <button onClick={submitShift} style={{ flex:1, padding:'8px 0', borderRadius:8, border:'none', background:'var(--pita-accent)', color:'white', fontSize:12, fontWeight:600, cursor:'pointer' }}>提出する</button>
+        )}
+      </div>
+      <div className="pita-phone-tabbar">
+        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
+        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
+        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+      </div>
+    </>
   )
 
   return (
-    <div className="pita-phone-stage">
-      <div>
-        <div className="pita-phone">
-          <div className="pita-phone-inner">
-            <div className="pita-notch" />
-            <div className="pita-status-bar"><span>9:41</span><span>●●● 5G 100%</span></div>
-            <div className="pita-phone-header">
-              <div style={{ width:32, height:32, borderRadius:'50%', background:'var(--pita-accent)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0 }}>{ME.name[0]}</div>
-              <div style={{ flex:1, minWidth:0 }}>
-                <div style={{ fontSize:14, fontWeight:700, color:'var(--pita-text)' }}>シフト提出</div>
-                <div style={{ fontSize:10, color:'var(--pita-muted)', marginTop:1 }}>{YEAR_MONTH}</div>
-              </div>
-              <button onClick={openNew} className="pita-btn accent" style={{ fontSize:10, height:24 }}>+ 新規作成</button>
-            </div>
-            <div className="pita-phone-body">
-              <div style={{ padding:'8px 0' }}>
-                {submissions.length === 0 && (
-                  <div style={{ textAlign:'center', padding:'32px 16px', color:'var(--pita-faint)', fontSize:12 }}>提出済みのシフトはありません</div>
-                )}
-                {submissions.map(sub => (
-                  <div key={sub.id} style={{ margin:'0 10px 8px', padding:'10px 12px', background:'var(--pita-panel)', border:'1px solid var(--pita-border)', borderRadius:10 }}>
-                    <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
-                      <span style={{ fontSize:12, fontWeight:700, color:'var(--pita-text)' }}>{sub.period}</span>
-                      <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[sub.status]}`}>{STATUS_LABEL[sub.status]}</span>
-                    </div>
-                    <div style={{ fontSize:10, color:'var(--pita-muted)', marginBottom:8 }}>
-                      <div>提出: {sub.submittedAt || '—'}</div>
-                      <div>最終編集: {sub.lastEditedAt || '—'}</div>
-                    </div>
-                    <button onClick={() => openEdit(sub)} style={{ width:'100%', padding:'6px 0', borderRadius:6, border:'1px solid var(--pita-border)', background:'var(--pita-bg-subtle)', color:'var(--pita-text)', fontSize:11, fontWeight:600, cursor:'pointer' }}>
-                      {sub.status === 'confirmed' ? '確認する' : '編集する'}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="pita-phone-tabbar">
-              <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
-              <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
-              <span className="pita-tab-item"><span className="pita-tab-ico">👤</span>アカウント</span>
-            </div>
-          </div>
+    <>
+      <div className="pita-phone-header">
+        <div style={{ width:32, height:32, borderRadius:'50%', background:'var(--pita-accent)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:13, fontWeight:700, flexShrink:0 }}>{ME.name[0]}</div>
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ fontSize:14, fontWeight:700, color:'var(--pita-text)' }}>シフト提出</div>
+          <div style={{ fontSize:10, color:'var(--pita-muted)', marginTop:1 }}>{YEAR_MONTH}</div>
         </div>
-        <div style={{ textAlign:'center', marginTop:12, fontFamily:'var(--font-mono)', fontSize:11, color:'var(--pita-faint)' }}>URL: /employee/submit</div>
+        <button onClick={openNew} className="pita-btn accent" style={{ fontSize:10, height:24 }}>+ 新規作成</button>
       </div>
-      <div>
-        <div className="pita-side-note" style={{ fontSize:11, color:'var(--pita-muted)', lineHeight:1.6 }}>
-          <div style={{ fontFamily:'var(--font-mono)', fontWeight:600, marginBottom:8, color:'var(--pita-text)' }}>承認状況</div>
-          <div style={{ marginBottom:4 }}><span className="bg-amber-100 text-amber-800 text-xs px-1.5 py-0.5 rounded-full font-semibold">下書き</span> — 未提出の編集中</div>
-          <div style={{ marginBottom:4 }}><span className="bg-blue-100 text-blue-800 text-xs px-1.5 py-0.5 rounded-full font-semibold">提出済み</span> — マネージャー確認待ち</div>
-          <div style={{ marginBottom:12 }}><span className="bg-emerald-100 text-emerald-800 text-xs px-1.5 py-0.5 rounded-full font-semibold">確定済み</span> — マネージャーが確定</div>
-          <hr style={{ border:'none', borderTop:'1px solid var(--pita-border)', margin:'10px 0' }} />
-          <Link to="/" style={{ fontFamily:'var(--font-mono)', fontSize:11, color:'var(--pita-muted)', textDecoration:'none' }}>← TOPへ</Link>
+      <div className="pita-phone-body">
+        <div style={{ padding:'8px 0' }}>
+          {submissions.length === 0 && (
+            <div style={{ textAlign:'center', padding:'32px 16px', color:'var(--pita-faint)', fontSize:12 }}>提出済みのシフトはありません</div>
+          )}
+          {submissions.map(sub => (
+            <div key={sub.id} style={{ margin:'0 10px 8px', padding:'10px 12px', background:'var(--pita-panel)', border:'1px solid var(--pita-border)', borderRadius:10 }}>
+              <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:4 }}>
+                <span style={{ fontSize:12, fontWeight:700, color:'var(--pita-text)' }}>{sub.period}</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[sub.status]}`}>{STATUS_LABEL[sub.status]}</span>
+              </div>
+              <div style={{ fontSize:10, color:'var(--pita-muted)', marginBottom:8 }}>
+                <div>提出: {sub.submittedAt || '—'}</div>
+                <div>最終編集: {sub.lastEditedAt || '—'}</div>
+              </div>
+              <button onClick={() => openEdit(sub)} style={{ width:'100%', padding:'6px 0', borderRadius:6, border:'1px solid var(--pita-border)', background:'var(--pita-bg-subtle)', color:'var(--pita-text)', fontSize:11, fontWeight:600, cursor:'pointer' }}>
+                {sub.status === 'confirmed' ? '確認する' : '編集する'}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
-    </div>
+      <div className="pita-phone-tabbar">
+        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
+        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
+        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+      </div>
+    </>
   )
 }
