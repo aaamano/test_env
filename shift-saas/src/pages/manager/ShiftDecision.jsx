@@ -223,8 +223,6 @@ export default function ShiftDecision() {
 
       {/* ── Main grid ── */}
       <div style={{ flex:1, minHeight:0, overflowX:'auto', overflowY:'auto', background:'var(--pita-panel)', border:B, borderRadius:8 }}>
-
-        {/* TABLE 1: Metrics */}
         <table style={{ borderCollapse:'collapse', tableLayout:'fixed', minWidth:'max-content', fontSize:10, fontFamily:'var(--font-mono)' }}>
           <colgroup>
             <col style={{ width:LW }} />
@@ -232,6 +230,7 @@ export default function ShiftDecision() {
             <col style={{ width:ETW }} />
             {slots.map((_, i) => <col key={i} style={{ width:slotW }} />)}
             <col style={{ width:52 }} />
+            {SUMM.map(s => <col key={s.k} style={{ width:s.w }} />)}
           </colgroup>
           <thead>
             <tr>
@@ -239,89 +238,73 @@ export default function ShiftDecision() {
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}></th>
               {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
               <th rowSpan={2} style={th({ background:'var(--pita-accent)' })}>合計</th>
+              <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'oklch(0.22 0.03 180)' }} />
             </tr>
             <tr>
               {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
             </tr>
           </thead>
           <tbody>
-            {/* 実行計画売上 */}
             <tr>
-              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.94 0.03 220)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>
-                実行計画売上<br/><span style={{ fontSize:9 }}>(千円)</span>
-              </td>
+              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.94 0.03 220)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>実行計画売上<br/><span style={{ fontSize:9 }}>(千円)</span></td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
               {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{v > 0 ? v : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
             <tr>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
               {cumSales.map((v, i) => <td key={i} style={td({ color:'var(--pita-muted)', fontSize:9 })}>{v}</td>)}
               <td style={td()} />
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
-
-            {/* 売上ACTUAL */}
             <tr>
-              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.95 0.02 150)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>
-                売上ACTUAL<br/><span style={{ fontSize:9 }}>(千円)</span>
-              </td>
+              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.95 0.02 150)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>売上ACTUAL<br/><span style={{ fontSize:9 }}>(千円)</span></td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>ACTUAL</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
             <tr>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
-
-            {/* 必要人員数 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>必要人員数</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? 'oklch(0.93 0.03 200)' : 'var(--pita-bg)', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
-
-            {/* 配置済み人数 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>配置済み人数</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>実績</td>
               {slots.map(slot => { const cnt = getAssignedList(slot).length; const req = getRequired(slot); return <td key={slot} style={td({ ...reqColor(cnt, req), fontWeight:600 })}>{cnt > 0 ? cnt : ''}</td> })}
               <td style={td()} />
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
-
-            {/* 合計時間 */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 180)', fontWeight:600, borderRight:BB, borderBottom:'2px solid var(--pita-border-strong)' })}>合計時間</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9, borderBottom:'2px solid var(--pita-border-strong)' })}>PLAN</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)', borderBottom:'2px solid var(--pita-border-strong)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700, borderBottom:'2px solid var(--pita-border-strong)' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)', borderBottom:'2px solid var(--pita-border-strong)' })} />)}
             </tr>
           </tbody>
-        </table>
 
-        {/* TABLE 2: Staff */}
-        <table style={{ borderCollapse:'collapse', tableLayout:'fixed', minWidth:'max-content', fontSize:10, fontFamily:'var(--font-mono)' }}>
-          <colgroup>
-            <col style={{ width:LW }} />
-            <col style={{ width:STW }} />
-            <col style={{ width:ETW }} />
-            {slots.map((_, i) => <col key={i} style={{ width:slotW }} />)}
-            {SUMM.map(s => <col key={s.k} style={{ width:s.w }} />)}
-          </colgroup>
-          <thead>
+          <tbody>
             <tr>
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>STAFF</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
               {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
+              <th rowSpan={2} style={{ border:B, background:'oklch(0.22 0.03 180)' }} />
               {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'oklch(0.30 0.05 180)' })}>{s.l}</th>)}
             </tr>
             <tr>
               {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
             </tr>
-          </thead>
-          <tbody>
             {staff.map((s, idx) => {
               const summ = getShiftSummary(s.id)
               const rowBg = idx % 2 === 0 ? 'var(--pita-panel)' : 'var(--pita-bg-subtle)'
@@ -343,6 +326,7 @@ export default function ShiftDecision() {
                       </td>
                     )
                   })}
+                  <td style={td({ background:rowBg })} />
                   {SUMM.map(col => {
                     const v = summ ? (
                       col.k === 'work'  ? summ.work.toFixed(2) :
@@ -361,17 +345,20 @@ export default function ShiftDecision() {
               <td style={td({ ...sL0, textAlign:'left', background:'var(--pita-bg-subtle)', fontWeight:700 })}>計{workingStaff.length}名</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', textAlign:'left', fontSize:9, color:'var(--pita-muted)' })}>時間帯別計画時間</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? 'oklch(0.45 0.12 20)' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'var(--pita-bg-subtle)' })} />
               {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
             <tr>
               <td style={td({ ...sL0, background:'var(--pita-bg-subtle)' })} />
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', textAlign:'left', fontSize:9, color:'var(--pita-muted)' })}>時間帯別人時売上高</td>
               {slots.map(slot => { const v = slotSalesPH(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontSize:9, color:'var(--pita-muted)' })}>{v > 0 ? `¥${v.toLocaleString()}` : ''}</td> })}
+              <td style={td({ background:'var(--pita-bg-subtle)' })} />
               {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>
           </tfoot>
         </table>
       </div>
+
 
       {/* ── Legend ── */}
       <div style={{ display:'flex', gap:16, fontSize:10, color:'var(--pita-muted)', flexWrap:'wrap', flexShrink:0 }}>
