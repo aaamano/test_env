@@ -531,6 +531,29 @@ body {
 .emp-wrap .pita-cell-work         { background: #818cf8 !important; }
 .emp-wrap .pita-phone-header      { background: #ffffff; border-color: #e5e7eb; }
 
+/* ── Employee layout stage + frame ── */
+.emp-stage {
+  min-height: 100vh;
+  background: #dde3ff;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+.emp-frame {
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 0 40px rgba(91,103,248,0.18);
+}
+/* SP: full width, no desktop chrome */
+@media (max-width: 480px) {
+  .emp-stage { background: #f9fafb; }
+  .emp-frame { max-width: 100%; box-shadow: none; min-height: 100svh; }
+}
+
 /* ── Mobile: phone-stage shows only inner content ── */
 @media (max-width: 767px) {
   .pita-phone-stage {
