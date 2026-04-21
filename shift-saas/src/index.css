@@ -371,22 +371,22 @@ body {
   font-family: inherit;
   font-variant-numeric: tabular-nums;
 }
-/* Unified table header style */
+/* Unified table header style — slate gray */
 .mgr-wrap .pita-plan-table thead th,
 .mgr-wrap .pita-mgr-grid thead th {
-  background: #c7d2fe !important;
-  color: #3730a3 !important;
-  font-size: 11px;
-  font-weight: 600;
-  border-bottom: 1px solid #a5b4fc;
+  background: #e2e8f0 !important;
+  color: #1e293b !important;
+  font-size: 12.5px;
+  font-weight: 700;
+  border-bottom: 1px solid #cbd5e1;
 }
 .mgr-wrap .pita-plan-table tbody th {
-  background: #c7d2fe;
-  color: #3730a3;
-  font-size: 12px;
-  font-weight: 600;
+  background: #e2e8f0;
+  color: #1e293b;
+  font-size: 13px;
+  font-weight: 700;
 }
-/* Data cells: no accent backgrounds */
+/* Data cells: white bg, dark text */
 .mgr-wrap .pita-plan-table td,
 .mgr-wrap .pita-mgr-grid td {
   background: white;
@@ -394,12 +394,23 @@ body {
 }
 .mgr-wrap .pita-plan-table td.total,
 .mgr-wrap .pita-plan-table thead th.total {
-  background: #ddd6fe !important;
-  color: #3730a3 !important;
+  background: #94a3b8 !important;
+  color: white !important;
+  font-weight: 700 !important;
+}
+/* Members table (pita-mgr-grid): larger font + padding to match Targets */
+.mgr-wrap .pita-mgr-grid th,
+.mgr-wrap .pita-mgr-grid td {
+  font-size: 12.5px;
+  padding: 8px 12px;
+}
+.mgr-wrap .pita-mgr-grid .name-col {
+  font-size: 13px;
+  padding: 8px 14px;
 }
 .mgr-wrap .pita-panel { box-shadow: 0 1px 3px rgba(15,23,42,0.05); border-radius: 12px; }
 .mgr-wrap .pita-panel-head { font-size: 14px; padding: 14px 20px; }
-.mgr-wrap .pita-plan-table { font-size: 12px; }
+.mgr-wrap .pita-plan-table { font-size: 13.5px; }
 .mgr-page { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
 .mgr-card {
   background: var(--pita-panel, #fff);

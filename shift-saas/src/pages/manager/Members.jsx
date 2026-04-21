@@ -162,7 +162,7 @@ export default function Members() {
               <tr>
                 <th className="name-col">スタッフ名</th>
                 <th className="meta-col">種別</th>
-                <th style={{ textAlign: 'left', background: 'var(--pita-bg-subtle)', fontSize: 10, color: 'var(--pita-muted)', fontWeight: 500, padding: '3px 5px' }}>スキル</th>
+                <th style={{ textAlign: 'left', background: '#e2e8f0', fontSize: 12.5, color: '#1e293b', fontWeight: 700, padding: '8px 12px' }}>スキル</th>
                 <th className="meta-col">時給</th>
                 <th className="meta-col">優先</th>
                 {daysConfig.map(d => (

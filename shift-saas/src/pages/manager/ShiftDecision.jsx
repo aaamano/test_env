@@ -168,8 +168,8 @@ export default function ShiftDecision() {
   // Shared table styles
   const B = '1px solid #dde5f0'
   const BB = '1px solid #c4d0e2'
-  const td = (extra = {}) => ({ border: B, padding: '2px 5px', textAlign: 'right', whiteSpace: 'nowrap', fontSize: 11, fontVariantNumeric: 'tabular-nums', background: 'var(--pita-panel)', ...extra })
-  const th = (extra = {}) => ({ border: B, padding: '4px 6px', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 11, fontWeight: 600, background: '#c7d2fe', color: '#3730a3', ...extra })
+  const td = (extra = {}) => ({ border: B, padding: '5px 7px', textAlign: 'right', whiteSpace: 'nowrap', fontSize: 12.5, fontVariantNumeric: 'tabular-nums', background: 'var(--pita-panel)', ...extra })
+  const th = (extra = {}) => ({ border: B, padding: '6px 8px', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 12.5, fontWeight: 700, background: '#e2e8f0', color: '#1e293b', ...extra })
   const sL0 = { position: 'sticky', left: 0,        zIndex: 5 }
   const sL1 = { position: 'sticky', left: LW,        zIndex: 5 }
   const sL2 = { position: 'sticky', left: LW + STW,  zIndex: 5 }
@@ -216,8 +216,8 @@ export default function ShiftDecision() {
           <button key={t.id}
             onClick={() => setSpecialTasks(prev => prev.map(x => x.id === t.id ? {...x, enabled: !x.enabled} : x))}
             style={{
-              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#c7d2fe' : '#dde5f0'}`,
-              background: t.enabled ? '#eef2ff' : '#f8fafc', color: t.enabled ? '#3730a3' : '#94a3b8',
+              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#cbd5e1' : '#dde5f0'}`,
+              background: t.enabled ? '#eef2ff' : '#f8fafc', color: t.enabled ? '#1e293b' : '#94a3b8',
               fontWeight: t.enabled ? 600 : 400, cursor:'pointer', fontFamily:'inherit',
             }}>
             {t.enabled ? '✓' : '○'} {t.name} ({t.startTime}〜{t.endTime})
@@ -240,12 +240,12 @@ export default function ShiftDecision() {
             <tr>
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>指標</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}></th>
-              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #a5b4fc' })}>{h}:00</th>)}
-              <th rowSpan={2} style={th({ background:'#a5b4fc', color:'white', fontWeight:700 })}>合計</th>
-              <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'#c7d2fe' }} />
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #cbd5e1' })}>{h}:00</th>)}
+              <th rowSpan={2} style={th({ background:'#94a3b8', color:'white', fontWeight:700 })}>合計</th>
+              <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'#e2e8f0' }} />
             </tr>
             <tr>
-              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#6366f1' })}>{slot.split(':')[1]}</th>)}
+              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#94a3b8' })}>{slot.split(':')[1]}</th>)}
             </tr>
           </thead>
           <tbody>
@@ -254,7 +254,7 @@ export default function ShiftDecision() {
               <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'white', color:'#334155', fontWeight:600, borderRight:BB, lineHeight:1.4 })}>実行計画売上<br/><span style={{ fontSize:9, fontWeight:400 }}>(千円)</span></td>
               <td colSpan={2} style={td({ ...sL1, background:'white', color:'#64748b', fontSize:10 })}>PLAN</td>
               {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? '#0f172a' : '#cbd5e1' })}>{v > 0 ? v : ''}</td> })}
-              <td style={td({ background:'#ddd6fe', color:'#3730a3', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
+              <td style={td({ background:'#e8edf4', color:'#1e293b', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
               {SUMM.map(s => <td key={s.k} style={td()} />)}
             </tr>
             <tr>
@@ -281,8 +281,8 @@ export default function ShiftDecision() {
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'white', color:'#334155', fontWeight:600, borderRight:BB })}>必要人員数</td>
               <td colSpan={2} style={td({ ...sL1, background:'white', color:'#64748b', fontSize:10 })}>PLAN</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ fontWeight: r > 0 ? 600 : 400, color: r > 0 ? '#3730a3' : '#cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'#ddd6fe', color:'#3730a3', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ fontWeight: r > 0 ? 600 : 400, color: r > 0 ? '#1e293b' : '#cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'#e8edf4', color:'#1e293b', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
               {SUMM.map(s => <td key={s.k} style={td()} />)}
             </tr>
             {/* ── 配置済み人数 ── */}
@@ -295,11 +295,11 @@ export default function ShiftDecision() {
             </tr>
             {/* ── 合計時間 ── */}
             <tr>
-              <td style={td({ ...sL0, textAlign:'left', background:'white', color:'#334155', fontWeight:600, borderRight:BB, borderBottom:'2px solid #a5b4fc' })}>合計時間</td>
-              <td colSpan={2} style={td({ ...sL1, background:'white', color:'#64748b', fontSize:10, borderBottom:'2px solid #a5b4fc' })}>PLAN</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? '#0f172a' : '#cbd5e1', borderBottom:'2px solid #a5b4fc' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'#ddd6fe', color:'#3730a3', fontWeight:700, borderBottom:'2px solid #a5b4fc' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
-              {SUMM.map(s => <td key={s.k} style={td({ borderBottom:'2px solid #a5b4fc' })} />)}
+              <td style={td({ ...sL0, textAlign:'left', background:'white', color:'#334155', fontWeight:600, borderRight:BB, borderBottom:'2px solid #cbd5e1' })}>合計時間</td>
+              <td colSpan={2} style={td({ ...sL1, background:'white', color:'#64748b', fontSize:10, borderBottom:'2px solid #cbd5e1' })}>PLAN</td>
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? '#0f172a' : '#cbd5e1', borderBottom:'2px solid #cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'#e8edf4', color:'#1e293b', fontWeight:700, borderBottom:'2px solid #cbd5e1' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ borderBottom:'2px solid #cbd5e1' })} />)}
             </tr>
           </tbody>
 
@@ -308,12 +308,12 @@ export default function ShiftDecision() {
             <tr>
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>スタッフ</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
-              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #a5b4fc' })}>{h}:00</th>)}
-              <th rowSpan={2} style={{ border:B, background:'#c7d2fe' }} />
-              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'#a5b4fc', color:'white', fontWeight:700 })}>{s.l}</th>)}
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #cbd5e1' })}>{h}:00</th>)}
+              <th rowSpan={2} style={{ border:B, background:'#e2e8f0' }} />
+              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'#94a3b8', color:'white', fontWeight:700 })}>{s.l}</th>)}
             </tr>
             <tr>
-              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#6366f1' })}>{slot.split(':')[1]}</th>)}
+              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#94a3b8' })}>{slot.split(':')[1]}</th>)}
             </tr>
             {workingStaff.map((s, idx) => {
               const summ = getShiftSummary(s.id)
@@ -354,7 +354,7 @@ export default function ShiftDecision() {
             <tr style={{ borderTop:'2px solid var(--pita-border-strong)' }}>
               <td style={td({ ...sL0, textAlign:'left', background:'var(--pita-bg-subtle)', fontWeight:700 })}>計{workingStaff.length}名</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', textAlign:'left', fontSize:9, color:'var(--pita-muted)' })}>時間帯別計画時間</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? '#3730a3' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? '#1e293b' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-bg-subtle)' })} />
               {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>

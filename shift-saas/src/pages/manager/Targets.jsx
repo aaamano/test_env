@@ -213,25 +213,25 @@ export default function Targets() {
       <div className="mgr-card" style={{ overflowX:'auto' }}>
         <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12, fontFamily:'inherit' }}>
           <thead>
-            <tr style={{ background:'#c7d2fe', borderBottom:'1px solid #a5b4fc' }}>
-              <th style={{ textAlign:'left', padding:'10px 16px', fontWeight:600, color:'#3730a3', minWidth:140, fontSize:11 }}>項目</th>
+            <tr style={{ background:'#e2e8f0', borderBottom:'1px solid #cbd5e1' }}>
+              <th style={{ textAlign:'left', padding:'10px 16px', fontWeight:700, color:'#1e293b', minWidth:140, fontSize:12.5 }}>項目</th>
               {targets.map(d => (
                 <th key={d.day} style={{
-                  textAlign:'center', padding:'10px 8px', fontWeight:600, minWidth:66, fontSize:11,
-                  color: (d.dow === '土' || d.dow === '日') ? '#be123c' : '#3730a3',
-                  background: (d.dow === '土' || d.dow === '日') ? '#a5b4fc' : '#c7d2fe',
+                  textAlign:'center', padding:'10px 8px', fontWeight:700, minWidth:66, fontSize:12.5,
+                  color: (d.dow === '土' || d.dow === '日') ? '#be123c' : '#1e293b',
+                  background: (d.dow === '土' || d.dow === '日') ? '#d1d5db' : '#e2e8f0',
                 }}>
                   <div>{d.day}日</div>
                   <div style={{ fontSize:10, fontWeight:400 }}>{d.dow}</div>
                 </th>
               ))}
-              <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:700, color:'white', background:'#818cf8', minWidth:80, fontSize:11 }}>合計/平均</th>
+              <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:700, color:'white', background:'#94a3b8', minWidth:80, fontSize:12.5 }}>合計/平均</th>
             </tr>
           </thead>
           <tbody>
             {FIELDS.map(({ key, label, unit, color }) => (
               <tr key={key} style={{ borderBottom:'1px solid #f0f5f9' }}>
-                <td style={{ padding:'9px 16px', fontWeight:500, color:'#334155', fontSize:12 }}>{label}</td>
+                <td style={{ padding:'9px 16px', fontWeight:500, color:'#334155', fontSize:13 }}>{label}</td>
                 {targets.map(d => (
                   <td key={d.day} style={{
                     textAlign:'center', padding:'6px 4px',
@@ -258,7 +258,7 @@ export default function Targets() {
                     )}
                   </td>
                 ))}
-                <td style={{ textAlign:'center', padding:'8px 12px', background:'#ddd6fe', fontWeight:700, color:'#3730a3', fontSize:12 }}>
+                <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:13 }}>
                   {key === 'avgSpend' ? `¥${avgSpend.toLocaleString()}`
                     : key === 'sales' ? `${totalSales.toLocaleString()}千`
                     : key === 'customers' ? `${totalCust.toLocaleString()}`
@@ -268,22 +268,22 @@ export default function Targets() {
             ))}
 
             {/* Required staff row */}
-            <tr style={{ borderBottom:'1px solid #c7d2fe', background:'#eef2ff' }}>
-              <td style={{ padding:'9px 16px', fontWeight:600, color:'#3730a3', fontSize:12 }}>
+            <tr style={{ borderBottom:'1px solid #cbd5e1', background:'#f1f5f9' }}>
+              <td style={{ padding:'9px 16px', fontWeight:700, color:'#1e293b', fontSize:13 }}>
                 <div>必要人員数（推定）</div>
-                <div style={{ fontWeight:400, color:'#a5b4fc', fontSize:10, marginTop:2 }}>ピーク最大 / 平均</div>
+                <div style={{ fontWeight:400, color:'#64748b', fontSize:10, marginTop:2 }}>ピーク最大 / 平均</div>
               </td>
               {targets.map(d => {
                 const peak = calcDayPeakStaff(d.orders, avgProductivity)
                 const avg = calcDayAvgStaff(d.orders, avgProductivity)
                 return (
-                  <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#c7d2fe' : '#eef2ff' }}>
-                    <div style={{ fontSize:12, fontWeight:700, color:'#3730a3' }}>{peak}<span style={{ fontSize:10, fontWeight:400, marginLeft:1 }}>名</span></div>
-                    <div style={{ fontSize:10, color:'#a5b4fc' }}>avg {avg}</div>
+                  <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#e2e8f0' : '#f1f5f9' }}>
+                    <div style={{ fontSize:13, fontWeight:700, color:'#1e293b' }}>{peak}<span style={{ fontSize:10, fontWeight:400, marginLeft:1 }}>名</span></div>
+                    <div style={{ fontSize:10, color:'#64748b' }}>avg {avg}</div>
                   </td>
                 )
               })}
-              <td style={{ textAlign:'center', padding:'8px 12px', background:'#c7d2fe', fontWeight:700, color:'#3730a3', fontSize:12 }}>
+              <td style={{ textAlign:'center', padding:'8px 12px', background:'#e2e8f0', fontWeight:700, color:'#1e293b', fontSize:13 }}>
                 {Math.round(targets.reduce((s, d) => s + calcDayPeakStaff(d.orders, avgProductivity), 0) / targets.length)}
                 <span style={{ fontSize:10, fontWeight:400, marginLeft:2 }}>名/日avg</span>
               </td>
