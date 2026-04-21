@@ -237,7 +237,7 @@ export default function Dashboard() {
                         <td className="name-col">
                           {s.name}
                           {s.skills.slice(0, 2).map(sk => (
-                            <span key={sk} className="pita-skill-tag" style={{ marginLeft: 4 }}>
+                            <span key={sk} className={sk === 'barista' ? 'pita-skill-barista' : sk === 'cashier' ? 'pita-skill-cashier' : 'pita-skill-floor'} style={{ marginLeft: 4 }}>
                               {sk === 'barista' ? 'バリスタ' : sk === 'cashier' ? 'レジ' : 'フロア'}
                             </span>
                           ))}
@@ -247,8 +247,8 @@ export default function Dashboard() {
                             fontSize: 10,
                             padding: '1px 5px',
                             borderRadius: 3,
-                            background: s.type === 'F' ? 'oklch(0.93 0.08 150)' : 'var(--pita-bg-subtle)',
-                            color:      s.type === 'F' ? 'oklch(0.40 0.10 150)' : 'var(--pita-muted)',
+                            background: s.type === 'F' ? '#d1fae5' : 'var(--pita-bg-subtle)',
+                            color:      s.type === 'F' ? '#065f46' : 'var(--pita-muted)',
                             fontWeight: 600,
                           }}>
                             {s.type}

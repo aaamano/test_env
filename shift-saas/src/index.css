@@ -362,6 +362,30 @@ body {
   --pita-ok: #10b981;
   --pita-warn: #f59e0b;
 }
+/* Unified font: no monospace in manager pages */
+.mgr-wrap table,
+.mgr-wrap .pita-plan-table,
+.mgr-wrap .pita-mgr-grid,
+.mgr-wrap .pita-shift-grid,
+.mgr-wrap .pita-code {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+}
+/* Unified table header style (reference-image style) */
+.mgr-wrap .pita-plan-table thead th,
+.mgr-wrap .pita-mgr-grid thead th {
+  background: #f8fafc !important;
+  color: #94a3b8 !important;
+  font-size: 11px;
+  font-weight: 500;
+  border-bottom: 1px solid #dde5f0;
+}
+.mgr-wrap .pita-plan-table tbody th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12px;
+  font-weight: 500;
+}
 .mgr-wrap .pita-panel { box-shadow: 0 1px 3px rgba(15,23,42,0.05); border-radius: 12px; }
 .mgr-wrap .pita-panel-head { font-size: 14px; padding: 14px 20px; }
 .mgr-wrap .pita-plan-table { font-size: 12px; }
@@ -443,6 +467,15 @@ body {
   border-color: #0ea5e9;
   box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
 }
+/* Skill tag variants */
+.pita-skill-tag,
+.pita-skill-barista,
+.pita-skill-cashier,
+.pita-skill-floor { display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px; font-family: inherit; font-weight: 500; }
+.pita-skill-tag     { background: var(--pita-accent-soft); color: var(--pita-accent-text); }
+.pita-skill-barista { background: #fef3c7; color: #92400e; }
+.pita-skill-cashier { background: #dbeafe; color: #1d4ed8; }
+.pita-skill-floor   { background: #f1f5f9; color: #475569; }
 
 /* ── Mobile: phone-stage shows only inner content ── */
 @media (max-width: 767px) {

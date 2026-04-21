@@ -140,9 +140,9 @@ export default function ShiftDecision() {
   }
 
   const reqColor = (cnt, req) => {
-    if (cnt === 0 && req > 0) return { background: 'oklch(0.92 0.08 20)',  color: 'oklch(0.45 0.12 20)' }
-    if (cnt < req)            return { background: 'oklch(0.93 0.07 45)',  color: 'oklch(0.50 0.10 45)' }
-    if (cnt >= req && req > 0)return { background: 'oklch(0.93 0.06 150)', color: 'oklch(0.40 0.09 150)' }
+    if (cnt === 0 && req > 0) return { background: '#fee2e2', color: '#991b1b' }
+    if (cnt < req)            return { background: '#fef3c7', color: '#92400e' }
+    if (cnt >= req && req > 0)return { background: '#d1fae5', color: '#065f46' }
     return { background: 'var(--pita-bg)', color: 'var(--pita-faint)' }
   }
 
@@ -166,10 +166,10 @@ export default function ShiftDecision() {
   const toggleAIDay = (day) => setAIDays(prev => { const n = new Set(prev); n.has(day) ? n.delete(day) : n.add(day); return n })
 
   // Shared table styles
-  const B = '1px solid var(--pita-border)'
-  const BB = '1px solid var(--pita-border-strong)'
-  const td = (extra = {}) => ({ border: B, padding: '2px 5px', textAlign: 'right', whiteSpace: 'nowrap', fontSize: 10, fontFamily: 'var(--font-mono)', background: 'var(--pita-panel)', ...extra })
-  const th = (extra = {}) => ({ border: B, padding: '3px 5px', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 10, fontFamily: 'var(--font-mono)', fontWeight: 600, background: 'var(--pita-text)', color: 'white', ...extra })
+  const B = '1px solid #dde5f0'
+  const BB = '1px solid #c4d0e2'
+  const td = (extra = {}) => ({ border: B, padding: '2px 5px', textAlign: 'right', whiteSpace: 'nowrap', fontSize: 11, fontVariantNumeric: 'tabular-nums', background: 'var(--pita-panel)', ...extra })
+  const th = (extra = {}) => ({ border: B, padding: '4px 6px', textAlign: 'center', whiteSpace: 'nowrap', fontSize: 11, fontWeight: 500, background: '#f8fafc', color: '#94a3b8', ...extra })
   const sL0 = { position: 'sticky', left: 0,        zIndex: 5 }
   const sL1 = { position: 'sticky', left: LW,        zIndex: 5 }
   const sL2 = { position: 'sticky', left: LW + STW,  zIndex: 5 }
@@ -178,19 +178,19 @@ export default function ShiftDecision() {
   const sH2 = { position: 'sticky', left: LW + STW,  zIndex: 15 }
 
   return (
-    <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden', padding:16, background:'var(--pita-bg)', gap:10 }}>
+    <div style={{ display:'flex', flexDirection:'column', height:'100%', overflow:'hidden', padding:'20px 24px 16px', background:'#f0f5f9', gap:12 }}>
 
       {/* ── Header ── */}
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:10, flexShrink:0 }}>
         <div>
-          <div style={{ fontSize:11, color:'var(--pita-muted)', marginBottom:2 }}>{YEAR_MONTH} 前半</div>
-          <h1 style={{ fontSize:18, fontWeight:700, color:'var(--pita-text)', margin:0 }}>シフト決定 — 時間帯人員配置</h1>
+          <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH} 前半</div>
+          <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', margin:0, letterSpacing:'-0.01em' }}>シフト決定 — 時間帯人員配置</h1>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:10 }}>
           <button onClick={openAI} style={{
             display:'flex', alignItems:'center', gap:6, border:'none', borderRadius:8,
-            padding:'6px 14px', fontSize:12, fontWeight:600, cursor:'pointer', color:'white',
-            background:'linear-gradient(135deg, oklch(0.45 0.15 300), oklch(0.50 0.10 250))',
+            padding:'8px 16px', fontSize:13, fontWeight:600, cursor:'pointer', color:'white',
+            background:'#0ea5e9', fontFamily:'inherit',
           }}>✨ AI自動配置</button>
         </div>
       </div>
@@ -199,31 +199,35 @@ export default function ShiftDecision() {
       <div style={{ display:'flex', gap:4, overflowX:'auto', paddingBottom:2, flexShrink:0 }}>
         {daysConfig.map(d => (
           <button key={d.day} onClick={() => setSelectedDay(d.day)} style={{
-            flexShrink:0, width:44, padding:'4px 0', borderRadius:6, border:'none', cursor:'pointer',
-            fontSize:10, fontFamily:'var(--font-mono)', fontWeight:600,
-            background: selectedDay === d.day ? 'var(--pita-accent)' : d.isWeekend ? 'oklch(0.95 0.04 20)' : 'var(--pita-bg-subtle)',
-            color: selectedDay === d.day ? 'white' : d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-muted)',
+            flexShrink:0, width:44, padding:'5px 0', borderRadius:7, border:'none', cursor:'pointer',
+            fontSize:11, fontWeight:600, fontFamily:'inherit',
+            background: selectedDay === d.day ? '#0ea5e9' : d.isWeekend ? '#fff1f2' : '#e8edf4',
+            color: selectedDay === d.day ? 'white' : d.isWeekend ? '#be123c' : '#64748b',
           }}>
-            <div>{d.day}</div><div style={{ fontSize:9 }}>{d.dow}</div>
+            <div>{d.day}</div><div style={{ fontSize:9, fontWeight:400 }}>{d.dow}</div>
           </button>
         ))}
       </div>
 
       {/* ── Special task toggles ── */}
       <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', flexShrink:0 }}>
-        <span style={{ fontSize:11, color:'var(--pita-muted)' }}>特別業務:</span>
+        <span style={{ fontSize:12, color:'#64748b' }}>特別業務:</span>
         {specialTasks.map(t => (
           <button key={t.id}
             onClick={() => setSpecialTasks(prev => prev.map(x => x.id === t.id ? {...x, enabled: !x.enabled} : x))}
-            className={`text-xs px-3 py-1 rounded-full border font-medium ${t.enabled ? (TASK_TOGGLE_ON[t.colorKey] || TASK_TOGGLE_ON.orange) : 'bg-gray-100 border-gray-300 text-gray-400'}`}>
+            style={{
+              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#bae6fd' : '#dde5f0'}`,
+              background: t.enabled ? '#e0f2fe' : '#f8fafc', color: t.enabled ? '#0369a1' : '#94a3b8',
+              fontWeight: t.enabled ? 600 : 400, cursor:'pointer', fontFamily:'inherit',
+            }}>
             {t.enabled ? '✓' : '○'} {t.name} ({t.startTime}〜{t.endTime})
           </button>
         ))}
       </div>
 
       {/* ── Main grid ── */}
-      <div style={{ flex:1, minHeight:0, overflowX:'auto', overflowY:'auto', background:'var(--pita-panel)', border:B, borderRadius:8 }}>
-        <table style={{ borderCollapse:'collapse', tableLayout:'fixed', minWidth:'max-content', fontSize:10, fontFamily:'var(--font-mono)' }}>
+      <div style={{ flex:1, minHeight:0, overflowX:'auto', overflowY:'auto', background:'white', border:B, borderRadius:10, boxShadow:'0 1px 3px rgba(15,23,42,0.05)' }}>
+        <table style={{ borderCollapse:'collapse', tableLayout:'fixed', minWidth:'max-content', fontSize:11, fontVariantNumeric:'tabular-nums' }}>
           <colgroup>
             <col style={{ width:LW }} />
             <col style={{ width:STW }} />
@@ -236,91 +240,97 @@ export default function ShiftDecision() {
             <tr>
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>指標</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}></th>
-              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
-              <th rowSpan={2} style={th({ background:'var(--pita-accent)' })}>合計</th>
-              <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'oklch(0.22 0.03 180)' }} />
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #dde5f0' })}>{h}:00</th>)}
+              <th rowSpan={2} style={th({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>合計</th>
+              <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'#f8fafc' }} />
             </tr>
             <tr>
-              {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
+              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#b0bec5' })}>{slot.split(':')[1]}</th>)}
             </tr>
           </thead>
           <tbody>
+            {/* ── 実行計画売上 ── */}
             <tr>
-              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.94 0.03 220)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>実行計画売上<br/><span style={{ fontSize:9 }}>(千円)</span></td>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
-              {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{v > 0 ? v : ''}</td> })}
-              <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB, lineHeight:1.4 })}>実行計画売上<br/><span style={{ fontSize:9, fontWeight:400 }}>(千円)</span></td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>PLAN</td>
+              {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? '#0f172a' : '#cbd5e1' })}>{v > 0 ? v : ''}</td> })}
+              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
             <tr>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
-              {cumSales.map((v, i) => <td key={i} style={td({ color:'var(--pita-muted)', fontSize:9 })}>{v}</td>)}
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>累計</td>
+              {cumSales.map((v, i) => <td key={i} style={td({ color:'#94a3b8', fontSize:10 })}>{v}</td>)}
               <td style={td()} />
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
+            {/* ── 売上ACTUAL ── */}
             <tr>
-              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'oklch(0.95 0.02 150)', fontWeight:600, borderRight:BB, lineHeight:1.3 })}>売上ACTUAL<br/><span style={{ fontSize:9 }}>(千円)</span></td>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>ACTUAL</td>
+              <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB, lineHeight:1.4 })}>売上ACTUAL<br/><span style={{ fontSize:9, fontWeight:400 }}>(千円)</span></td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>ACTUAL</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
             <tr>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>累計</td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>累計</td>
               {slots.map(slot => <td key={slot} style={td()} />)}
               <td style={td()} />
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
+            {/* ── 必要人員数 ── */}
             <tr>
-              <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>必要人員数</td>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>PLAN</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? 'oklch(0.93 0.03 200)' : 'var(--pita-bg)', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              <td style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB })}>必要人員数</td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>PLAN</td>
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? '#e0f2fe' : 'white', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? '#0369a1' : '#cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
+            {/* ── 配置済み人数 ── */}
             <tr>
-              <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 240)', fontWeight:600, borderRight:BB })}>配置済み人数</td>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9 })}>実績</td>
+              <td style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB })}>配置済み人数</td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>実績</td>
               {slots.map(slot => { const cnt = getAssignedList(slot).length; const req = getRequired(slot); return <td key={slot} style={td({ ...reqColor(cnt, req), fontWeight:600 })}>{cnt > 0 ? cnt : ''}</td> })}
               <td style={td()} />
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
+            {/* ── 合計時間 ── */}
             <tr>
-              <td style={td({ ...sL0, textAlign:'left', background:'oklch(0.93 0.03 180)', fontWeight:600, borderRight:BB, borderBottom:'2px solid var(--pita-border-strong)' })}>合計時間</td>
-              <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', color:'var(--pita-muted)', fontSize:9, borderBottom:'2px solid var(--pita-border-strong)' })}>PLAN</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? 'var(--pita-text)' : 'var(--pita-faint)', borderBottom:'2px solid var(--pita-border-strong)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'var(--pita-accent-soft)', color:'var(--pita-accent-text)', fontWeight:700, borderBottom:'2px solid var(--pita-border-strong)' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
-              {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)', borderBottom:'2px solid var(--pita-border-strong)' })} />)}
+              <td style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB, borderBottom:'2px solid #c4d0e2' })}>合計時間</td>
+              <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10, borderBottom:'2px solid #c4d0e2' })}>PLAN</td>
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? '#0f172a' : '#cbd5e1', borderBottom:'2px solid #c4d0e2' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700, borderBottom:'2px solid #c4d0e2' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc', borderBottom:'2px solid #c4d0e2' })} />)}
             </tr>
           </tbody>
 
           <tbody>
+            {/* ── STAFF section header ── */}
             <tr>
-              <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>STAFF</th>
+              <th rowSpan={2} style={th({ ...sH0, textAlign:'left', fontWeight:600, color:'#475569' })}>スタッフ</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
-              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid oklch(0.45 0.05 180)' })}>{h}:00</th>)}
-              <th rowSpan={2} style={{ border:B, background:'oklch(0.22 0.03 180)' }} />
-              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'oklch(0.30 0.05 180)' })}>{s.l}</th>)}
+              {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #dde5f0' })}>{h}:00</th>)}
+              <th rowSpan={2} style={{ border:B, background:'#f8fafc' }} />
+              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'#e0f2fe', color:'#0369a1', fontWeight:600 })}>{s.l}</th>)}
             </tr>
             <tr>
-              {slots.map(slot => <th key={slot} style={th({ fontSize:9, fontWeight:400, color:'oklch(0.75 0.03 180)' })}>{slot.split(':')[1]}</th>)}
+              {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#b0bec5' })}>{slot.split(':')[1]}</th>)}
             </tr>
             {workingStaff.map((s, idx) => {
               const summ = getShiftSummary(s.id)
-              const rowBg = idx % 2 === 0 ? 'var(--pita-panel)' : 'var(--pita-bg-subtle)'
+              const rowBg = idx % 2 === 0 ? 'white' : '#f8fafc'
               return (
                 <tr key={s.id}>
-                  <td style={td({ ...sL0, textAlign:'left', background:rowBg, fontWeight:600, borderRight:BB })}>{s.name}</td>
-                  <td style={td({ ...sL1, background:rowBg, textAlign:'center', color:'var(--pita-muted)' })}>{summ ? summ.start.toFixed(2) : ''}</td>
-                  <td style={td({ ...sL2, background:rowBg, textAlign:'center', color:'var(--pita-muted)' })}>{summ ? summ.end.toFixed(2) : ''}</td>
+                  <td style={td({ ...sL0, textAlign:'left', background:rowBg, fontWeight:600, color:'#0f172a', borderRight:BB })}>{s.name}</td>
+                  <td style={td({ ...sL1, background:rowBg, textAlign:'center', color:'#94a3b8' })}>{summ ? summ.start.toFixed(2) : ''}</td>
+                  <td style={td({ ...sL2, background:rowBg, textAlign:'center', color:'#94a3b8' })}>{summ ? summ.end.toFixed(2) : ''}</td>
                   {slots.map(slot => {
                     const w = isWorking(s.id, slot)
                     const a = getAssignedList(slot).includes(s.id)
                     return (
                       <td key={slot} onClick={() => toggleCell(s.id, slot)} style={td({
                         padding:0, textAlign:'center', cursor: w ? 'pointer' : 'default',
-                        background: a ? 'var(--pita-shift-work)' : w ? 'var(--pita-shift-soft)' : 'var(--pita-bg-subtle)',
-                        color: a ? 'white' : 'oklch(0.35 0.08 180)',
+                        background: a ? '#38bdf8' : w ? '#e0f2fe' : '#f8fafc',
+                        color: a ? 'white' : '#94a3b8',
                       })}>
                         {w && !a ? <span style={{ fontSize:8 }}>·</span> : ''}
                       </td>
@@ -334,7 +344,7 @@ export default function ShiftDecision() {
                       col.k === 'night' ? (summ.night > 0 ? summ.night.toFixed(2) : '') :
                       col.k === 'pay'   ? `¥${summ.pay.toLocaleString()}` : ''
                     ) : ''
-                    return <td key={col.k} style={td({ background: idx % 2 === 0 ? 'oklch(0.96 0.01 180)' : 'oklch(0.95 0.02 180)', color:'var(--pita-text)' })}>{v}</td>
+                    return <td key={col.k} style={td({ background: idx % 2 === 0 ? '#f0f9ff' : '#e8f4fd', color:'#0f172a' })}>{v}</td>
                   })}
                 </tr>
               )
@@ -344,7 +354,7 @@ export default function ShiftDecision() {
             <tr style={{ borderTop:'2px solid var(--pita-border-strong)' }}>
               <td style={td({ ...sL0, textAlign:'left', background:'var(--pita-bg-subtle)', fontWeight:700 })}>計{workingStaff.length}名</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', textAlign:'left', fontSize:9, color:'var(--pita-muted)' })}>時間帯別計画時間</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? 'oklch(0.45 0.12 20)' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? '#0369a1' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-bg-subtle)' })} />
               {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>

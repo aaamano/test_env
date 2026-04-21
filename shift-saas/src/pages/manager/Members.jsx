@@ -24,9 +24,9 @@ function getBarProps(code) {
 
 // Retention priority badge inline styles
 function retentionStyle(p) {
-  if (p <= 2) return { background: 'oklch(0.93 0.05 20)', color: 'oklch(0.40 0.10 20)' }
-  if (p <= 4) return { background: 'oklch(0.93 0.06 45)', color: 'oklch(0.45 0.10 45)' }
-  if (p <= 6) return { background: 'oklch(0.94 0.05 80)', color: 'oklch(0.45 0.08 80)' }
+  if (p <= 2) return { background: '#fee2e2', color: '#991b1b' }
+  if (p <= 4) return { background: '#fef3c7', color: '#92400e' }
+  if (p <= 6) return { background: '#fefce8', color: '#713f12' }
   return { background: 'var(--pita-bg-subtle)', color: 'var(--pita-muted)' }
 }
 
@@ -212,8 +212,8 @@ export default function Members() {
                         padding: '1px 5px',
                         borderRadius: 3,
                         fontWeight: 600,
-                        background: m.type === 'F' ? 'oklch(0.93 0.08 150)' : 'var(--pita-bg-subtle)',
-                        color:      m.type === 'F' ? 'oklch(0.40 0.10 150)' : 'var(--pita-muted)',
+                        background: m.type === 'F' ? '#d1fae5' : 'var(--pita-bg-subtle)',
+                        color:      m.type === 'F' ? '#065f46' : 'var(--pita-muted)',
                       }}>
                         {m.type}
                       </span>
@@ -222,7 +222,7 @@ export default function Members() {
                     {/* Skills */}
                     <td style={{ background: 'var(--pita-panel)', padding: '3px 5px', textAlign: 'left', whiteSpace: 'nowrap' }}>
                       {m.skills.map(sk => (
-                        <span key={sk} className="pita-skill-tag" style={{ marginRight: 3 }}>
+                        <span key={sk} className={sk === 'barista' ? 'pita-skill-barista' : sk === 'cashier' ? 'pita-skill-cashier' : 'pita-skill-floor'} style={{ marginRight: 3 }}>
                           {skillLabels[sk] || sk}
                         </span>
                       ))}
