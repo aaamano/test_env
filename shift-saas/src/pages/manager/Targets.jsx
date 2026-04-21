@@ -213,33 +213,33 @@ export default function Targets() {
       <div className="mgr-card" style={{ overflowX:'auto' }}>
         <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12, fontFamily:'inherit' }}>
           <thead>
-            <tr style={{ background:'#f0f5f9', borderBottom:'1px solid #dde5f0' }}>
-              <th style={{ textAlign:'left', padding:'10px 16px', fontWeight:600, color:'#64748b', minWidth:140, fontSize:11 }}>項目</th>
+            <tr style={{ background:'#c7d2fe', borderBottom:'1px solid #a5b4fc' }}>
+              <th style={{ textAlign:'left', padding:'10px 16px', fontWeight:600, color:'#3730a3', minWidth:140, fontSize:11 }}>項目</th>
               {targets.map(d => (
                 <th key={d.day} style={{
                   textAlign:'center', padding:'10px 8px', fontWeight:600, minWidth:66, fontSize:11,
-                  color: (d.dow === '土' || d.dow === '日') ? '#ef4444' : '#64748b',
-                  background: (d.dow === '土' || d.dow === '日') ? '#fff5f5' : '#f0f5f9',
+                  color: (d.dow === '土' || d.dow === '日') ? '#be123c' : '#3730a3',
+                  background: (d.dow === '土' || d.dow === '日') ? '#a5b4fc' : '#c7d2fe',
                 }}>
                   <div>{d.day}日</div>
                   <div style={{ fontSize:10, fontWeight:400 }}>{d.dow}</div>
                 </th>
               ))}
-              <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:600, color:'#64748b', background:'#e8edf4', minWidth:80, fontSize:11 }}>合計/平均</th>
+              <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:700, color:'white', background:'#818cf8', minWidth:80, fontSize:11 }}>合計/平均</th>
             </tr>
           </thead>
           <tbody>
             {FIELDS.map(({ key, label, unit, color }) => (
               <tr key={key} style={{ borderBottom:'1px solid #f0f5f9' }}>
-                <td style={{ padding:'9px 16px', fontWeight:500, color:'#64748b', fontSize:12 }}>{label}</td>
+                <td style={{ padding:'9px 16px', fontWeight:500, color:'#334155', fontSize:12 }}>{label}</td>
                 {targets.map(d => (
                   <td key={d.day} style={{
                     textAlign:'center', padding:'6px 4px',
-                    background: (d.dow === '土' || d.dow === '日') ? '#fff8f8' : 'white',
+                    background: 'white',
                   }}>
                     {editingCell?.day === d.day && editingCell?.field === key ? (
                       <input type="number" defaultValue={d[key]} autoFocus
-                        style={{ width:'100%', textAlign:'center', border:'2px solid #4f46e5', borderRadius:4, padding:'4px', fontSize:12, outline:'none', fontFamily:'inherit' }}
+                        style={{ width:'100%', textAlign:'center', border:'2px solid #4f46e5', borderRadius:4, padding:'4px', fontSize:12, outline:'none', fontFamily:'inherit', background:'#f5f3ff', color:'#3730a3' }}
                         onBlur={e => { update(d.day, key, e.target.value); setEditingCell(null) }}
                         onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }} />
                     ) : (
@@ -249,7 +249,7 @@ export default function Targets() {
                           padding:'4px', cursor:'pointer', background:'transparent', color:'#0f172a',
                           fontFamily:'inherit', transition:'background 0.1s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background='#eef2ff'}
+                        onMouseEnter={e => e.currentTarget.style.background='#e0e7ff'}
                         onMouseLeave={e => e.currentTarget.style.background='transparent'}
                       >
                         {key === 'avgSpend' ? `¥${d[key].toLocaleString()}` : d[key].toLocaleString()}
@@ -258,7 +258,7 @@ export default function Targets() {
                     )}
                   </td>
                 ))}
-                <td style={{ textAlign:'center', padding:'8px 12px', background:'#f0f5f9', fontWeight:700, color:'#0f172a', fontSize:12 }}>
+                <td style={{ textAlign:'center', padding:'8px 12px', background:'#ddd6fe', fontWeight:700, color:'#3730a3', fontSize:12 }}>
                   {key === 'avgSpend' ? `¥${avgSpend.toLocaleString()}`
                     : key === 'sales' ? `${totalSales.toLocaleString()}千`
                     : key === 'customers' ? `${totalCust.toLocaleString()}`
