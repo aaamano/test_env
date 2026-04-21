@@ -15,10 +15,10 @@ export default function MemberDetail() {
 
   if (!member) {
     return (
-      <div className="p-8 text-center text-gray-400">
-        <div className="text-4xl mb-4">🔍</div>
-        <div>メンバーが見つかりません</div>
-        <Link to="/manager/members" className="text-blue-600 hover:underline mt-2 inline-block">← 一覧に戻る</Link>
+      <div className="mgr-page" style={{ textAlign:'center', color:'#94a3b8', paddingTop:64 }}>
+        <div style={{ fontSize:40, marginBottom:12 }}>🔍</div>
+        <div style={{ fontSize:14 }}>メンバーが見つかりません</div>
+        <Link to="/manager/members" style={{ color:'#0ea5e9', textDecoration:'none', fontSize:13, display:'inline-block', marginTop:8 }}>← 一覧に戻る</Link>
       </div>
     )
   }
@@ -36,50 +36,51 @@ export default function MemberDetail() {
   }, 0)
 
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <Link to="/manager/members" className="text-sm text-gray-500 hover:text-gray-700 flex items-center gap-1 mb-3">
+    <div className="mgr-page">
+      {/* Back + header */}
+      <div style={{ marginBottom:24 }}>
+        <Link to="/manager/members" style={{ fontSize:12, color:'#64748b', textDecoration:'none', display:'inline-flex', alignItems:'center', gap:4, marginBottom:14 }}>
           ← メンバー一覧
         </Link>
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-2xl font-bold">
+        <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
+          <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+            <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:22, fontWeight:700, flexShrink:0 }}>
               {member.name[0]}
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{member.name}</h1>
-              <div className="flex items-center gap-2 mt-1">
-                <span className={`text-xs px-2 py-0.5 rounded font-semibold ${member.type === 'F' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
+              <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', letterSpacing:'-0.01em', margin:0 }}>{member.name}</h1>
+              <div style={{ display:'flex', alignItems:'center', gap:8, marginTop:6 }}>
+                <span style={{ fontSize:11, padding:'2px 8px', borderRadius:4, fontWeight:600, background: member.type === 'F' ? '#d1fae5' : '#f0f5f9', color: member.type === 'F' ? '#065f46' : '#475569' }}>
                   {member.type === 'F' ? '正社員' : 'パート/バイト'}
                 </span>
-                <span className="text-sm text-gray-500">{member.role}</span>
+                <span style={{ fontSize:12, color:'#64748b' }}>{member.role}</span>
               </div>
             </div>
           </div>
-          <Link to={`/manager/members`} className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+          <Link to="/manager/members" className="mgr-btn-primary" style={{ textDecoration:'none' }}>
             編集する
           </Link>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {[
-          { label: '今月出勤日数',   value: `${workDays}日`,        color: 'bg-blue-50 border-blue-200' },
-          { label: '想定労働時間',   value: `${totalHours}h`,       color: 'bg-emerald-50 border-emerald-200' },
-          { label: '時間生産性',     value: `${member.hourlyOrders}件/h`, color: 'bg-amber-50 border-amber-200' },
-          { label: '時給',           value: `¥${member.wage.toLocaleString()}`, color: 'bg-purple-50 border-purple-200' },
+          { label: '今月出勤日数',   value: `${workDays}日`,        bg:'#e0f2fe', border:'#bae6fd', txt:'#0369a1' },
+          { label: '想定労働時間',   value: `${totalHours}h`,       bg:'#d1fae5', border:'#a7f3d0', txt:'#065f46' },
+          { label: '時間生産性',     value: `${member.hourlyOrders}件/h`, bg:'#fef3c7', border:'#fde68a', txt:'#92400e' },
+          { label: '時給',           value: `¥${member.wage.toLocaleString()}`, bg:'#ede9fe', border:'#ddd6fe', txt:'#5b21b6' },
         ].map((k, i) => (
-          <div key={i} className={`border rounded-xl p-4 ${k.color}`}>
-            <div className="text-xs text-gray-500 mb-1">{k.label}</div>
-            <div className="text-2xl font-bold text-gray-900">{k.value}</div>
+          <div key={i} style={{ border:`1px solid ${k.border}`, borderRadius:12, padding:'16px 18px', background:k.bg, boxShadow:'0 1px 3px rgba(15,23,42,0.04)' }}>
+            <div style={{ fontSize:11, color:'#64748b', marginBottom:6 }}>{k.label}</div>
+            <div style={{ fontSize:22, fontWeight:700, color:k.txt }}>{k.value}</div>
           </div>
         ))}
       </div>
 
       {/* Skills */}
-      <div className="bg-white border border-gray-200 rounded-xl p-5 mb-5">
-        <h2 className="font-semibold text-gray-800 mb-3">スキル・能力</h2>
+      <div className="mgr-card" style={{ padding:20, marginBottom:20 }}>
+        <h2 style={{ fontSize:14, fontWeight:600, color:'#0f172a', marginBottom:12, marginTop:0 }}>スキル・能力</h2>
         <div className="flex gap-3 flex-wrap">
           {Object.entries(skillLabels).map(([k, v]) => (
             <div key={k} className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${
@@ -96,15 +97,15 @@ export default function MemberDetail() {
             </div>
           ))}
         </div>
-        <div className="mt-4 text-xs text-gray-500">
+        <div style={{ marginTop:12, fontSize:11, color:'#64748b' }}>
           時間生産性係数 <strong>{member.hourlyOrders}</strong> は、1時間あたりに処理できる注文数の想定値です。シフト配置時の必要人員計算に使用されます。
         </div>
       </div>
 
       {/* Shift calendar */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-auto">
-        <div className="px-5 py-3 border-b border-gray-100">
-          <h2 className="font-semibold text-gray-800 text-sm">{YEAR_MONTH} 前半シフト</h2>
+      <div className="mgr-card" style={{ overflowX:'auto' }}>
+        <div className="mgr-card-head">
+          {YEAR_MONTH} 前半シフト
         </div>
         <table className="w-full text-xs border-collapse">
           <thead>

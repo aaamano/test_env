@@ -101,53 +101,38 @@ export default function Members() {
   const compatOptions = members.filter(m => m.id !== form.id && !constraintForm.incompatible.some(i => i.staffId === m.id))
 
   return (
-    <div style={{ padding: '20px', maxWidth: 1600, margin: '0 auto' }}>
+    <div className="mgr-page">
 
       {/* Page header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 3 }}>{YEAR_MONTH} 前半</div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--pita-text)' }}>メンバー管理</div>
+          <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4 }}>{YEAR_MONTH} 前半</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: '#0f172a', letterSpacing: '-0.01em' }}>メンバー管理</div>
         </div>
-        <button onClick={openNew} className="pita-btn primary" style={{ padding: '6px 16px', borderRadius: 6, fontSize: 13, fontWeight: 600, cursor: 'pointer' }}>
+        <button onClick={openNew} className="mgr-btn-primary">
           + スタッフを追加
         </button>
       </div>
 
       {/* Search + filter controls */}
-      <div style={{ display: 'flex', gap: 10, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 14, flexWrap: 'wrap', alignItems: 'center' }}>
         <input
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="名前で検索..."
-          style={{
-            border: '1px solid var(--pita-border)',
-            borderRadius: 6,
-            padding: '5px 10px',
-            fontSize: 12,
-            width: 180,
-            outline: 'none',
-            background: 'var(--pita-panel)',
-            color: 'var(--pita-text)',
-          }}
+          className="mgr-input"
+          style={{ width: 200 }}
         />
         <select
           value={filterSkill}
           onChange={e => setFilterSkill(e.target.value)}
-          style={{
-            border: '1px solid var(--pita-border)',
-            borderRadius: 6,
-            padding: '5px 10px',
-            fontSize: 12,
-            outline: 'none',
-            background: 'var(--pita-panel)',
-            color: 'var(--pita-text)',
-          }}
+          className="mgr-input"
+          style={{ width: 'auto' }}
         >
           <option value="">全スキル</option>
           {Object.entries(skillLabels).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
         </select>
-        <div style={{ marginLeft: 'auto', fontSize: 11, color: 'var(--pita-muted)' }}>
+        <div style={{ marginLeft: 'auto', fontSize: 12, color: '#64748b' }}>
           {filtered.length}名 / {members.length}名
         </div>
       </div>
@@ -170,7 +155,7 @@ export default function Members() {
       </div>
 
       {/* Staff table */}
-      <div className="pita-panel" style={{ marginBottom: 24 }}>
+      <div className="mgr-card" style={{ marginBottom: 24 }}>
         <div style={{ overflowX: 'auto' }}>
           <table className="pita-mgr-grid">
             <thead>
@@ -461,8 +446,8 @@ export default function Members() {
             <div className="px-6 py-4 border-t flex gap-3 justify-between">
               <div className="text-xs text-gray-400 self-center">* 必須項目</div>
               <div className="flex gap-3">
-                <button onClick={() => setShowModal(false)} className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">キャンセル</button>
-                <button onClick={handleSave} className="px-5 py-2 text-sm bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">保存する</button>
+                <button onClick={() => setShowModal(false)} className="mgr-btn-secondary">キャンセル</button>
+                <button onClick={handleSave} className="mgr-btn-primary">保存する</button>
               </div>
             </div>
           </div>

@@ -57,96 +57,104 @@ export default function StoreSettings() {
   }))
 
   return (
-    <div className="p-6 max-w-3xl">
-      <div className="mb-6 flex items-start justify-between">
+    <div className="mgr-page" style={{ maxWidth: 860 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
         <div>
-          <div className="text-xs text-gray-400 mb-1">{YEAR_MONTH}</div>
-          <h1 className="text-2xl font-bold text-gray-900">店舗設定</h1>
-          <p className="text-sm text-gray-500 mt-1">各店舗ごとに個別設定できます</p>
+          <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH}</div>
+          <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', letterSpacing:'-0.01em', margin:0 }}>店舗設定</h1>
+          <p style={{ fontSize:12, color:'#64748b', marginTop:4, marginBottom:0 }}>各店舗ごとに個別設定できます</p>
         </div>
-        <button onClick={handleSave} className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700">
+        <button onClick={handleSave} className="mgr-btn-primary">
           {saved ? '✓ 保存しました' : '設定を保存'}
         </button>
       </div>
 
       {/* Basic settings */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6 mb-5">
-        <h2 className="font-semibold text-gray-800 mb-4">基本設定</h2>
-        <div className="grid grid-cols-2 gap-5">
+      <div className="mgr-card" style={{ padding:24, marginBottom:20 }}>
+        <h2 style={{ fontSize:14, fontWeight:600, color:'#0f172a', marginBottom:16, marginTop:0 }}>基本設定</h2>
+        <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:20 }}>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">営業開始時間</label>
+            <label className="mgr-label">営業開始時間</label>
             <select value={config.openHour} onChange={e => setConfig(p => ({ ...p, openHour: Number(e.target.value) }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400">
+              className="mgr-input">
               {HOURS.map(h => <option key={h} value={h}>{h}:00</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">営業終了時間</label>
+            <label className="mgr-label">営業終了時間</label>
             <select value={config.closeHour} onChange={e => setConfig(p => ({ ...p, closeHour: Number(e.target.value) }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400">
+              className="mgr-input">
               {HOURS.map(h => <option key={h} value={h}>{h}:00</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">シフト時間単位（デフォルト）</label>
-            <div className="flex gap-2">
+            <label className="mgr-label">シフト時間単位（デフォルト）</label>
+            <div style={{ display:'flex', gap:8 }}>
               {[15, 30, 60].map(v => (
                 <button key={v} onClick={() => setConfig(p => ({ ...p, slotInterval: v }))}
-                  className={`flex-1 py-2 rounded-lg border text-sm font-medium transition-colors ${config.slotInterval === v ? 'bg-blue-600 border-blue-600 text-white' : 'bg-white border-gray-300 text-gray-600 hover:border-blue-300'}`}>
+                  style={{
+                    flex:1, padding:'8px 0', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer',
+                    border: config.slotInterval === v ? 'none' : '1px solid #dde5f0',
+                    background: config.slotInterval === v ? '#0ea5e9' : 'white',
+                    color: config.slotInterval === v ? 'white' : '#64748b',
+                    fontFamily:'inherit', transition:'all 0.15s',
+                  }}>
                   {v}分
                 </button>
               ))}
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-gray-600 mb-1.5">平均時間生産性（件/人/時）</label>
+            <label className="mgr-label">平均時間生産性（件/人/時）</label>
             <input type="number" value={config.avgProductivity}
               onChange={e => setConfig(p => ({ ...p, avgProductivity: Number(e.target.value) }))}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-400" min={1} max={30} />
-            <div className="text-xs text-gray-400 mt-1">必要人員数の算出に使用</div>
+              className="mgr-input" min={1} max={30} />
+            <div style={{ fontSize:11, color:'#94a3b8', marginTop:4 }}>必要人員数の算出に使用</div>
           </div>
         </div>
       </div>
 
       {/* Special tasks */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mgr-card" style={{ padding:24 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
           <div>
-            <h2 className="font-semibold text-gray-800">特別業務時間帯</h2>
-            <p className="text-xs text-gray-500 mt-0.5">この時間帯は必要人員数に自動加算されます</p>
+            <h2 style={{ fontSize:14, fontWeight:600, color:'#0f172a', margin:0 }}>特別業務時間帯</h2>
+            <p style={{ fontSize:11, color:'#64748b', marginTop:3, marginBottom:0 }}>この時間帯は必要人員数に自動加算されます</p>
           </div>
-          <button onClick={openNew} className="text-sm bg-blue-600 text-white px-3 py-1.5 rounded-lg hover:bg-blue-700 flex items-center gap-1">
+          <button onClick={openNew} className="mgr-btn-primary" style={{ padding:'6px 14px', fontSize:12 }}>
             + 追加
           </button>
         </div>
 
-        <div className="space-y-3">
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           {config.specialTasks.map(task => {
             const colors = TASK_COLORS[task.colorKey] || TASK_COLORS.orange
             return (
-              <div key={task.id} className={`flex items-center gap-4 p-4 rounded-xl border ${colors.card} ${!task.enabled ? 'opacity-50' : ''}`}>
+              <div key={task.id} className={`flex items-center gap-4 p-4 rounded-xl border ${colors.card}`}
+                style={{ opacity: task.enabled ? 1 : 0.5 }}>
                 {/* Toggle switch */}
                 <button
                   onClick={() => toggleTask(task.id)}
                   role="switch"
                   aria-checked={task.enabled}
-                  className={`flex-shrink-0 inline-flex items-center w-11 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ${task.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}
+                  className={`flex-shrink-0 inline-flex items-center w-11 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none`}
+                  style={{ background: task.enabled ? '#0ea5e9' : '#cbd5e1' }}
                 >
                   <span className={`inline-block w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${task.enabled ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>
-                <div className="flex-1">
-                  <div className="font-semibold text-sm">{task.name}</div>
-                  <div className="text-xs opacity-70 mt-0.5">{task.startTime} 〜 {task.endTime}　追加人員: +{task.requiredStaff}名</div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontWeight:600, fontSize:13 }}>{task.name}</div>
+                  <div style={{ fontSize:11, opacity:0.7, marginTop:2 }}>{task.startTime} 〜 {task.endTime}　追加人員: +{task.requiredStaff}名</div>
                 </div>
-                <div className="flex gap-2 text-xs">
-                  <button onClick={() => openEdit(task)} className="font-medium underline opacity-70 hover:opacity-100">編集</button>
-                  <button onClick={() => removeTask(task.id)} className="font-medium text-red-600 underline opacity-70 hover:opacity-100">削除</button>
+                <div style={{ display:'flex', gap:10, fontSize:12 }}>
+                  <button onClick={() => openEdit(task)} style={{ fontWeight:500, textDecoration:'underline', opacity:0.7, background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>編集</button>
+                  <button onClick={() => removeTask(task.id)} style={{ fontWeight:500, color:'#ef4444', textDecoration:'underline', opacity:0.7, background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>削除</button>
                 </div>
               </div>
             )
           })}
           {config.specialTasks.length === 0 && (
-            <div className="text-center py-8 text-gray-400 text-sm border-2 border-dashed border-gray-200 rounded-xl">
+            <div style={{ textAlign:'center', padding:'28px 24px', color:'#94a3b8', fontSize:13, border:'2px dashed #dde5f0', borderRadius:12 }}>
               特別業務が未設定です。「+ 追加」から登録してください。
             </div>
           )}
@@ -220,8 +228,8 @@ export default function StoreSettings() {
               </div>
             </div>
             <div className="px-6 py-4 border-t flex gap-3 justify-end">
-              <button onClick={() => setEditTask(null)} className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">キャンセル</button>
-              <button onClick={saveTask} className="px-5 py-2 text-sm bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700">保存</button>
+              <button onClick={() => setEditTask(null)} className="mgr-btn-secondary">キャンセル</button>
+              <button onClick={saveTask} className="mgr-btn-primary">保存</button>
             </div>
           </div>
         </div>

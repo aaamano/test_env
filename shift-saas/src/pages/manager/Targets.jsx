@@ -54,10 +54,10 @@ function SVGLineChart({ targets, meta }) {
           </text>
         </g>
       ))}
-      <polyline points={planPts}  fill="none" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="6 3" strokeLinejoin="round" />
+      <polyline points={planPts}  fill="none" stroke="#7dd3fc" strokeWidth="1.5" strokeDasharray="6 3" strokeLinejoin="round" />
       <polyline points={actPts}   fill="none" stroke="#10b981" strokeWidth="2"   strokeLinejoin="round" />
       {planVals.map((v, i) => (
-        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="2.8" fill="white" stroke="#818cf8" strokeWidth="1.5" />
+        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="2.8" fill="white" stroke="#7dd3fc" strokeWidth="1.5" />
       ))}
       {actualVals.map((v, i) => (
         <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="3"   fill="white" stroke="#10b981" strokeWidth="2" />
@@ -133,45 +133,57 @@ export default function Targets() {
   ]
 
   return (
-    <div className="p-6 bg-slate-50 min-h-full">
+    <div className="mgr-page">
       {/* Header */}
-      <div className="mb-6 flex items-start justify-between">
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
         <div>
-          <div className="text-xs text-slate-400 mb-1 font-mono">{YEAR_MONTH} 前半</div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">目標計画</h1>
-          <p className="text-sm text-slate-500 mt-0.5">日別売上・客数・客単価の目標を設定します</p>
+          <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH} 前半</div>
+          <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', letterSpacing:'-0.01em', margin:0 }}>目標計画</h1>
+          <p style={{ fontSize:12, color:'#64748b', marginTop:4, marginBottom:0 }}>日別売上・客数・客単価の目標を設定します</p>
         </div>
-        <div className="flex items-center gap-2">
-          {csvMsg && <span className={`text-xs ${csvMsg.startsWith('✓') ? 'text-emerald-600' : 'text-red-500'}`}>{csvMsg}</span>}
-          <button onClick={() => fileInputRef.current?.click()} className="inline-flex items-center gap-1.5 bg-white border border-slate-200 text-slate-700 px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors shadow-sm">
-            CSVアップロード
+        <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+          {csvMsg && <span style={{ fontSize:12, color: csvMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>{csvMsg}</span>}
+          <button onClick={() => fileInputRef.current?.click()} className="mgr-btn-secondary">
+            CSV アップロード
           </button>
           <input ref={fileInputRef} type="file" accept=".csv" className="hidden" onChange={handleCsvUpload} />
-          <button onClick={handleSave} className="inline-flex items-center gap-1.5 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm">
+          <button onClick={handleSave} className="mgr-btn-primary">
             {saved ? '✓ 保存しました' : '保存する'}
           </button>
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-4 gap-4 mb-5">
+      <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {kpiCards.map((k, i) => (
-          <div key={i} className={`${k.bg} border ${k.border} rounded-2xl px-5 py-4`}>
-            <div className="text-xs text-slate-400 mb-2 font-medium">{k.label}</div>
-            <div className={`text-[1.6rem] font-bold leading-tight ${k.val} mb-1`}>{k.value}</div>
-            <div className={`text-xs ${k.sub2}`}>{k.sub}</div>
+          <div key={i} style={{
+            background: ['#e0f2fe','#d1fae5','#fef3c7','#ede9fe'][i],
+            border: `1px solid ${['#bae6fd','#a7f3d0','#fde68a','#ddd6fe'][i]}`,
+            borderRadius:12, padding:'16px 18px',
+            boxShadow:'0 1px 3px rgba(15,23,42,0.04)',
+          }}>
+            <div style={{ fontSize:11, color:'#64748b', marginBottom:6 }}>{k.label}</div>
+            <div style={{ fontSize:24, fontWeight:700, lineHeight:1.2, color:['#0369a1','#065f46','#92400e','#5b21b6'][i], marginBottom:4 }}>{k.value}</div>
+            <div style={{ fontSize:11, color:'#94a3b8' }}>{k.sub}</div>
           </div>
         ))}
       </div>
 
       {/* Chart */}
-      <div className="bg-white border border-slate-100 rounded-2xl px-5 pt-5 pb-4 mb-5 shadow-sm">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-slate-700">目標グラフ <span className="text-xs font-normal text-slate-400 ml-1">— 計画 vs 参考実績</span></h2>
-          <div className="flex gap-1">
+      <div className="mgr-card" style={{ padding:'20px 20px 14px', marginBottom:20 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:12 }}>
+          <h2 style={{ fontSize:14, fontWeight:600, color:'#0f172a', margin:0 }}>
+            目標グラフ <span style={{ fontSize:12, fontWeight:400, color:'#94a3b8', marginLeft:4 }}>— 計画 vs 参考実績</span>
+          </h2>
+          <div style={{ display:'flex', gap:4 }}>
             {Object.entries(chartMeta).map(([key, m]) => (
               <button key={key} onClick={() => setActiveChart(key)}
-                className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${activeChart === key ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-500 hover:bg-slate-200'}`}>
+                style={{
+                  padding:'5px 12px', borderRadius:20, fontSize:12, fontWeight: activeChart === key ? 600 : 400,
+                  background: activeChart === key ? '#0f172a' : '#f0f5f9',
+                  color: activeChart === key ? 'white' : '#64748b',
+                  border:'none', cursor:'pointer', fontFamily:'inherit', transition:'all 0.15s',
+                }}>
                 {m.label}
               </button>
             ))}
@@ -182,7 +194,7 @@ export default function Targets() {
         </div>
         <div style={{ display:'flex', gap:20, fontSize:11, color:'#64748b', marginTop:4, paddingLeft:62 }}>
           <span style={{ display:'flex', alignItems:'center', gap:6 }}>
-            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#818cf8" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
+            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#7dd3fc" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
             計画
           </span>
           <span style={{ display:'flex', alignItems:'center', gap:6 }}>
@@ -193,46 +205,60 @@ export default function Targets() {
       </div>
 
       {/* CSV hint */}
-      <div className="mb-4 text-xs text-slate-400 bg-white border border-slate-200 rounded-lg px-4 py-2">
-        CSVフォーマット: <code className="bg-slate-100 px-1 rounded">日,曜日,売上(千円),客数,注文数</code>
+      <div style={{ marginBottom:16, fontSize:12, color:'#94a3b8', background:'white', border:'1px solid #dde5f0', borderRadius:8, padding:'8px 16px' }}>
+        CSVフォーマット: <code style={{ background:'#f0f5f9', padding:'1px 5px', borderRadius:4, fontFamily:'monospace' }}>日,曜日,売上(千円),客数,注文数</code>
       </div>
 
       {/* Editable table */}
-      <div className="bg-white border border-slate-200 rounded-xl overflow-auto shadow-sm">
-        <table className="w-full text-sm border-collapse">
+      <div className="mgr-card" style={{ overflowX:'auto' }}>
+        <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12, fontFamily:'inherit' }}>
           <thead>
-            <tr className="bg-slate-50 border-b border-slate-200">
-              <th className="text-left px-4 py-3 font-semibold text-slate-600 min-w-[140px]">項目</th>
+            <tr style={{ background:'#f0f5f9', borderBottom:'1px solid #dde5f0' }}>
+              <th style={{ textAlign:'left', padding:'10px 16px', fontWeight:600, color:'#64748b', minWidth:140, fontSize:11 }}>項目</th>
               {targets.map(d => (
-                <th key={d.day} className={`text-center px-2 py-3 font-semibold min-w-[66px] ${d.dow === '土' || d.dow === '日' ? 'text-red-500 bg-red-50/50' : 'text-slate-600'}`}>
+                <th key={d.day} style={{
+                  textAlign:'center', padding:'10px 8px', fontWeight:600, minWidth:66, fontSize:11,
+                  color: (d.dow === '土' || d.dow === '日') ? '#ef4444' : '#64748b',
+                  background: (d.dow === '土' || d.dow === '日') ? '#fff5f5' : '#f0f5f9',
+                }}>
                   <div>{d.day}日</div>
-                  <div className="text-xs font-normal">{d.dow}</div>
+                  <div style={{ fontSize:10, fontWeight:400 }}>{d.dow}</div>
                 </th>
               ))}
-              <th className="text-center px-3 py-3 font-semibold text-slate-600 bg-slate-100 min-w-[80px]">合計/平均</th>
+              <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:600, color:'#64748b', background:'#e8edf4', minWidth:80, fontSize:11 }}>合計/平均</th>
             </tr>
           </thead>
           <tbody>
             {FIELDS.map(({ key, label, unit, color }) => (
-              <tr key={key} className="border-b border-slate-100 hover:bg-slate-50/50">
-                <td className="px-4 py-2.5 font-medium text-slate-700 text-xs">{label}</td>
+              <tr key={key} style={{ borderBottom:'1px solid #f0f5f9' }}>
+                <td style={{ padding:'9px 16px', fontWeight:500, color:'#64748b', fontSize:12 }}>{label}</td>
                 {targets.map(d => (
-                  <td key={d.day} className={`text-center py-1.5 px-1 ${d.dow === '土' || d.dow === '日' ? 'bg-red-50/30' : ''}`}>
+                  <td key={d.day} style={{
+                    textAlign:'center', padding:'6px 4px',
+                    background: (d.dow === '土' || d.dow === '日') ? '#fff8f8' : 'white',
+                  }}>
                     {editingCell?.day === d.day && editingCell?.field === key ? (
                       <input type="number" defaultValue={d[key]} autoFocus
-                        className="w-full text-center border-2 border-blue-400 rounded px-1 py-1 text-sm outline-none"
+                        style={{ width:'100%', textAlign:'center', border:'2px solid #0ea5e9', borderRadius:4, padding:'4px', fontSize:12, outline:'none', fontFamily:'inherit' }}
                         onBlur={e => { update(d.day, key, e.target.value); setEditingCell(null) }}
                         onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }} />
                     ) : (
                       <button onClick={() => setEditingCell({ day: d.day, field: key })}
-                        className={`w-full text-sm font-semibold rounded px-1 py-1 hover:bg-blue-50 hover:text-blue-700 transition-colors ${color}`}>
+                        style={{
+                          width:'100%', fontSize:12, fontWeight:600, border:'none', borderRadius:4,
+                          padding:'4px', cursor:'pointer', background:'transparent', color:'#0f172a',
+                          fontFamily:'inherit', transition:'background 0.1s',
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background='#e0f2fe'}
+                        onMouseLeave={e => e.currentTarget.style.background='transparent'}
+                      >
                         {key === 'avgSpend' ? `¥${d[key].toLocaleString()}` : d[key].toLocaleString()}
-                        <span className="text-[10px] font-normal text-slate-400 ml-0.5">{unit}</span>
+                        <span style={{ fontSize:10, fontWeight:400, color:'#94a3b8', marginLeft:2 }}>{unit}</span>
                       </button>
                     )}
                   </td>
                 ))}
-                <td className="text-center py-2 px-3 bg-slate-50 font-bold text-slate-700 text-sm">
+                <td style={{ textAlign:'center', padding:'8px 12px', background:'#f0f5f9', fontWeight:700, color:'#0f172a', fontSize:12 }}>
                   {key === 'avgSpend' ? `¥${avgSpend.toLocaleString()}`
                     : key === 'sales' ? `${totalSales.toLocaleString()}千`
                     : key === 'customers' ? `${totalCust.toLocaleString()}`
@@ -242,29 +268,29 @@ export default function Targets() {
             ))}
 
             {/* Required staff row */}
-            <tr className="border-b border-indigo-100 bg-indigo-50">
-              <td className="px-4 py-2.5 font-semibold text-indigo-700 text-xs">
+            <tr style={{ borderBottom:'1px solid #bae6fd', background:'#e0f2fe' }}>
+              <td style={{ padding:'9px 16px', fontWeight:600, color:'#0369a1', fontSize:12 }}>
                 <div>必要人員数（推定）</div>
-                <div className="font-normal text-indigo-400 mt-0.5">ピーク最大 / 平均</div>
+                <div style={{ fontWeight:400, color:'#7ec8e3', fontSize:10, marginTop:2 }}>ピーク最大 / 平均</div>
               </td>
               {targets.map(d => {
                 const peak = calcDayPeakStaff(d.orders, avgProductivity)
                 const avg = calcDayAvgStaff(d.orders, avgProductivity)
                 return (
-                  <td key={d.day} className={`text-center py-2 px-1 ${d.isWeekend ? 'bg-indigo-100/50' : ''}`}>
-                    <div className="text-sm font-bold text-indigo-700">{peak}<span className="text-[10px] font-normal ml-0.5">名</span></div>
-                    <div className="text-[10px] text-indigo-400">avg {avg}</div>
+                  <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#bfdbfe' : '#e0f2fe' }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:'#0369a1' }}>{peak}<span style={{ fontSize:10, fontWeight:400, marginLeft:1 }}>名</span></div>
+                    <div style={{ fontSize:10, color:'#7ec8e3' }}>avg {avg}</div>
                   </td>
                 )
               })}
-              <td className="text-center py-2 px-3 bg-indigo-100 font-bold text-indigo-700 text-sm">
+              <td style={{ textAlign:'center', padding:'8px 12px', background:'#bae6fd', fontWeight:700, color:'#0369a1', fontSize:12 }}>
                 {Math.round(targets.reduce((s, d) => s + calcDayPeakStaff(d.orders, avgProductivity), 0) / targets.length)}
-                <span className="text-xs font-normal ml-0.5">名/日avg</span>
+                <span style={{ fontSize:10, fontWeight:400, marginLeft:2 }}>名/日avg</span>
               </td>
             </tr>
           </tbody>
         </table>
-        <div className="px-4 py-2 text-xs text-slate-400">
+        <div style={{ padding:'8px 16px', fontSize:11, color:'#94a3b8' }}>
           ※ セルをクリックして直接編集できます。必要人員は注文数÷時間生産性({avgProductivity}件/h)で推定。
         </div>
       </div>

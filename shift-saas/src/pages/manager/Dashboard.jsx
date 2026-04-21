@@ -39,39 +39,42 @@ export default function Dashboard() {
   const [view, setView] = useState('A')
 
   return (
-    <div style={{ padding: '20px', maxWidth: 1400, margin: '0 auto' }}>
+    <div className="mgr-page">
 
       {/* Top bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <div>
-          <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 3 }}>{STORE_NAME}</div>
-          <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--pita-text)' }}>{YEAR_MONTH} 前半　ダッシュボード</div>
+          <div style={{ fontSize: 11, color: 'var(--pita-faint)', marginBottom: 4 }}>{STORE_NAME}</div>
+          <div style={{ fontSize: 22, fontWeight: 700, color: 'var(--pita-text)', letterSpacing: '-0.01em' }}>{YEAR_MONTH} 前半 — ダッシュボード</div>
         </div>
         <div style={{ display: 'flex', gap: 8 }}>
-          <Link to="/manager/targets" className="pita-btn primary" style={{ textDecoration: 'none', padding: '5px 14px', borderRadius: 6, fontSize: 12 }}>
+          <Link to="/manager/targets" className="mgr-btn-secondary" style={{ textDecoration: 'none' }}>
             目標設定 →
           </Link>
-          <Link to="/manager/shift" className="pita-btn primary" style={{ textDecoration: 'none', padding: '5px 14px', borderRadius: 6, fontSize: 12 }}>
+          <Link to="/manager/shift" className="mgr-btn-primary" style={{ textDecoration: 'none' }}>
             シフト決定 →
           </Link>
         </div>
       </div>
 
       {/* View toggle */}
-      <div style={{ display: 'flex', gap: 6, marginBottom: 16 }}>
+      <div style={{ display: 'flex', gap: 4, marginBottom: 20, background: '#e8edf4', borderRadius: 10, padding: 4, width: 'fit-content' }}>
         {[['A', '計画一覧 + バー'], ['B', 'ダッシュボード']].map(([key, label]) => (
           <button
             key={key}
             onClick={() => setView(key)}
-            className="pita-btn"
             style={{
-              padding: '4px 14px',
-              borderRadius: 6,
+              padding: '6px 16px',
+              borderRadius: 7,
               fontSize: 12,
-              border: '1px solid var(--pita-border)',
-              background: view === key ? 'var(--pita-text)' : 'var(--pita-panel)',
-              color: view === key ? 'var(--pita-bg)' : 'var(--pita-muted)',
+              fontWeight: view === key ? 600 : 400,
+              border: 'none',
+              background: view === key ? 'white' : 'transparent',
+              color: view === key ? 'var(--pita-text)' : 'var(--pita-muted)',
               cursor: 'pointer',
+              fontFamily: 'inherit',
+              boxShadow: view === key ? '0 1px 3px rgba(15,23,42,0.10)' : 'none',
+              transition: 'all 0.15s',
             }}
           >
             {label}
@@ -92,19 +95,19 @@ export default function Dashboard() {
             ].map((k, i) => (
               <div
                 key={i}
-                className="pita-chip accent"
                 style={{
-                  padding: '5px 12px',
-                  borderRadius: 6,
+                  padding: '6px 14px',
+                  borderRadius: 20,
                   fontSize: 12,
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: 7,
-                  background: 'var(--pita-accent-soft)',
-                  color: 'var(--pita-accent-text)',
+                  gap: 8,
+                  background: '#e0f2fe',
+                  color: '#0369a1',
+                  border: '1px solid #bae6fd',
                 }}
               >
-                <span style={{ fontSize: 10, opacity: 0.75 }}>{k.label}</span>
+                <span style={{ fontSize: 10, color: '#7ec8e3' }}>{k.label}</span>
                 <span style={{ fontWeight: 700 }}>{k.value}</span>
               </div>
             ))}
@@ -285,24 +288,25 @@ export default function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
             {[
               { label: '前半 売上目標合計', value: `¥${totalMonth.toLocaleString()}千`, sub: '前年比 +3.2%',
-                bg: 'oklch(0.96 0.03 250)', border: 'oklch(0.88 0.06 250)', txt: 'oklch(0.35 0.10 250)' },
+                bg: '#e0f2fe', border: '#bae6fd', txt: '#0369a1' },
               { label: '前半 客数目標', value: `${totalCust.toLocaleString()}名`, sub: `1日平均 ${Math.round(totalCust / 15)}名`,
-                bg: 'oklch(0.96 0.04 155)', border: 'oklch(0.88 0.07 155)', txt: 'oklch(0.38 0.10 155)' },
+                bg: '#d1fae5', border: '#a7f3d0', txt: '#065f46' },
               { label: '平均客単価', value: `¥${avgUnit.toLocaleString()}`, sub: '目標 ¥3,000',
-                bg: 'oklch(0.97 0.04 70)',  border: 'oklch(0.88 0.08 70)',  txt: 'oklch(0.42 0.10 70)' },
+                bg: '#fef3c7', border: '#fde68a', txt: '#92400e' },
               { label: 'スタッフ数', value: `${staff.length}名`,
                 sub: `正社員${staff.filter(s => s.type === 'F').length}名 / P${staff.filter(s => s.type === 'P').length}名`,
-                bg: 'oklch(0.96 0.03 300)', border: 'oklch(0.88 0.06 300)', txt: 'oklch(0.38 0.08 300)' },
+                bg: '#ede9fe', border: '#ddd6fe', txt: '#5b21b6' },
             ].map((k, i) => (
               <div key={i} style={{
                 background: k.bg,
                 border: `1px solid ${k.border}`,
-                borderRadius: 10,
-                padding: '14px 16px',
+                borderRadius: 12,
+                padding: '16px 18px',
+                boxShadow: '0 1px 3px rgba(15,23,42,0.04)',
               }}>
-                <div style={{ fontSize: 10, color: 'var(--pita-muted)', marginBottom: 4 }}>{k.label}</div>
-                <div style={{ fontSize: 22, fontWeight: 700, color: k.txt }}>{k.value}</div>
-                <div style={{ fontSize: 10, color: 'var(--pita-faint)', marginTop: 4 }}>{k.sub}</div>
+                <div style={{ fontSize: 11, color: '#64748b', marginBottom: 6 }}>{k.label}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: k.txt, lineHeight: 1.2 }}>{k.value}</div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>{k.sub}</div>
               </div>
             ))}
           </div>
@@ -349,20 +353,20 @@ export default function Dashboard() {
 
                   return (
                     <>
-                      <polyline points={planPts} fill="none" stroke="oklch(0.55 0.12 250)" strokeWidth={1.5} strokeDasharray="4 2" />
-                      <polyline points={actPts}  fill="none" stroke="oklch(0.55 0.13 175)" strokeWidth={2} />
+                      <polyline points={planPts} fill="none" stroke="#7dd3fc" strokeWidth={1.5} strokeDasharray="4 2" />
+                      <polyline points={actPts}  fill="none" stroke="#10b981" strokeWidth={2} />
 
                       {/* Dots – plan */}
                       {dailyTargets.slice(0, ACTUAL_DAYS).map((d, i) => {
                         const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
                         return <circle key={i} cx={x} cy={toY(d.sales)} r={2.5}
-                          fill="oklch(0.55 0.12 250)" />
+                          fill="white" stroke="#7dd3fc" strokeWidth={1.5} />
                       })}
                       {/* Dots – actual */}
                       {actualSales.map((v, i) => {
                         const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
                         return <circle key={i} cx={x} cy={toY(v)} r={2.5}
-                          fill="oklch(0.55 0.13 175)" />
+                          fill="white" stroke="#10b981" strokeWidth={2} />
                       })}
                     </>
                   )
@@ -371,15 +375,15 @@ export default function Dashboard() {
 
               {/* Legend */}
               <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--pita-muted)' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b' }}>
                   <svg width={20} height={4} viewBox="0 0 20 4">
-                    <line x1={0} y1={2} x2={20} y2={2} stroke="oklch(0.55 0.12 250)" strokeWidth={1.5} strokeDasharray="4 2" />
+                    <line x1={0} y1={2} x2={20} y2={2} stroke="#7dd3fc" strokeWidth={1.5} strokeDasharray="4 2" />
                   </svg>
                   計画
                 </span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--pita-muted)' }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b' }}>
                   <svg width={20} height={4} viewBox="0 0 20 4">
-                    <line x1={0} y1={2} x2={20} y2={2} stroke="oklch(0.55 0.13 175)" strokeWidth={2} />
+                    <line x1={0} y1={2} x2={20} y2={2} stroke="#10b981" strokeWidth={2} />
                   </svg>
                   実績
                 </span>

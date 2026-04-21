@@ -343,6 +343,107 @@ body {
   );
 }
 
+/* ── Manager portal theme ── */
+.mgr-wrap {
+  --pita-bg: #f0f5f9;
+  --pita-bg-subtle: #e8edf4;
+  --pita-panel: #ffffff;
+  --pita-hover: #eef4fb;
+  --pita-border: #dde5f0;
+  --pita-border-strong: #c4d0e2;
+  --pita-text: #0f172a;
+  --pita-muted: #64748b;
+  --pita-faint: #94a3b8;
+  --pita-accent: #0ea5e9;
+  --pita-accent-soft: #e0f2fe;
+  --pita-accent-text: #0369a1;
+  --pita-shift-work: #38bdf8;
+  --pita-shift-soft: #e0f2fe;
+  --pita-ok: #10b981;
+  --pita-warn: #f59e0b;
+}
+.mgr-wrap .pita-panel { box-shadow: 0 1px 3px rgba(15,23,42,0.05); border-radius: 12px; }
+.mgr-wrap .pita-panel-head { font-size: 14px; padding: 14px 20px; }
+.mgr-wrap .pita-plan-table { font-size: 12px; }
+.mgr-page { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+.mgr-card {
+  background: var(--pita-panel, #fff);
+  border: 1px solid #dde5f0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(15,23,42,0.05);
+}
+.mgr-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid #dde5f0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #0f172a;
+}
+.mgr-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 18px;
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mgr-btn-primary:hover { background: #0284c7; }
+.mgr-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 16px;
+  background: white;
+  color: #0f172a;
+  border: 1px solid #dde5f0;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mgr-btn-secondary:hover { background: #f0f5f9; }
+.mgr-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 5px;
+  letter-spacing: 0.02em;
+}
+.mgr-input {
+  border: 1px solid #dde5f0;
+  border-radius: 8px;
+  padding: 7px 11px;
+  font-size: 13px;
+  outline: none;
+  background: white;
+  color: #0f172a;
+  font-family: inherit;
+  width: 100%;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.mgr-input:focus {
+  border-color: #0ea5e9;
+  box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+}
+
 /* ── Mobile: phone-stage shows only inner content ── */
 @media (max-width: 767px) {
   .pita-phone-stage {
