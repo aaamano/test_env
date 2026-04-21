@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { managerNotifications } from '../../data/mockData'
 
 const TYPE_CONFIG = {
-  submit:  { bg: '#e0f2fe', color: '#0369a1', icon: '📝' },
+  submit:  { bg: '#eef2ff', color: '#3730a3', icon: '📝' },
   alert:   { bg: '#fef3c7', color: '#92400e', icon: '⚠️' },
   warning: { bg: '#fee2e2', color: '#991b1b', icon: '🔴' },
   info:    { bg: '#f0f5f9', color: '#475569', icon: 'ℹ️' },
@@ -74,7 +74,7 @@ export default function ManagerNotifications() {
                     {n.text}
                   </p>
                   {!n.read && (
-                    <span style={{ width:7, height:7, background:'#0ea5e9', borderRadius:'50%', flexShrink:0, marginTop:5 }} />
+                    <span style={{ width:7, height:7, background:'#4f46e5', borderRadius:'50%', flexShrink:0, marginTop:5 }} />
                   )}
                 </div>
                 <p style={{ fontSize:11, color:'#94a3b8', margin:'4px 0 0' }}>

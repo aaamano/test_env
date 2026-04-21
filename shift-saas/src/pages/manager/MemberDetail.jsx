@@ -18,7 +18,7 @@ export default function MemberDetail() {
       <div className="mgr-page" style={{ textAlign:'center', color:'#94a3b8', paddingTop:64 }}>
         <div style={{ fontSize:40, marginBottom:12 }}>🔍</div>
         <div style={{ fontSize:14 }}>メンバーが見つかりません</div>
-        <Link to="/manager/members" style={{ color:'#0ea5e9', textDecoration:'none', fontSize:13, display:'inline-block', marginTop:8 }}>← 一覧に戻る</Link>
+        <Link to="/manager/members" style={{ color:'#4f46e5', textDecoration:'none', fontSize:13, display:'inline-block', marginTop:8 }}>← 一覧に戻る</Link>
       </div>
     )
   }
@@ -44,7 +44,7 @@ export default function MemberDetail() {
         </Link>
         <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between' }}>
           <div style={{ display:'flex', alignItems:'center', gap:16 }}>
-            <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:22, fontWeight:700, flexShrink:0 }}>
+            <div style={{ width:56, height:56, borderRadius:'50%', background:'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', display:'flex', alignItems:'center', justifyContent:'center', color:'white', fontSize:22, fontWeight:700, flexShrink:0 }}>
               {member.name[0]}
             </div>
             <div>
@@ -66,7 +66,7 @@ export default function MemberDetail() {
       {/* Stats */}
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {[
-          { label: '今月出勤日数',   value: `${workDays}日`,        bg:'#e0f2fe', border:'#bae6fd', txt:'#0369a1' },
+          { label: '今月出勤日数',   value: `${workDays}日`,        bg:'#eef2ff', border:'#c7d2fe', txt:'#3730a3' },
           { label: '想定労働時間',   value: `${totalHours}h`,       bg:'#d1fae5', border:'#a7f3d0', txt:'#065f46' },
           { label: '時間生産性',     value: `${member.hourlyOrders}件/h`, bg:'#fef3c7', border:'#fde68a', txt:'#92400e' },
           { label: '時給',           value: `¥${member.wage.toLocaleString()}`, bg:'#ede9fe', border:'#ddd6fe', txt:'#5b21b6' },

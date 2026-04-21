@@ -54,10 +54,10 @@ function SVGLineChart({ targets, meta }) {
           </text>
         </g>
       ))}
-      <polyline points={planPts}  fill="none" stroke="#7dd3fc" strokeWidth="1.5" strokeDasharray="6 3" strokeLinejoin="round" />
+      <polyline points={planPts}  fill="none" stroke="#a5b4fc" strokeWidth="1.5" strokeDasharray="6 3" strokeLinejoin="round" />
       <polyline points={actPts}   fill="none" stroke="#10b981" strokeWidth="2"   strokeLinejoin="round" />
       {planVals.map((v, i) => (
-        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="2.8" fill="white" stroke="#7dd3fc" strokeWidth="1.5" />
+        <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="2.8" fill="white" stroke="#a5b4fc" strokeWidth="1.5" />
       ))}
       {actualVals.map((v, i) => (
         <circle key={i} cx={xp(i).toFixed(1)} cy={yp(v).toFixed(1)} r="3"   fill="white" stroke="#10b981" strokeWidth="2" />
@@ -157,13 +157,13 @@ export default function Targets() {
       <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:12, marginBottom:20 }}>
         {kpiCards.map((k, i) => (
           <div key={i} style={{
-            background: ['#e0f2fe','#d1fae5','#fef3c7','#ede9fe'][i],
-            border: `1px solid ${['#bae6fd','#a7f3d0','#fde68a','#ddd6fe'][i]}`,
+            background: ['#eef2ff','#d1fae5','#fef3c7','#ede9fe'][i],
+            border: `1px solid ${['#c7d2fe','#a7f3d0','#fde68a','#ddd6fe'][i]}`,
             borderRadius:12, padding:'16px 18px',
             boxShadow:'0 1px 3px rgba(15,23,42,0.04)',
           }}>
             <div style={{ fontSize:11, color:'#64748b', marginBottom:6 }}>{k.label}</div>
-            <div style={{ fontSize:24, fontWeight:700, lineHeight:1.2, color:['#0369a1','#065f46','#92400e','#5b21b6'][i], marginBottom:4 }}>{k.value}</div>
+            <div style={{ fontSize:24, fontWeight:700, lineHeight:1.2, color:['#3730a3','#065f46','#92400e','#5b21b6'][i], marginBottom:4 }}>{k.value}</div>
             <div style={{ fontSize:11, color:'#94a3b8' }}>{k.sub}</div>
           </div>
         ))}
@@ -194,7 +194,7 @@ export default function Targets() {
         </div>
         <div style={{ display:'flex', gap:20, fontSize:11, color:'#64748b', marginTop:4, paddingLeft:62 }}>
           <span style={{ display:'flex', alignItems:'center', gap:6 }}>
-            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#7dd3fc" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
+            <svg width="20" height="10" style={{ display:'block' }}><line x1="0" y1="5" x2="20" y2="5" stroke="#a5b4fc" strokeWidth="1.5" strokeDasharray="6 3" /></svg>
             計画
           </span>
           <span style={{ display:'flex', alignItems:'center', gap:6 }}>
@@ -239,7 +239,7 @@ export default function Targets() {
                   }}>
                     {editingCell?.day === d.day && editingCell?.field === key ? (
                       <input type="number" defaultValue={d[key]} autoFocus
-                        style={{ width:'100%', textAlign:'center', border:'2px solid #0ea5e9', borderRadius:4, padding:'4px', fontSize:12, outline:'none', fontFamily:'inherit' }}
+                        style={{ width:'100%', textAlign:'center', border:'2px solid #4f46e5', borderRadius:4, padding:'4px', fontSize:12, outline:'none', fontFamily:'inherit' }}
                         onBlur={e => { update(d.day, key, e.target.value); setEditingCell(null) }}
                         onKeyDown={e => { if (e.key === 'Enter') e.target.blur() }} />
                     ) : (
@@ -249,7 +249,7 @@ export default function Targets() {
                           padding:'4px', cursor:'pointer', background:'transparent', color:'#0f172a',
                           fontFamily:'inherit', transition:'background 0.1s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background='#e0f2fe'}
+                        onMouseEnter={e => e.currentTarget.style.background='#eef2ff'}
                         onMouseLeave={e => e.currentTarget.style.background='transparent'}
                       >
                         {key === 'avgSpend' ? `¥${d[key].toLocaleString()}` : d[key].toLocaleString()}
@@ -268,22 +268,22 @@ export default function Targets() {
             ))}
 
             {/* Required staff row */}
-            <tr style={{ borderBottom:'1px solid #bae6fd', background:'#e0f2fe' }}>
-              <td style={{ padding:'9px 16px', fontWeight:600, color:'#0369a1', fontSize:12 }}>
+            <tr style={{ borderBottom:'1px solid #c7d2fe', background:'#eef2ff' }}>
+              <td style={{ padding:'9px 16px', fontWeight:600, color:'#3730a3', fontSize:12 }}>
                 <div>必要人員数（推定）</div>
-                <div style={{ fontWeight:400, color:'#7ec8e3', fontSize:10, marginTop:2 }}>ピーク最大 / 平均</div>
+                <div style={{ fontWeight:400, color:'#a5b4fc', fontSize:10, marginTop:2 }}>ピーク最大 / 平均</div>
               </td>
               {targets.map(d => {
                 const peak = calcDayPeakStaff(d.orders, avgProductivity)
                 const avg = calcDayAvgStaff(d.orders, avgProductivity)
                 return (
-                  <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#bfdbfe' : '#e0f2fe' }}>
-                    <div style={{ fontSize:12, fontWeight:700, color:'#0369a1' }}>{peak}<span style={{ fontSize:10, fontWeight:400, marginLeft:1 }}>名</span></div>
-                    <div style={{ fontSize:10, color:'#7ec8e3' }}>avg {avg}</div>
+                  <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#c7d2fe' : '#eef2ff' }}>
+                    <div style={{ fontSize:12, fontWeight:700, color:'#3730a3' }}>{peak}<span style={{ fontSize:10, fontWeight:400, marginLeft:1 }}>名</span></div>
+                    <div style={{ fontSize:10, color:'#a5b4fc' }}>avg {avg}</div>
                   </td>
                 )
               })}
-              <td style={{ textAlign:'center', padding:'8px 12px', background:'#bae6fd', fontWeight:700, color:'#0369a1', fontSize:12 }}>
+              <td style={{ textAlign:'center', padding:'8px 12px', background:'#c7d2fe', fontWeight:700, color:'#3730a3', fontSize:12 }}>
                 {Math.round(targets.reduce((s, d) => s + calcDayPeakStaff(d.orders, avgProductivity), 0) / targets.length)}
                 <span style={{ fontSize:10, fontWeight:400, marginLeft:2 }}>名/日avg</span>
               </td>

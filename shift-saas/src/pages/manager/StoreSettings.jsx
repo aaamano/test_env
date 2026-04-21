@@ -95,7 +95,7 @@ export default function StoreSettings() {
                   style={{
                     flex:1, padding:'8px 0', borderRadius:8, fontSize:13, fontWeight:500, cursor:'pointer',
                     border: config.slotInterval === v ? 'none' : '1px solid #dde5f0',
-                    background: config.slotInterval === v ? '#0ea5e9' : 'white',
+                    background: config.slotInterval === v ? '#4f46e5' : 'white',
                     color: config.slotInterval === v ? 'white' : '#64748b',
                     fontFamily:'inherit', transition:'all 0.15s',
                   }}>
@@ -138,7 +138,7 @@ export default function StoreSettings() {
                   role="switch"
                   aria-checked={task.enabled}
                   className={`flex-shrink-0 inline-flex items-center w-11 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none`}
-                  style={{ background: task.enabled ? '#0ea5e9' : '#cbd5e1' }}
+                  style={{ background: task.enabled ? '#4f46e5' : '#cbd5e1' }}
                 >
                   <span className={`inline-block w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${task.enabled ? 'translate-x-5' : 'translate-x-0'}`} />
                 </button>

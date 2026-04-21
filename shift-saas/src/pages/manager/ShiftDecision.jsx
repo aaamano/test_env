@@ -190,7 +190,7 @@ export default function ShiftDecision() {
           <button onClick={openAI} style={{
             display:'flex', alignItems:'center', gap:6, border:'none', borderRadius:8,
             padding:'8px 16px', fontSize:13, fontWeight:600, cursor:'pointer', color:'white',
-            background:'#0ea5e9', fontFamily:'inherit',
+            background:'#4f46e5', fontFamily:'inherit',
           }}>✨ AI自動配置</button>
         </div>
       </div>
@@ -201,7 +201,7 @@ export default function ShiftDecision() {
           <button key={d.day} onClick={() => setSelectedDay(d.day)} style={{
             flexShrink:0, width:44, padding:'5px 0', borderRadius:7, border:'none', cursor:'pointer',
             fontSize:11, fontWeight:600, fontFamily:'inherit',
-            background: selectedDay === d.day ? '#0ea5e9' : d.isWeekend ? '#fff1f2' : '#e8edf4',
+            background: selectedDay === d.day ? '#4f46e5' : d.isWeekend ? '#fff1f2' : '#e8edf4',
             color: selectedDay === d.day ? 'white' : d.isWeekend ? '#be123c' : '#64748b',
           }}>
             <div>{d.day}</div><div style={{ fontSize:9, fontWeight:400 }}>{d.dow}</div>
@@ -216,8 +216,8 @@ export default function ShiftDecision() {
           <button key={t.id}
             onClick={() => setSpecialTasks(prev => prev.map(x => x.id === t.id ? {...x, enabled: !x.enabled} : x))}
             style={{
-              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#bae6fd' : '#dde5f0'}`,
-              background: t.enabled ? '#e0f2fe' : '#f8fafc', color: t.enabled ? '#0369a1' : '#94a3b8',
+              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#c7d2fe' : '#dde5f0'}`,
+              background: t.enabled ? '#eef2ff' : '#f8fafc', color: t.enabled ? '#3730a3' : '#94a3b8',
               fontWeight: t.enabled ? 600 : 400, cursor:'pointer', fontFamily:'inherit',
             }}>
             {t.enabled ? '✓' : '○'} {t.name} ({t.startTime}〜{t.endTime})
@@ -241,7 +241,7 @@ export default function ShiftDecision() {
               <th rowSpan={2} style={th({ ...sH0, textAlign:'left' })}>指標</th>
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}></th>
               {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #dde5f0' })}>{h}:00</th>)}
-              <th rowSpan={2} style={th({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>合計</th>
+              <th rowSpan={2} style={th({ background:'#eef2ff', color:'#3730a3', fontWeight:700 })}>合計</th>
               <th rowSpan={2} colSpan={SUMM.length} style={{ border:B, background:'#f8fafc' }} />
             </tr>
             <tr>
@@ -254,7 +254,7 @@ export default function ShiftDecision() {
               <td rowSpan={2} style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB, lineHeight:1.4 })}>実行計画売上<br/><span style={{ fontSize:9, fontWeight:400 }}>(千円)</span></td>
               <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>PLAN</td>
               {slots.map(slot => { const v = slotSalesKen(slot); return <td key={slot} style={td({ color: v > 0 ? '#0f172a' : '#cbd5e1' })}>{v > 0 ? v : ''}</td> })}
-              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
+              <td style={td({ background:'#eef2ff', color:'#3730a3', fontWeight:700 })}>{dayTarget?.sales ?? 0}</td>
               {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
             <tr>
@@ -281,8 +281,8 @@ export default function ShiftDecision() {
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB })}>必要人員数</td>
               <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10 })}>PLAN</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? '#e0f2fe' : 'white', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? '#0369a1' : '#cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background: r > 0 ? '#eef2ff' : 'white', fontWeight: r > 0 ? 600 : 400, color: r > 0 ? '#3730a3' : '#cbd5e1' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              <td style={td({ background:'#eef2ff', color:'#3730a3', fontWeight:700 })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
               {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc' })} />)}
             </tr>
             {/* ── 配置済み人数 ── */}
@@ -298,7 +298,7 @@ export default function ShiftDecision() {
               <td style={td({ ...sL0, textAlign:'left', background:'#f0f5f9', color:'#475569', fontWeight:600, borderRight:BB, borderBottom:'2px solid #c4d0e2' })}>合計時間</td>
               <td colSpan={2} style={td({ ...sL1, background:'#f8fafc', color:'#94a3b8', fontSize:10, borderBottom:'2px solid #c4d0e2' })}>PLAN</td>
               {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ color: r > 0 ? '#0f172a' : '#cbd5e1', borderBottom:'2px solid #c4d0e2' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
-              <td style={td({ background:'#e0f2fe', color:'#0369a1', fontWeight:700, borderBottom:'2px solid #c4d0e2' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
+              <td style={td({ background:'#eef2ff', color:'#3730a3', fontWeight:700, borderBottom:'2px solid #c4d0e2' })}>{slots.reduce((s, slot) => s + getRequired(slot), 0).toFixed(2)}</td>
               {SUMM.map(s => <td key={s.k} style={td({ background:'#f8fafc', borderBottom:'2px solid #c4d0e2' })} />)}
             </tr>
           </tbody>
@@ -310,7 +310,7 @@ export default function ShiftDecision() {
               <th rowSpan={2} colSpan={2} style={th({ ...sH1 })}>勤務時間</th>
               {hours.map(h => <th key={h} colSpan={slots.filter(s => parseInt(s) === h).length} style={th({ borderBottom:'1px solid #dde5f0' })}>{h}:00</th>)}
               <th rowSpan={2} style={{ border:B, background:'#f8fafc' }} />
-              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'#e0f2fe', color:'#0369a1', fontWeight:600 })}>{s.l}</th>)}
+              {SUMM.map(s => <th key={s.k} rowSpan={2} style={th({ background:'#eef2ff', color:'#3730a3', fontWeight:600 })}>{s.l}</th>)}
             </tr>
             <tr>
               {slots.map(slot => <th key={slot} style={th({ fontSize:10, fontWeight:400, color:'#b0bec5' })}>{slot.split(':')[1]}</th>)}
@@ -329,7 +329,7 @@ export default function ShiftDecision() {
                     return (
                       <td key={slot} onClick={() => toggleCell(s.id, slot)} style={td({
                         padding:0, textAlign:'center', cursor: w ? 'pointer' : 'default',
-                        background: a ? '#38bdf8' : w ? '#e0f2fe' : '#f8fafc',
+                        background: a ? '#818cf8' : w ? '#eef2ff' : '#f8fafc',
                         color: a ? 'white' : '#94a3b8',
                       })}>
                         {w && !a ? <span style={{ fontSize:8 }}>·</span> : ''}
@@ -354,7 +354,7 @@ export default function ShiftDecision() {
             <tr style={{ borderTop:'2px solid var(--pita-border-strong)' }}>
               <td style={td({ ...sL0, textAlign:'left', background:'var(--pita-bg-subtle)', fontWeight:700 })}>計{workingStaff.length}名</td>
               <td colSpan={2} style={td({ ...sL1, background:'var(--pita-bg-subtle)', textAlign:'left', fontSize:9, color:'var(--pita-muted)' })}>時間帯別計画時間</td>
-              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? '#0369a1' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
+              {slots.map(slot => { const r = getRequired(slot); return <td key={slot} style={td({ background:'var(--pita-bg-subtle)', fontWeight: r > 0 ? 700 : 400, color: r > 0 ? '#3730a3' : 'var(--pita-faint)' })}>{r > 0 ? r.toFixed(2) : ''}</td> })}
               <td style={td({ background:'var(--pita-bg-subtle)' })} />
               {SUMM.map(s => <td key={s.k} style={td({ background:'var(--pita-bg-subtle)' })} />)}
             </tr>

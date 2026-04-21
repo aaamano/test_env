@@ -13,10 +13,10 @@ const NAV = [
 
 const UNREAD = managerNotifications.filter(n => !n.read).length
 
-const SIDEBAR = '#1c2b3a'
-const SIDEBAR_ACTIVE = '#0ea5e9'
-const SIDEBAR_TEXT = '#8fafc4'
-const SIDEBAR_BORDER = 'rgba(255,255,255,0.07)'
+const SIDEBAR = '#1e1b4b'
+const SIDEBAR_ACTIVE = '#4f46e5'
+const SIDEBAR_TEXT = '#a5b4fc'
+const SIDEBAR_BORDER = 'rgba(255,255,255,0.08)'
 
 export default function ManagerLayout() {
   const [showDrop, setShowDrop] = useState(false)
@@ -30,7 +30,7 @@ export default function ManagerLayout() {
 
         {/* Brand */}
         <div style={{ padding:'20px 16px 16px', borderBottom:`1px solid ${SIDEBAR_BORDER}` }}>
-          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.10em', textTransform:'uppercase', color:'#4db8e8', marginBottom:6 }}>
+          <div style={{ fontSize:10, fontWeight:700, letterSpacing:'0.10em', textTransform:'uppercase', color:'#a5b4fc', marginBottom:6 }}>
             ShiftFlow
           </div>
           <div style={{ fontSize:14, fontWeight:700, color:'white', lineHeight:1.3, marginBottom:2 }}>
@@ -39,7 +39,7 @@ export default function ManagerLayout() {
           <div style={{ fontSize:11, color:SIDEBAR_TEXT }}>
             {STORE_NAME.split(' ').slice(0,2).join(' ')}
           </div>
-          <div style={{ fontSize:10, color:'#4db8e8', marginTop:1 }}>{YEAR_MONTH}</div>
+          <div style={{ fontSize:10, color:'#a5b4fc', marginTop:1 }}>{YEAR_MONTH}</div>
 
           {/* Store selector */}
           <div style={{ marginTop:12, position:'relative' }}>
@@ -69,7 +69,7 @@ export default function ManagerLayout() {
                       width:'100%', textAlign:'left', padding:'9px 12px', fontSize:12,
                       fontWeight: store.status === 'active' ? 600 : 400,
                       color: store.status === 'active' ? '#0f172a' : '#94a3b8',
-                      background: activeStore.id === store.id ? '#e0f2fe' : 'white',
+                      background: activeStore.id === store.id ? '#eef2ff' : 'white',
                       cursor: store.status === 'active' ? 'pointer' : 'not-allowed',
                       border:'none', fontFamily:'inherit',
                       display:'flex', alignItems:'center', justifyContent:'space-between',
@@ -80,7 +80,7 @@ export default function ManagerLayout() {
                       <span style={{ fontSize:10, background:'#f1f5f9', color:'#94a3b8', padding:'1px 5px', borderRadius:4 }}>準備中</span>
                     )}
                     {activeStore.id === store.id && store.status === 'active' && (
-                      <span style={{ color:'#0ea5e9', fontSize:11, fontWeight:700 }}>✓</span>
+                      <span style={{ color:'#4f46e5', fontSize:11, fontWeight:700 }}>✓</span>
                     )}
                   </button>
                 ))}
@@ -121,7 +121,7 @@ export default function ManagerLayout() {
 
         {/* Footer */}
         <div style={{ padding:'12px 16px', borderTop:`1px solid ${SIDEBAR_BORDER}` }}>
-          <a href="/" style={{ fontSize:12, color:'#5a8fb4', textDecoration:'none', display:'flex', alignItems:'center', gap:5 }}>
+          <a href="/" style={{ fontSize:12, color:'#818cf8', textDecoration:'none', display:'flex', alignItems:'center', gap:5 }}>
             ← TOP に戻る
           </a>
         </div>

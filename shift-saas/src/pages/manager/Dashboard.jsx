@@ -102,9 +102,9 @@ export default function Dashboard() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: 8,
-                  background: '#e0f2fe',
-                  color: '#0369a1',
-                  border: '1px solid #bae6fd',
+                  background: '#eef2ff',
+                  color: '#3730a3',
+                  border: '1px solid #c7d2fe',
                 }}
               >
                 <span style={{ fontSize: 10, color: '#7ec8e3' }}>{k.label}</span>
@@ -288,7 +288,7 @@ export default function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 12, marginBottom: 20 }}>
             {[
               { label: '前半 売上目標合計', value: `¥${totalMonth.toLocaleString()}千`, sub: '前年比 +3.2%',
-                bg: '#e0f2fe', border: '#bae6fd', txt: '#0369a1' },
+                bg: '#eef2ff', border: '#c7d2fe', txt: '#3730a3' },
               { label: '前半 客数目標', value: `${totalCust.toLocaleString()}名`, sub: `1日平均 ${Math.round(totalCust / 15)}名`,
                 bg: '#d1fae5', border: '#a7f3d0', txt: '#065f46' },
               { label: '平均客単価', value: `¥${avgUnit.toLocaleString()}`, sub: '目標 ¥3,000',
@@ -353,14 +353,14 @@ export default function Dashboard() {
 
                   return (
                     <>
-                      <polyline points={planPts} fill="none" stroke="#7dd3fc" strokeWidth={1.5} strokeDasharray="4 2" />
+                      <polyline points={planPts} fill="none" stroke="#a5b4fc" strokeWidth={1.5} strokeDasharray="4 2" />
                       <polyline points={actPts}  fill="none" stroke="#10b981" strokeWidth={2} />
 
                       {/* Dots – plan */}
                       {dailyTargets.slice(0, ACTUAL_DAYS).map((d, i) => {
                         const x = 30 + i * (260 / (ACTUAL_DAYS - 1))
                         return <circle key={i} cx={x} cy={toY(d.sales)} r={2.5}
-                          fill="white" stroke="#7dd3fc" strokeWidth={1.5} />
+                          fill="white" stroke="#a5b4fc" strokeWidth={1.5} />
                       })}
                       {/* Dots – actual */}
                       {actualSales.map((v, i) => {
@@ -377,7 +377,7 @@ export default function Dashboard() {
               <div style={{ display: 'flex', gap: 16, marginTop: 8 }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: '#64748b' }}>
                   <svg width={20} height={4} viewBox="0 0 20 4">
-                    <line x1={0} y1={2} x2={20} y2={2} stroke="#7dd3fc" strokeWidth={1.5} strokeDasharray="4 2" />
+                    <line x1={0} y1={2} x2={20} y2={2} stroke="#a5b4fc" strokeWidth={1.5} strokeDasharray="4 2" />
                   </svg>
                   計画
                 </span>
