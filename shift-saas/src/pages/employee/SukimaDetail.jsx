@@ -64,8 +64,8 @@ export default function SukimaDetail() {
               <rect x={8} y={4} width={22} height={10} fill="#c8d5c8" rx="1" />
               <rect x={38} y={16} width={16} height={10} fill="#c8d5c8" rx="1" />
               <rect x={60} y={24} width={18} height={10} fill="#c8d5c8" rx="1" />
-              <circle cx={pos.x} cy={pos.y*0.6} r="5" fill="#3b82f6" stroke="white" strokeWidth="1.5" opacity="0.25" />
-              <circle cx={pos.x} cy={pos.y*0.6} r="3.5" fill="#3b82f6" stroke="white" strokeWidth="1.5" />
+              <circle cx={pos.x} cy={pos.y*0.6} r="5" fill="#5B67F8" stroke="white" strokeWidth="1.5" opacity="0.25" />
+              <circle cx={pos.x} cy={pos.y*0.6} r="3.5" fill="#5B67F8" stroke="white" strokeWidth="1.5" />
               <circle cx={pos.x} cy={pos.y*0.6} r="1.2" fill="white" />
               <text x={pos.x+6} y={pos.y*0.6+2} fontSize="3.5" fill="#1f2937" fontWeight="700">{job.store}</text>
             </svg>
@@ -74,7 +74,7 @@ export default function SukimaDetail() {
         </div>
       </div>
       <div style={{ padding:'10px 14px', borderTop:'1px solid var(--pita-border)', background:'white', flexShrink:0 }}>
-        <button style={{ width:'100%', padding:'14px 0', borderRadius:10, border:'none', background:'#3b82f6', color:'white', fontSize:14, fontWeight:700, cursor:'pointer' }}>
+        <button style={{ width:'100%', padding:'14px 0', borderRadius:10, border:'none', background:'#5B67F8', color:'white', fontSize:14, fontWeight:700, cursor:'pointer' }}>
           この枠に応募する
         </button>
       </div>

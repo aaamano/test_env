@@ -16,9 +16,9 @@ function parseCode(code) {
 }
 
 const STATUS = {
-  confirmed: { label: '確定済み', cellBg: 'var(--pita-shift-work)', badgeBg: 'oklch(0.93 0.06 150)', badgeColor: 'oklch(0.30 0.09 150)' },
-  submitted: { label: '提出済み', cellBg: 'oklch(0.78 0.08 230)',   badgeBg: 'oklch(0.91 0.05 230)', badgeColor: 'oklch(0.35 0.07 230)' },
-  draft:     { label: '下書き',   cellBg: 'oklch(0.88 0.07 60)',    badgeBg: 'oklch(0.93 0.05 60)',  badgeColor: 'oklch(0.45 0.08 60)'  },
+  confirmed: { label: '確定済み', cellBg: 'var(--pita-shift-work)', badgeBg: '#dcfce7', badgeColor: '#14532d' },
+  submitted: { label: '提出済み', cellBg: '#93c5fd',                badgeBg: '#dbeafe', badgeColor: '#1e40af' },
+  draft:     { label: '下書き',   cellBg: '#fde68a',                badgeBg: '#fef3c7', badgeColor: '#92400e' },
 }
 
 const STATUS_PRIORITY = { confirmed: 0, submitted: 1, draft: 2 }
@@ -69,7 +69,7 @@ export default function Schedule({ base = '/employee', sukima = false }) {
                 const shift = parseCode(shiftRow[di])
                 return (
                   <tr key={d.day}>
-                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? '#dc2626' : 'var(--pita-text)', fontSize:9 }}>
                       {d.day}/{d.dow}
                     </td>
                     {HOURS.map(h => {

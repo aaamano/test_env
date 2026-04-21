@@ -24,16 +24,29 @@ function deadlineLabel(h) {
   return `あと${Math.floor(h)}時間${Math.round((h%1)*60)>0?`${Math.round((h%1)*60)}分`:''}で締め切り`
 }
 
-export default function SukimaTop() {
-  const [selDate, setSelDate]       = useState(0)
-  const [showFilter, setShowFilter] = useState(false)
-  const [showMap, setShowMap]       = useState(false)
-  const [filters, setFilters]       = useState(DEFAULT_FILTERS)
-  const [filterIdx, setFilterIdx]   = useState({})
-  const [notifOn, setNotifOn]       = useState(false)
-  const [search, setSearch]         = useState('')
+const IconSliders = () => (
+  <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+    <line x1="3" y1="5" x2="17" y2="5"/>
+    <circle cx="13" cy="5" r="2.5" fill="white" stroke="currentColor" strokeWidth="2"/>
+    <line x1="3" y1="10" x2="17" y2="10"/>
+    <circle cx="7" cy="10" r="2.5" fill="white" stroke="currentColor" strokeWidth="2"/>
+    <line x1="3" y1="15" x2="17" y2="15"/>
+    <circle cx="11" cy="15" r="2.5" fill="white" stroke="currentColor" strokeWidth="2"/>
+  </svg>
+)
 
-  const dt   = DATES[selDate]
+export default function SukimaTop() {
+  const [selDate, setSelDate]             = useState(0)
+  const [showFilter, setShowFilter]       = useState(false)
+  const [showMap, setShowMap]             = useState(false)
+  const [showCondition, setShowCondition] = useState(false)
+  const [filters, setFilters]             = useState(DEFAULT_FILTERS)
+  const [filterIdx, setFilterIdx]         = useState({})
+  const [notifOn, setNotifOn]             = useState(false)
+  const [search, setSearch]               = useState('')
+  const [cond, setCond]                   = useState({ minWage: '', maxDist: '', minHours: '', maxHours: '' })
+
+  const dt    = DATES[selDate]
   const label = `${dt.d.getFullYear()}年${dt.d.getMonth()+1}月${dt.dayNum}日`
 
   const dayJobs = sukimaJobs.filter(j => j.date === dt.dateStr).filter(j => {
@@ -96,11 +109,11 @@ export default function SukimaTop() {
       <div style={{ padding:'12px 14px', display:'flex', alignItems:'center', background:'var(--pita-panel)', borderBottom:'1px solid var(--pita-border)', flexShrink:0 }}>
         <button onClick={() => setShowFilter(false)} style={{ width:32, height:32, borderRadius:'50%', border:'1px solid #e5e7eb', background:'white', fontSize:16, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>✕</button>
         <div style={{ flex:1 }} />
-        <button onClick={() => { setFilters(DEFAULT_FILTERS); setFilterIdx({}) }} style={{ fontSize:12, color:'#3b82f6', background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>すべて解除</button>
+        <button onClick={() => { setFilters(DEFAULT_FILTERS); setFilterIdx({}) }} style={{ fontSize:12, color:'#5B67F8', background:'none', border:'none', cursor:'pointer', fontWeight:600 }}>すべて解除</button>
       </div>
       <div style={{ flex:1, overflow:'auto', background:'var(--pita-bg)' }}>
         {FILTER_OPTS.map(opt => (
-          <button key={opt.key} onClick={() => cycleFilter(opt.key)} style={{ width:'100%', display:'flex', alignItems:'center', gap:16, padding:'16px 20px', borderBottom:'1px solid #f3f4f6', background:'white', border:'none', borderBottom:'1px solid #f3f4f6', cursor:'pointer', textAlign:'left' }}>
+          <button key={opt.key} onClick={() => cycleFilter(opt.key)} style={{ width:'100%', display:'flex', alignItems:'center', gap:16, padding:'16px 20px', background:'white', border:'none', borderBottom:'1px solid #f3f4f6', cursor:'pointer', textAlign:'left' }}>
             <div style={{ width:28, textAlign:'center', fontSize:18, color:'#374151', flexShrink:0 }}>{opt.icon}</div>
             <div style={{ fontSize:13, color:'#374151', flex:1 }}>{opt.label}</div>
             <div style={{ fontSize:13, color: filters[opt.key] === opt.options[0] ? '#9ca3af' : '#1f2937', fontWeight: filters[opt.key] !== opt.options[0] ? 600 : 400 }}>{filters[opt.key]}</div>
@@ -109,7 +122,7 @@ export default function SukimaTop() {
         ))}
       </div>
       <div style={{ padding:'12px 14px', background:'var(--pita-panel)', flexShrink:0 }}>
-        <button onClick={() => setShowFilter(false)} style={{ width:'100%', padding:'14px 0', borderRadius:10, border:'none', background:'#3b82f6', color:'white', fontSize:14, fontWeight:700, cursor:'pointer' }}>
+        <button onClick={() => setShowFilter(false)} style={{ width:'100%', padding:'14px 0', borderRadius:10, border:'none', background:'#5B67F8', color:'white', fontSize:14, fontWeight:700, cursor:'pointer' }}>
           絞り込み結果を表示
         </button>
       </div>
@@ -119,8 +132,10 @@ export default function SukimaTop() {
   return (
     <>
       <div style={{ padding:'10px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'white', borderBottom:'1px solid #f3f4f6', flexShrink:0 }}>
-        <button style={{ display:'flex', alignItems:'center', gap:5, background:'none', border:'none', cursor:'pointer', fontSize:13, fontWeight:600, color:'#1f2937' }}>📍 東京都 <span style={{ color:'#9ca3af' }}>▼</span></button>
-        <button onClick={() => setShowFilter(true)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:20, border:'1px solid #e5e7eb', background:'white', fontSize:12, cursor:'pointer', color:'#374151' }}>≡= 絞り込み</button>
+        <button onClick={() => setShowCondition(true)} style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 16px', borderRadius:20, border:'none', background:'#5B67F8', fontSize:12, fontWeight:700, cursor:'pointer', color:'white' }}>条件登録</button>
+        <button onClick={() => setShowFilter(true)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:20, border:'1px solid #e5e7eb', background:'white', fontSize:12, cursor:'pointer', color:'#374151' }}>
+          <IconSliders /> 絞り込み
+        </button>
       </div>
       <div style={{ padding:'8px 14px', background:'#f9fafb', flexShrink:0 }}>
         <div style={{ display:'flex', alignItems:'center', gap:8, background:'white', borderRadius:22, padding:'8px 14px', border:'1px solid #e5e7eb' }}>
@@ -132,7 +147,7 @@ export default function SukimaTop() {
         {DATES.map((d, i) => (
           <button key={i} onClick={() => setSelDate(i)} style={{ flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', width:52, height:58, borderRadius:12, border: i===selDate ? 'none' : '1px solid #e5e7eb', background: i===selDate ? '#facc15' : 'white', cursor:'pointer', padding:0 }}>
             {i === 0 ? (<><span style={{ fontSize:9, color: i===selDate ? '#78350f' : '#6b7280', fontWeight:600 }}>今日</span><span style={{ fontSize:20, fontWeight:700, lineHeight:1.1, color: i===selDate ? '#78350f' : '#1f2937' }}>{d.dayNum}</span><span style={{ fontSize:9, color: i===selDate ? '#78350f' : '#6b7280' }}>{d.dow}</span></>)
-            : (<><span style={{ fontSize:20, fontWeight:700, lineHeight:1.1, color: d.isSun ? '#ef4444' : d.isSat ? '#3b82f6' : '#1f2937' }}>{d.dayNum}</span><span style={{ fontSize:9, color: d.isSun ? '#ef4444' : d.isSat ? '#3b82f6' : '#6b7280' }}>{d.dow}</span></>)}
+            : (<><span style={{ fontSize:20, fontWeight:700, lineHeight:1.1, color: d.isSun ? '#ef4444' : d.isSat ? '#5B67F8' : '#1f2937' }}>{d.dayNum}</span><span style={{ fontSize:9, color: d.isSun ? '#ef4444' : d.isSat ? '#5B67F8' : '#6b7280' }}>{d.dow}</span></>)}
           </button>
         ))}
       </div>
@@ -145,7 +160,7 @@ export default function SukimaTop() {
           <span style={{ fontSize:12, fontWeight:600, color:'#1f2937' }}>{label}</span>
           <div style={{ display:'flex', alignItems:'center', gap:6 }}>
             <span style={{ fontSize:9, color:'#9ca3af' }}>この日の新しい募集を通知</span>
-            <button onClick={() => setNotifOn(v => !v)} style={{ padding:'3px 10px', borderRadius:12, border:'1px solid #e5e7eb', background: notifOn ? '#3b82f6' : 'white', color: notifOn ? 'white' : '#374151', fontSize:10, fontWeight:600, cursor:'pointer' }}>{notifOn ? 'ON' : 'OFF'}</button>
+            <button onClick={() => setNotifOn(v => !v)} style={{ padding:'3px 10px', borderRadius:12, border:'1px solid #e5e7eb', background: notifOn ? '#5B67F8' : 'white', color: notifOn ? 'white' : '#374151', fontSize:10, fontWeight:600, cursor:'pointer' }}>{notifOn ? 'ON' : 'OFF'}</button>
           </div>
         </div>
         <div style={{ padding:'0 10px 10px' }}>
@@ -155,7 +170,7 @@ export default function SukimaTop() {
               <div style={{ background:'white', borderRadius:12, border:'1px solid #e5e7eb', overflow:'hidden', display:'flex' }}>
                 <div style={{ width:88, flexShrink:0, background:j.bgColor, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', position:'relative', minHeight:100 }}>
                   <span style={{ fontSize:30 }}>{j.emoji}</span>
-                  <div style={{ position:'absolute', top:6, left:6, background:'#ef4444', color:'white', fontSize:8, fontWeight:700, padding:'2px 5px', borderRadius:4 }}>⏰ {Math.floor(j.deadlineHours)}h{Math.round((j.deadlineHours%1)*60)>0?`${Math.round((j.deadlineHours%1)*60)}m`:''}</div>
+                  <div style={{ position:'absolute', top:6, left:6, background:'#ef4444', color:'white', fontSize:8, fontWeight:700, padding:'2px 5px', borderRadius:4 }}>⏰ あと {Math.floor(j.deadlineHours)}h{Math.round((j.deadlineHours%1)*60)>0?`${Math.round((j.deadlineHours%1)*60)}m`:''}</div>
                 </div>
                 <div style={{ flex:1, padding:'10px 10px 8px' }}>
                   <div style={{ fontSize:12, fontWeight:700, color:'#1f2937', marginBottom:2 }}>{j.store}：{j.role}</div>
@@ -172,6 +187,47 @@ export default function SukimaTop() {
         </div>
       </div>
       <EmployeeTabBar base="/employee-ver2" active="sukima" sukima={true} />
+
+      {showCondition && (
+        <>
+          <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.45)', zIndex:50 }} onClick={() => setShowCondition(false)} />
+          <div style={{ position:'fixed', bottom:0, left:'50%', transform:'translateX(-50%)', width:'100%', maxWidth:430, background:'white', borderRadius:'16px 16px 0 0', zIndex:51, padding:'20px 16px 28px' }}>
+            <div style={{ display:'flex', alignItems:'center', marginBottom:18 }}>
+              <div style={{ fontSize:15, fontWeight:700, color:'#1f2937' }}>条件登録</div>
+              <div style={{ flex:1 }} />
+              <button onClick={() => setShowCondition(false)} style={{ background:'none', border:'none', fontSize:20, cursor:'pointer', color:'#9ca3af', lineHeight:1, padding:0 }}>✕</button>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
+              <div>
+                <label style={{ fontSize:12, fontWeight:600, color:'#374151', display:'block', marginBottom:7 }}>時給（〇〇円以上）</label>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <input type="number" value={cond.minWage} onChange={e => setCond(p => ({...p, minWage:e.target.value}))} placeholder="例：1200" style={{ flex:1, padding:'9px 10px', borderRadius:8, border:'1px solid #e5e7eb', fontSize:13, outline:'none' }} />
+                  <span style={{ fontSize:12, color:'#6b7280', flexShrink:0 }}>円以上</span>
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize:12, fontWeight:600, color:'#374151', display:'block', marginBottom:7 }}>場所（現在地から〇〇km以内）</label>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <input type="number" value={cond.maxDist} onChange={e => setCond(p => ({...p, maxDist:e.target.value}))} placeholder="例：3" style={{ flex:1, padding:'9px 10px', borderRadius:8, border:'1px solid #e5e7eb', fontSize:13, outline:'none' }} />
+                  <span style={{ fontSize:12, color:'#6b7280', flexShrink:0 }}>km以内</span>
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize:12, fontWeight:600, color:'#374151', display:'block', marginBottom:7 }}>稼働時間（〇〇時間以上〜〇〇時間以下）</label>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <input type="number" value={cond.minHours} onChange={e => setCond(p => ({...p, minHours:e.target.value}))} placeholder="最小" style={{ flex:1, padding:'9px 10px', borderRadius:8, border:'1px solid #e5e7eb', fontSize:13, outline:'none' }} />
+                  <span style={{ fontSize:12, color:'#6b7280', flexShrink:0 }}>〜</span>
+                  <input type="number" value={cond.maxHours} onChange={e => setCond(p => ({...p, maxHours:e.target.value}))} placeholder="最大" style={{ flex:1, padding:'9px 10px', borderRadius:8, border:'1px solid #e5e7eb', fontSize:13, outline:'none' }} />
+                  <span style={{ fontSize:12, color:'#6b7280', flexShrink:0 }}>時間</span>
+                </div>
+              </div>
+            </div>
+            <button onClick={() => setShowCondition(false)} style={{ marginTop:22, width:'100%', padding:'14px 0', borderRadius:10, border:'none', background:'#5B67F8', color:'white', fontSize:14, fontWeight:700, cursor:'pointer' }}>
+              登録する
+            </button>
+          </div>
+        </>
+      )}
     </>
   )
 }
