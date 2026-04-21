@@ -99,7 +99,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
         <span className={`text-xs px-2 py-0.5 rounded-full font-semibold ${STATUS_STYLE[active.status]}`}>{STATUS_LABEL[active.status]}</span>
       </div>
       <div className="pita-mode-bar">
-        <span className="pita-mode-chip" style={{ background:'oklch(0.93 0.06 150)', color:'oklch(0.30 0.09 150)' }}>確定済み</span>
+        <span className="pita-mode-chip" style={{ background:'#dcfce7', color:'#14532d' }}>確定済み</span>
         <span style={{ fontSize:9, color:'var(--pita-muted)' }}>マネージャーが確定したシフトです</span>
       </div>
       <div className="pita-phone-body">
@@ -111,7 +111,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
                 const shift = parseCode(editRow[di])
                 return (
                   <tr key={d.day}>
-                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? '#dc2626' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
                     {HOURS.map(h => {
                       const inShift = shift && h >= shift.start && h < shift.end
                       return <td key={h} className={inShift ? 'pita-cell-work' : 'pita-cell-off'} style={{ cursor:'default' }} />
@@ -123,9 +123,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
           </table>
         </div>
       </div>
-      <div className="pita-phone-tabbar">
-        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
-      </div>
+      <EmployeeTabBar base={base} active="submit" sukima={sukima} />
     </>
   )
 
@@ -152,7 +150,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
                 const shift = parseCode(editRow[di])
                 return (
                   <tr key={d.day}>
-                    <td className="pita-time-col" style={{ color: d.isWeekend ? 'oklch(0.50 0.12 20)' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
+                    <td className="pita-time-col" style={{ color: d.isWeekend ? '#dc2626' : 'var(--pita-text)', fontSize:9 }}>{d.day}/{d.dow}</td>
                     {HOURS.map(h => {
                       const inShift = shift && h >= shift.start && h < shift.end
                       const inPrev = isInPreview(di, h)
@@ -174,9 +172,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
           <button onClick={submitShift} style={{ flex:1, padding:'8px 0', borderRadius:8, border:'none', background:'var(--pita-accent)', color:'white', fontSize:12, fontWeight:600, cursor:'pointer' }}>提出する</button>
         )}
       </div>
-      <div className="pita-phone-tabbar">
-        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
-      </div>
+      <EmployeeTabBar base={base} active="submit" sukima={sukima} />
     </>
   )
 
@@ -212,9 +208,7 @@ export default function ShiftSubmit({ base = '/employee', sukima = false }) {
           ))}
         </div>
       </div>
-      <div className="pita-phone-tabbar">
-        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
-      </div>
+      <EmployeeTabBar base={base} active="submit" sukima={sukima} />
     </>
   )
 }

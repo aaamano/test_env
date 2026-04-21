@@ -50,7 +50,7 @@ export default function EmployeeNotifications({ base = '/employee', sukima = fal
                   display:'flex', alignItems:'flex-start', gap:10,
                   padding:'11px 14px',
                   borderBottom:'1px solid var(--pita-border)',
-                  background: !n.read ? 'oklch(0.97 0.02 220)' : 'var(--pita-bg)',
+                  background: !n.read ? '#eef2ff' : 'var(--pita-bg)',
                   cursor:'pointer',
                 }}
               >
@@ -72,7 +72,7 @@ export default function EmployeeNotifications({ base = '/employee', sukima = fal
                       {n.text}
                     </p>
                     {!n.read && (
-                      <span style={{ width:7, height:7, background:'oklch(0.55 0.15 240)', borderRadius:'50%', flexShrink:0, marginTop:4 }} />
+                      <span style={{ width:7, height:7, background:'#5B67F8', borderRadius:'50%', flexShrink:0, marginTop:4 }} />
                     )}
                   </div>
                   <p style={{ fontSize:10, color:'var(--pita-faint)', margin:'3px 0 0' }}>
