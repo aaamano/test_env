@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { employeeNotifications } from '../../data/mockData'
+import EmployeeTabBar from '../../components/EmployeeTabBar'
 
 const TYPE_CONFIG = {
   reminder:  { bg: 'bg-amber-100',   icon: '⏰', label: 'リマインダー' },
@@ -8,7 +9,7 @@ const TYPE_CONFIG = {
   info:      { bg: 'bg-slate-100',   icon: 'ℹ️', label: 'お知らせ' },
 }
 
-export default function EmployeeNotifications() {
+export default function EmployeeNotifications({ base = '/employee', sukima = false }) {
   const [items, setItems] = useState(employeeNotifications)
 
   const markRead = (id) => setItems(prev => prev.map(n => n.id === id ? { ...n, read: true } : n))
@@ -84,20 +85,7 @@ export default function EmployeeNotifications() {
         </div>
       </div>
 
-      <div className="pita-phone-tabbar">
-        <Link to="/employee" className="pita-tab-item">
-          <span className="pita-tab-ico">📅</span>スケジュール
-        </Link>
-        <Link to="/employee/submit" className="pita-tab-item">
-          <span className="pita-tab-ico">📝</span>シフト提出
-        </Link>
-        <Link to="/employee/notifications" className="pita-tab-item active">
-          <span className="pita-tab-ico">🔔</span>通知
-        </Link>
-        <Link to="/" className="pita-tab-item">
-          <span className="pita-tab-ico">🏠</span>TOP
-        </Link>
-      </div>
+      <EmployeeTabBar base={base} active="notifications" sukima={sukima} />
     </>
   )
 }

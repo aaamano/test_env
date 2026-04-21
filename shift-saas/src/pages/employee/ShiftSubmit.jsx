@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { staff, daysConfig, YEAR_MONTH, shiftSubmissions as initialSubmissions } from '../../data/mockData'
+import EmployeeTabBar from '../../components/EmployeeTabBar'
 
 const ME = staff[0]
 const HOURS = Array.from({ length: 15 }, (_, i) => i + 8)
@@ -22,7 +23,7 @@ const STATUS_STYLE = {
   confirmed: 'bg-emerald-100 text-emerald-800',
 }
 
-export default function ShiftSubmit() {
+export default function ShiftSubmit({ base = '/employee', sukima = false }) {
   const [submissions, setSubmissions] = useState(initialSubmissions)
   const [mode, setMode] = useState('list')
   const [active, setActive] = useState(null)
@@ -123,10 +124,7 @@ export default function ShiftSubmit() {
         </div>
       </div>
       <div className="pita-phone-tabbar">
-        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
-        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
-        <Link to="/employee/notifications" className="pita-tab-item" style={{ position:'relative' }}><span className="pita-tab-ico">🔔</span>通知<span style={{ position:'absolute', top:6, right:'calc(50% - 14px)', width:7, height:7, background:'#ef4444', borderRadius:'50%' }} /></Link>
-        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
       </div>
     </>
   )
@@ -177,10 +175,7 @@ export default function ShiftSubmit() {
         )}
       </div>
       <div className="pita-phone-tabbar">
-        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
-        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
-        <Link to="/employee/notifications" className="pita-tab-item" style={{ position:'relative' }}><span className="pita-tab-ico">🔔</span>通知<span style={{ position:'absolute', top:6, right:'calc(50% - 14px)', width:7, height:7, background:'#ef4444', borderRadius:'50%' }} /></Link>
-        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
       </div>
     </>
   )
@@ -218,10 +213,7 @@ export default function ShiftSubmit() {
         </div>
       </div>
       <div className="pita-phone-tabbar">
-        <Link to="/employee" className="pita-tab-item"><span className="pita-tab-ico">📅</span>スケジュール</Link>
-        <Link to="/employee/submit" className="pita-tab-item active"><span className="pita-tab-ico">📝</span>シフト提出</Link>
-        <Link to="/employee/notifications" className="pita-tab-item" style={{ position:'relative' }}><span className="pita-tab-ico">🔔</span>通知<span style={{ position:'absolute', top:6, right:'calc(50% - 14px)', width:7, height:7, background:'#ef4444', borderRadius:'50%' }} /></Link>
-        <Link to="/" className="pita-tab-item"><span className="pita-tab-ico">🏠</span>TOP</Link>
+        <EmployeeTabBar base={base} active="submit" sukima={sukima} />
       </div>
     </>
   )

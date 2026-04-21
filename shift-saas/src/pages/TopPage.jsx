@@ -51,7 +51,17 @@ export default function TopPage() {
         </Link>
       </div>
 
-      <p className="text-slate-600 text-xs mt-10">ShiftFlow v1.0 — 2026年4月 前半シフト</p>
+      <div className="mt-8">
+        <Link
+          to="/employee-ver2"
+          className="group inline-flex items-center gap-3 bg-white/5 hover:bg-yellow-500/10 border border-white/10 hover:border-yellow-400/40 rounded-xl px-6 py-3 text-sm text-slate-400 hover:text-yellow-300 transition-all duration-200"
+        >
+          <span className="text-lg">⚡</span>
+          <span>Employee ver2 — スキマバイト機能付き</span>
+          <span className="text-[10px] bg-yellow-500/20 text-yellow-300 px-2 py-0.5 rounded-full font-semibold">NEW</span>
+        </Link>
+      </div>
+      <p className="text-slate-600 text-xs mt-6">ShiftFlow v2.0 — 2026年4月 前半シフト</p>
     </div>
   )
 }

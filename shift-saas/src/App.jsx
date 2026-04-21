@@ -12,6 +12,8 @@ import ManagerNotifications from './pages/manager/Notifications'
 import Schedule from './pages/employee/Schedule'
 import ShiftSubmit from './pages/employee/ShiftSubmit'
 import EmployeeNotifications from './pages/employee/Notifications'
+import SukimaTop from './pages/employee/SukimaTop'
+import SukimaDetail from './pages/employee/SukimaDetail'
 
 export default function App() {
   return (
@@ -33,6 +35,14 @@ export default function App() {
           <Route index element={<Schedule />} />
           <Route path="submit" element={<ShiftSubmit />} />
           <Route path="notifications" element={<EmployeeNotifications />} />
+        </Route>
+
+        <Route path="/employee-ver2" element={<EmployeeLayout />}>
+          <Route index element={<Schedule base="/employee-ver2" sukima={true} />} />
+          <Route path="submit" element={<ShiftSubmit base="/employee-ver2" sukima={true} />} />
+          <Route path="notifications" element={<EmployeeNotifications base="/employee-ver2" sukima={true} />} />
+          <Route path="sukima" element={<SukimaTop />} />
+          <Route path="sukima/:id" element={<SukimaDetail />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" />} />

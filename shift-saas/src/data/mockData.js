@@ -277,3 +277,13 @@ export const employeeNotifications = [
   { id: 2, type: 'confirmed',  text: '2026年4月 前半のシフトが確定しました',      sub: 'マネージャーが確定しました',   time: '昨日 14:30',  read: false },
   { id: 3, type: 'info',       text: '2026年5月 前半のシフト提出期限は4月23日です', sub: 'あと3日',                    time: '3日前',       read: true  },
 ]
+
+export const sukimaJobs = [
+  { id:1, date:'2026-04-21', store:'渋谷店',      role:'バリスタ',         startTime:'12:00', endTime:'15:00', wage:1300, filled:0, total:2, deadlineHours:2.5,  transport:true,  location:'渋谷区道玄坂2-10-7',   bgColor:'#f5ede3', emoji:'☕', description:'人気カフェのバリスタとして活躍。エスプレッソマシン経験者優遇。制服貸与あり。未経験でも丁寧に研修します。' },
+  { id:2, date:'2026-04-21', store:'新宿三丁目店', role:'ホールスタッフ',   startTime:'17:00', endTime:'22:00', wage:1150, filled:1, total:3, deadlineHours:4.2,  transport:true,  location:'新宿区新宿3-35-15',    bgColor:'#e3edf5', emoji:'🍸', description:'夜のホールスタッフ募集。接客経験がある方歓迎。活気あるお店です。ドリンク提供あり。' },
+  { id:3, date:'2026-04-21', store:'表参道店',     role:'キッチンスタッフ', startTime:'10:00', endTime:'14:00', wage:1200, filled:0, total:1, deadlineHours:0.75, transport:false, location:'港区北青山3-6-1',       bgColor:'#e3f5e9', emoji:'🥗', description:'ランチタイムのキッチン補助。料理経験不問、簡単な調理補助から始められます。' },
+  { id:4, date:'2026-04-22', store:'銀座店',       role:'フロアスタッフ',   startTime:'11:00', endTime:'16:00', wage:1250, filled:0, total:2, deadlineHours:22,   transport:true,  location:'中央区銀座4-2-12',      bgColor:'#f5e3f5', emoji:'🍽', description:'銀座の高級感あふれるカフェでフロアスタッフとして活躍。服装規定あり（貸与あり）。' },
+  { id:5, date:'2026-04-22', store:'恵比寿店',     role:'バリスタ',         startTime:'08:00', endTime:'12:00', wage:1100, filled:1, total:2, deadlineHours:18,   transport:true,  location:'渋谷区恵比寿4-20-7',   bgColor:'#f5f0e3', emoji:'☕', description:'朝の時間帯にバリスタとして活躍。コーヒーが好きな方大歓迎！研修制度充実。' },
+  { id:6, date:'2026-04-23', store:'池袋店',       role:'ホールスタッフ',   startTime:'14:00', endTime:'19:00', wage:1180, filled:0, total:3, deadlineHours:40,   transport:true,  location:'豊島区東池袋1-21-1',   bgColor:'#e3eef5', emoji:'🍹', description:'土曜の賑やかな池袋店でホールを担当。体力に自信がある方向け。経験不問。' },
+  { id:7, date:'2026-04-24', store:'青山店',       role:'バリスタ',         startTime:'09:00', endTime:'13:00', wage:1350, filled:0, total:1, deadlineHours:64,   transport:true,  location:'港区南青山5-1-1',       bgColor:'#f0e3f5', emoji:'☕', description:'閑静な青山エリアのカフェ。落ち着いた環境でバリスタスキルを活かせます。' },
+]
