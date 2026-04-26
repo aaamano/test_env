@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react'
 import {
   staff, daysConfig, shiftData, assignedShifts, YEAR_MONTH,
   storeConfig, staffConstraints, dailyTargets, ORDER_DISTRIBUTION,
-  generateSlots, parseShiftTimes, calcRequiredStaff,
+  generateSlots, parseShiftTimes, calcRequiredStaff, skillLabels,
 } from '../../data/mockData'
 
 const AI_STAGES = [
@@ -322,6 +322,24 @@ export default function ShiftDecision() {
               <td style={td()} />
               {SUMM.map(s => <td key={s.k} style={td()} />)}
             </tr>
+            {/* ── スキル別配置数 ── */}
+            {Object.entries(skillLabels).map(([key, label]) => (
+              <tr key={key}>
+                <td style={td({ ...sL0, textAlign:'left', background:'#fafafa', color:'#475569', fontWeight:600, borderRight:BB, fontSize:11 })}>
+                  スキル: {label}<br/><span style={{ fontSize:9, fontWeight:400, color:'#94a3b8' }}>配置数</span>
+                </td>
+                <td colSpan={2} style={td({ ...sL1, background:'#fafafa', color:'#94a3b8', fontSize:10 })}>人数</td>
+                {slots.map(slot => {
+                  const cnt = getAssignedList(slot).filter(id => staff.find(s => s.id === id)?.skills.includes(key)).length
+                  return <td key={slot} style={td({ background: cnt > 0 ? '#eef2ff' : '#fafafa', color: cnt > 0 ? '#3730a3' : '#e2e8f0', fontWeight: cnt > 0 ? 700 : 400 })}>{cnt > 0 ? cnt : ''}</td>
+                })}
+                <td style={td({ background:'#eef2ff', color:'#3730a3', fontWeight:700 })}>
+                  {slots.reduce((s, slot) => s + getAssignedList(slot).filter(id => staff.find(m => m.id === id)?.skills.includes(key)).length, 0)}
+                </td>
+                {SUMM.map(s => <td key={s.k} style={td({ background:'#fafafa' })} />)}
+              </tr>
+            ))}
+
             {/* ── 合計時間 ── */}
             <tr>
               <td style={td({ ...sL0, textAlign:'left', background:'white', color:'#334155', fontWeight:600, borderRight:BB, borderBottom:'2px solid #cbd5e1' })}>合計時間</td>
