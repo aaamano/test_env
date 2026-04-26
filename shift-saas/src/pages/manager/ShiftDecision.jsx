@@ -77,11 +77,31 @@ export default function ShiftDecision() {
   const [selectedDay,  setSelectedDay]  = useState(1)
   const [assigned,     setAssigned]     = useState(assignedShifts)
   const [specialTasks, setSpecialTasks] = useState(storeConfig.specialTasks)
-  const [showAI,   setShowAI]   = useState(false)
-  const [aiPhase,  setAIPhase]  = useState('select')
-  const [aiStage,  setAIStage]  = useState(0)
-  const [aiDays,   setAIDays]   = useState(() => new Set(daysConfig.map(d => d.day)))
-  const [aiResult, setAIResult] = useState(null)
+  const [showAI,        setShowAI]       = useState(false)
+  const [aiPhase,       setAIPhase]      = useState('select')
+  const [aiStage,       setAIStage]      = useState(0)
+  const [aiDays,        setAIDays]       = useState(() => new Set(daysConfig.map(d => d.day)))
+  const [aiResult,      setAIResult]     = useState(null)
+  const [shiftStatus,   setShiftStatus]  = useState('draft')   // 'draft' | 'confirmed'
+  const [saveFlash,     setSaveFlash]    = useState('')          // 'saved' | 'confirmed' | ''
+  const [showPublish,   setShowPublish]  = useState(false)
+  const [publishEndDay, setPublishEndDay] = useState(15)
+  const [published,     setPublished]    = useState(false)
+
+  const handleSaveDraft = () => {
+    setShiftStatus('draft')
+    setSaveFlash('saved')
+    setTimeout(() => setSaveFlash(''), 2000)
+  }
+  const handleConfirm = () => {
+    setShiftStatus('confirmed')
+    setSaveFlash('confirmed')
+    setTimeout(() => setSaveFlash(''), 2000)
+  }
+  const handlePublish = () => {
+    setPublished(true)
+    setShowPublish(false)
+  }
 
   const slots = useMemo(
     () => generateSlots(15, storeConfig.openHour, storeConfig.closeHour),
@@ -184,14 +204,23 @@ export default function ShiftDecision() {
       <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', flexWrap:'wrap', gap:10, flexShrink:0 }}>
         <div>
           <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH} 前半</div>
-          <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', margin:0, letterSpacing:'-0.01em' }}>シフト決定 — 時間帯人員配置</h1>
+          <div style={{ display:'flex', alignItems:'center', gap:10 }}>
+            <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', margin:0, letterSpacing:'-0.01em' }}>シフト決定 — 時間帯人員配置</h1>
+            <span style={{
+              fontSize:11, fontWeight:600, padding:'3px 10px', borderRadius:10, whiteSpace:'nowrap',
+              background: shiftStatus === 'confirmed' ? '#d1fae5' : '#f1f5f9',
+              color:      shiftStatus === 'confirmed' ? '#065f46' : '#64748b',
+            }}>
+              {saveFlash === 'saved' ? '✓ 保存しました' : saveFlash === 'confirmed' ? '✓ 確定しました' : shiftStatus === 'confirmed' ? '確定済み' : '下書き'}
+            </span>
+            {published && <span style={{ fontSize:11, fontWeight:600, padding:'3px 10px', borderRadius:10, background:'#dbeafe', color:'#1d4ed8' }}>📢 展開済み</span>}
+          </div>
         </div>
-        <div style={{ display:'flex', alignItems:'center', gap:10 }}>
-          <button onClick={openAI} style={{
-            display:'flex', alignItems:'center', gap:6, border:'none', borderRadius:8,
-            padding:'8px 16px', fontSize:13, fontWeight:600, cursor:'pointer', color:'white',
-            background:'#4f46e5', fontFamily:'inherit',
-          }}>✨ AI自動配置</button>
+        <div style={{ display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' }}>
+          <button onClick={handleSaveDraft} style={{ padding:'8px 14px', borderRadius:8, border:'1px solid #dde5f0', background:'white', color:'#334155', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>下書き保存</button>
+          <button onClick={handleConfirm} style={{ padding:'8px 14px', borderRadius:8, border:'none', background:'#10b981', color:'white', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>シフト確定</button>
+          <button onClick={() => setShowPublish(true)} style={{ display:'flex', alignItems:'center', gap:6, padding:'8px 14px', borderRadius:8, border:'none', background:'#f59e0b', color:'white', fontSize:12, fontWeight:600, cursor:'pointer', fontFamily:'inherit' }}>📢 シフト展開</button>
+          <button onClick={openAI} style={{ display:'flex', alignItems:'center', gap:6, border:'none', borderRadius:8, padding:'8px 14px', fontSize:12, fontWeight:600, cursor:'pointer', color:'white', background:'#4f46e5', fontFamily:'inherit' }}>✨ AI自動配置</button>
         </div>
       </div>
 
@@ -383,6 +412,42 @@ export default function ShiftDecision() {
           </span>
         ))}
       </div>
+
+      {/* ── Publish Modal ── */}
+      {showPublish && (
+        <div style={{ position:'fixed', inset:0, background:'rgba(15,23,42,0.45)', zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
+          <div style={{ background:'white', borderRadius:16, width:'100%', maxWidth:440, boxShadow:'0 20px 60px rgba(15,23,42,0.18)' }}>
+            <div style={{ padding:'20px 24px', borderBottom:'1px solid #e2e8f0' }}>
+              <div style={{ fontSize:17, fontWeight:700, color:'#0f172a' }}>📢 シフト受付を開始する</div>
+              <div style={{ fontSize:12, color:'#64748b', marginTop:4 }}>スタッフへシフト提出の通知を送ります</div>
+            </div>
+            <div style={{ padding:'20px 24px', display:'flex', flexDirection:'column', gap:16 }}>
+              <div>
+                <label style={{ fontSize:12, fontWeight:600, color:'#475569', display:'block', marginBottom:8 }}>提出期限日</label>
+                <div style={{ display:'flex', alignItems:'center', gap:8 }}>
+                  <select value={publishEndDay} onChange={e => setPublishEndDay(Number(e.target.value))}
+                    style={{ padding:'8px 12px', borderRadius:8, border:'1px solid #dde5f0', fontSize:13, color:'#0f172a', fontFamily:'inherit', outline:'none' }}>
+                    {daysConfig.map(d => <option key={d.day} value={d.day}>{d.day}日({d.dow})</option>)}
+                  </select>
+                  <span style={{ fontSize:13, color:'#64748b' }}>まで</span>
+                </div>
+              </div>
+              <div>
+                <label style={{ fontSize:12, fontWeight:600, color:'#475569', display:'block', marginBottom:6 }}>通知プレビュー</label>
+                <div style={{ background:'#f8fafc', border:'1px solid #e2e8f0', borderRadius:8, padding:'12px 14px', fontSize:12, color:'#334155', lineHeight:1.7 }}>
+                  【シフト受付開始】<br/>
+                  {YEAR_MONTH}前半のシフト提出をお願いします。<br/>
+                  {publishEndDay}日までにアプリからご提出ください。
+                </div>
+              </div>
+            </div>
+            <div style={{ padding:'12px 24px 20px', display:'flex', gap:10 }}>
+              <button onClick={() => setShowPublish(false)} style={{ flex:1, padding:'10px 0', borderRadius:8, border:'1px solid #dde5f0', background:'white', color:'#475569', fontSize:13, fontWeight:600, cursor:'pointer' }}>キャンセル</button>
+              <button onClick={handlePublish} style={{ flex:1, padding:'10px 0', borderRadius:8, border:'none', background:'#f59e0b', color:'white', fontSize:13, fontWeight:700, cursor:'pointer' }}>通知を送る</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── AI Modal ── */}
       {showAI && (
