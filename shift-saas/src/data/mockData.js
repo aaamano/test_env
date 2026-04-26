@@ -68,21 +68,21 @@ export const shiftData = {
 }
 
 export const dailyTargets = [
-  { day: 1,  dow: '水', sales: 420, customers: 140, avgSpend: 3000, orders: 210 },
-  { day: 2,  dow: '木', sales: 410, customers: 137, avgSpend: 2993, orders: 205 },
-  { day: 3,  dow: '金', sales: 480, customers: 160, avgSpend: 3000, orders: 240 },
-  { day: 4,  dow: '土', sales: 620, customers: 206, avgSpend: 3010, orders: 310 },
-  { day: 5,  dow: '日', sales: 590, customers: 196, avgSpend: 3010, orders: 295 },
-  { day: 6,  dow: '月', sales: 380, customers: 126, avgSpend: 3016, orders: 190 },
-  { day: 7,  dow: '火', sales: 370, customers: 123, avgSpend: 3008, orders: 185 },
-  { day: 8,  dow: '水', sales: 415, customers: 138, avgSpend: 3007, orders: 207 },
-  { day: 9,  dow: '木', sales: 405, customers: 135, avgSpend: 3000, orders: 202 },
-  { day: 10, dow: '金', sales: 475, customers: 158, avgSpend: 3006, orders: 237 },
-  { day: 11, dow: '土', sales: 650, customers: 216, avgSpend: 3009, orders: 325 },
-  { day: 12, dow: '日', sales: 610, customers: 203, avgSpend: 3004, orders: 305 },
-  { day: 13, dow: '月', sales: 360, customers: 120, avgSpend: 3000, orders: 180 },
-  { day: 14, dow: '火', sales: 355, customers: 118, avgSpend: 3008, orders: 177 },
-  { day: 15, dow: '水', sales: 425, customers: 141, avgSpend: 3014, orders: 212 },
+  { day: 1,  dow: '水', sales: 420, customers: 140, avgSpend: 3000, orders: 210, laborCost: 130, isWeekend: false },
+  { day: 2,  dow: '木', sales: 410, customers: 137, avgSpend: 2993, orders: 205, laborCost: 127, isWeekend: false },
+  { day: 3,  dow: '金', sales: 480, customers: 160, avgSpend: 3000, orders: 240, laborCost: 149, isWeekend: false },
+  { day: 4,  dow: '土', sales: 620, customers: 206, avgSpend: 3010, orders: 310, laborCost: 198, isWeekend: true  },
+  { day: 5,  dow: '日', sales: 590, customers: 196, avgSpend: 3010, orders: 295, laborCost: 189, isWeekend: true  },
+  { day: 6,  dow: '月', sales: 380, customers: 126, avgSpend: 3016, orders: 190, laborCost: 118, isWeekend: false },
+  { day: 7,  dow: '火', sales: 370, customers: 123, avgSpend: 3008, orders: 185, laborCost: 115, isWeekend: false },
+  { day: 8,  dow: '水', sales: 415, customers: 138, avgSpend: 3007, orders: 207, laborCost: 129, isWeekend: false },
+  { day: 9,  dow: '木', sales: 405, customers: 135, avgSpend: 3000, orders: 202, laborCost: 126, isWeekend: false },
+  { day: 10, dow: '金', sales: 475, customers: 158, avgSpend: 3006, orders: 237, laborCost: 147, isWeekend: false },
+  { day: 11, dow: '土', sales: 650, customers: 216, avgSpend: 3009, orders: 325, laborCost: 208, isWeekend: true  },
+  { day: 12, dow: '日', sales: 610, customers: 203, avgSpend: 3004, orders: 305, laborCost: 195, isWeekend: true  },
+  { day: 13, dow: '月', sales: 360, customers: 120, avgSpend: 3000, orders: 180, laborCost: 112, isWeekend: false },
+  { day: 14, dow: '火', sales: 355, customers: 118, avgSpend: 3008, orders: 177, laborCost: 110, isWeekend: false },
+  { day: 15, dow: '水', sales: 425, customers: 141, avgSpend: 3014, orders: 212, laborCost: 132, isWeekend: false },
 ]
 
 // For the shift decision screen – staff availability per time slot

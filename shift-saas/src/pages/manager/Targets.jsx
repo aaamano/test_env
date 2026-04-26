@@ -13,10 +13,11 @@ const calcDayAvgStaff = (orders, productivity) => {
 }
 
 const FIELDS = [
-  { key: 'sales',     label: '売上目標(千円)', unit: '千円', color: 'text-blue-700' },
-  { key: 'customers', label: '客数目標(名)',    unit: '名',  color: 'text-emerald-700' },
-  { key: 'avgSpend',  label: '客単価(円)',      unit: '円',  color: 'text-amber-700' },
-  { key: 'orders',    label: '注文数(件)',      unit: '件',  color: 'text-purple-700' },
+  { key: 'sales',     label: '売上目標(千円)', unit: '千円' },
+  { key: 'customers', label: '客数目標(名)',    unit: '名'  },
+  { key: 'avgSpend',  label: '客単価(円)',      unit: '円'  },
+  { key: 'orders',    label: '注文数(件)',      unit: '件'  },
+  { key: 'laborCost', label: '人件費目標(千円)', unit: '千円' },
 ]
 
 const ACTUAL_RATIO = [0.98, 0.93, 1.04, 1.06, 0.97, 1.01, 1.05, 0.99, 1.03, 0.95, 1.00, 1.07, 0.98, 1.02, 0.96]
@@ -113,11 +114,15 @@ export default function Targets() {
     e.target.value = ''
   }
 
-  const totalSales  = targets.reduce((s, d) => s + d.sales, 0)
-  const totalCust   = targets.reduce((s, d) => s + d.customers, 0)
-  const totalOrders = targets.reduce((s, d) => s + d.orders, 0)
-  const avgSpend    = totalCust > 0 ? Math.round((totalSales * 1000) / totalCust) : 0
+  const totalSales     = targets.reduce((s, d) => s + d.sales, 0)
+  const totalCust      = targets.reduce((s, d) => s + d.customers, 0)
+  const totalOrders    = targets.reduce((s, d) => s + d.orders, 0)
+  const totalLaborCost = targets.reduce((s, d) => s + (d.laborCost || 0), 0)
+  const avgSpend       = totalCust > 0 ? Math.round((totalSales * 1000) / totalCust) : 0
   const { avgProductivity } = storeConfig
+  const AVG_WAGE = 1050 // 円/h proxy for labor-hour calculation
+  const laborRatio = (d) => d.sales > 0 ? ((d.laborCost || 0) / d.sales * 100).toFixed(1) : '—'
+  const laborProd  = (d) => (d.laborCost || 0) > 0 ? Math.round(d.sales * AVG_WAGE / (d.laborCost || 1)) : '—'
 
   const chartMeta = {
     sales:     { label: '売上(千円)', color: '#818cf8', getValue: d => d.sales },
@@ -259,13 +264,50 @@ export default function Targets() {
                   </td>
                 ))}
                 <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:13 }}>
-                  {key === 'avgSpend' ? `¥${avgSpend.toLocaleString()}`
-                    : key === 'sales' ? `${totalSales.toLocaleString()}千`
+                  {key === 'avgSpend'   ? `¥${avgSpend.toLocaleString()}`
+                    : key === 'sales'   ? `${totalSales.toLocaleString()}千`
                     : key === 'customers' ? `${totalCust.toLocaleString()}`
+                    : key === 'laborCost' ? `${totalLaborCost.toLocaleString()}千`
                     : targets.reduce((s, d) => s + d[key], 0).toLocaleString()}
                 </td>
               </tr>
             ))}
+
+            {/* 人件比率 row */}
+            <tr style={{ borderBottom:'1px solid #e2e8f0', background:'#f8fafc' }}>
+              <td style={{ padding:'9px 16px', fontWeight:600, color:'#475569', fontSize:12 }}>
+                <div>人件比率</div>
+                <div style={{ fontWeight:400, color:'#94a3b8', fontSize:10 }}>人件費 ÷ 売上</div>
+              </td>
+              {targets.map(d => (
+                <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#f1f5f9' : '#f8fafc' }}>
+                  <div style={{ fontSize:12, fontWeight:600, color: (d.laborCost||0)/d.sales > 0.35 ? '#dc2626' : '#334155' }}>
+                    {laborRatio(d)}%
+                  </div>
+                </td>
+              ))}
+              <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:12 }}>
+                {totalSales > 0 ? (totalLaborCost / totalSales * 100).toFixed(1) : '—'}%
+              </td>
+            </tr>
+
+            {/* 人時生産性 row */}
+            <tr style={{ borderBottom:'1px solid #cbd5e1', background:'#f8fafc' }}>
+              <td style={{ padding:'9px 16px', fontWeight:600, color:'#475569', fontSize:12 }}>
+                <div>人時生産性</div>
+                <div style={{ fontWeight:400, color:'#94a3b8', fontSize:10 }}>売上 ÷ 総労働h</div>
+              </td>
+              {targets.map(d => (
+                <td key={d.day} style={{ textAlign:'center', padding:'6px 4px', background: d.isWeekend ? '#f1f5f9' : '#f8fafc' }}>
+                  <div style={{ fontSize:12, fontWeight:600, color:'#334155' }}>
+                    {(d.laborCost||0) > 0 ? `¥${laborProd(d).toLocaleString()}` : '—'}
+                  </div>
+                </td>
+              ))}
+              <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:12 }}>
+                {totalLaborCost > 0 ? `¥${Math.round(totalSales * AVG_WAGE / totalLaborCost).toLocaleString()}` : '—'}
+              </td>
+            </tr>
 
             {/* Required staff row */}
             <tr style={{ borderBottom:'1px solid #cbd5e1', background:'#f1f5f9' }}>
