@@ -82,7 +82,9 @@ export default function ShiftDecision() {
   const [aiStage,       setAIStage]      = useState(0)
   const [aiDays,        setAIDays]       = useState(() => new Set(daysConfig.map(d => d.day)))
   const [aiResult,      setAIResult]     = useState(null)
-  const [shiftStatus,   setShiftStatus]  = useState('draft')   // 'draft' | 'confirmed'
+  const [dayTaskOverrides, setDayTaskOverrides] = useState({})  // { [day]: { [taskId]: Partial<Task> } }
+  const [editDayTask,      setEditDayTask]      = useState(null) // taskId being edited for the day
+  const [shiftStatus,      setShiftStatus]      = useState('draft')   // 'draft' | 'confirmed'
   const [saveFlash,     setSaveFlash]    = useState('')          // 'saved' | 'confirmed' | ''
   const [showPublish,   setShowPublish]  = useState(false)
   const [publishEndDay, setPublishEndDay] = useState(15)
@@ -103,6 +105,13 @@ export default function ShiftDecision() {
     setShowPublish(false)
   }
 
+  const getEffectiveTasks = (day) => specialTasks.map(t => ({ ...t, ...(dayTaskOverrides[day]?.[t.id] || {}) }))
+  const setDayOverride = (day, taskId, patch) =>
+    setDayTaskOverrides(prev => ({
+      ...prev,
+      [day]: { ...(prev[day] || {}), [taskId]: { ...(prev[day]?.[taskId] || {}), ...patch } },
+    }))
+
   const slots = useMemo(
     () => generateSlots(15, storeConfig.openHour, storeConfig.closeHour),
     []
@@ -113,9 +122,10 @@ export default function ShiftDecision() {
   const dayTarget   = dailyTargets.find(t => t.day === selectedDay)
   const dailyOrders = dayTarget?.orders ?? 200
 
+  const effectiveTasks = getEffectiveTasks(selectedDay)
   const getRequired = (slot) => {
     const [h, m] = slot.split(':').map(Number)
-    const extra = getTasksForSlotMin(h * 60 + m, specialTasks).reduce((s, t) => s + t.requiredStaff, 0)
+    const extra = getTasksForSlotMin(h * 60 + m, effectiveTasks).reduce((s, t) => s + t.requiredStaff, 0)
     return calcRequiredStaff(dailyOrders, h, storeConfig.avgProductivity, extra)
   }
   const getAssignedList = (slot) => assigned[selectedDay]?.[slot] || []
@@ -238,20 +248,51 @@ export default function ShiftDecision() {
         ))}
       </div>
 
-      {/* ── Special task toggles ── */}
-      <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'center', flexShrink:0 }}>
-        <span style={{ fontSize:12, color:'#64748b' }}>特別業務:</span>
-        {specialTasks.map(t => (
-          <button key={t.id}
-            onClick={() => setSpecialTasks(prev => prev.map(x => x.id === t.id ? {...x, enabled: !x.enabled} : x))}
-            style={{
-              fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#cbd5e1' : '#dde5f0'}`,
-              background: t.enabled ? '#eef2ff' : '#f8fafc', color: t.enabled ? '#1e293b' : '#94a3b8',
-              fontWeight: t.enabled ? 600 : 400, cursor:'pointer', fontFamily:'inherit',
-            }}>
-            {t.enabled ? '✓' : '○'} {t.name} ({t.startTime}〜{t.endTime})
-          </button>
-        ))}
+      {/* ── Special task toggles (per-day) ── */}
+      <div style={{ display:'flex', gap:8, flexWrap:'wrap', alignItems:'flex-start', flexShrink:0 }}>
+        <span style={{ fontSize:12, color:'#64748b', paddingTop:6 }}>特別業務:</span>
+        {effectiveTasks.map(t => {
+          const isEditing = editDayTask === t.id
+          const ov = dayTaskOverrides[selectedDay]?.[t.id]
+          return (
+            <div key={t.id} style={{ display:'flex', flexDirection:'column', gap:4 }}>
+              <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <button
+                  onClick={() => setDayOverride(selectedDay, t.id, { enabled: !t.enabled })}
+                  style={{
+                    fontSize:12, padding:'4px 12px', borderRadius:20, border:`1px solid ${t.enabled ? '#cbd5e1' : '#dde5f0'}`,
+                    background: t.enabled ? '#eef2ff' : '#f8fafc', color: t.enabled ? '#1e293b' : '#94a3b8',
+                    fontWeight: t.enabled ? 600 : 400, cursor:'pointer', fontFamily:'inherit',
+                  }}>
+                  {t.enabled ? '✓' : '○'} {t.name} ({t.startTime}〜{t.endTime} /{t.requiredStaff}名)
+                </button>
+                <button onClick={() => setEditDayTask(isEditing ? null : t.id)}
+                  style={{ fontSize:10, color:'#6366f1', background:'none', border:'none', cursor:'pointer', textDecoration:'underline', fontFamily:'inherit' }}>
+                  {isEditing ? '閉じる' : 'この日のみ変更'}
+                </button>
+                {ov && <span style={{ fontSize:10, color:'#f59e0b', fontWeight:600 }}>※上書き中</span>}
+              </div>
+              {isEditing && (
+                <div style={{ display:'flex', gap:8, padding:'8px 12px', background:'#fafafa', border:'1px solid #e2e8f0', borderRadius:8, alignItems:'center', flexWrap:'wrap', fontSize:12 }}>
+                  <label style={{ color:'#475569', fontWeight:600 }}>開始</label>
+                  <input type="time" defaultValue={t.startTime.padStart(5,'0')}
+                    onChange={e => setDayOverride(selectedDay, t.id, { startTime: e.target.value })}
+                    style={{ padding:'3px 6px', borderRadius:6, border:'1px solid #dde5f0', fontSize:12, fontFamily:'inherit' }} />
+                  <label style={{ color:'#475569', fontWeight:600 }}>終了</label>
+                  <input type="time" defaultValue={t.endTime.padStart(5,'0')}
+                    onChange={e => setDayOverride(selectedDay, t.id, { endTime: e.target.value })}
+                    style={{ padding:'3px 6px', borderRadius:6, border:'1px solid #dde5f0', fontSize:12, fontFamily:'inherit' }} />
+                  <label style={{ color:'#475569', fontWeight:600 }}>必要人数</label>
+                  <input type="number" min={1} max={10} defaultValue={t.requiredStaff}
+                    onChange={e => setDayOverride(selectedDay, t.id, { requiredStaff: Number(e.target.value) })}
+                    style={{ width:48, padding:'3px 6px', borderRadius:6, border:'1px solid #dde5f0', fontSize:12, fontFamily:'inherit', textAlign:'center' }} />
+                  <button onClick={() => { setDayTaskOverrides(prev => { const n = {...prev}; if(n[selectedDay]) { delete n[selectedDay][t.id] }; return n }); setEditDayTask(null) }}
+                    style={{ fontSize:11, color:'#94a3b8', background:'none', border:'none', cursor:'pointer', fontFamily:'inherit' }}>リセット</button>
+                </div>
+              )}
+            </div>
+          )
+        })}
       </div>
 
       {/* ── Main grid ── */}
