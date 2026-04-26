@@ -72,13 +72,43 @@ function SVGLineChart({ targets, meta }) {
   )
 }
 
+const HOURS_LIST = Object.keys(ORDER_DISTRIBUTION).map(Number).sort((a, b) => a - b)
+
+function initHourly(d) {
+  const result = {}
+  HOURS_LIST.forEach(h => {
+    const ratio = ORDER_DISTRIBUTION[h] || 0
+    result[h] = {
+      sales:     Math.round(d.sales     * ratio),
+      laborCost: Math.round((d.laborCost || 0) * ratio),
+    }
+  })
+  return result
+}
+
 export default function Targets() {
   const [targets, setTargets] = useState(dailyTargets)
   const [editingCell, setEditingCell] = useState(null)
   const [saved, setSaved] = useState(false)
   const [csvMsg, setCsvMsg] = useState('')
   const [activeChart, setActiveChart] = useState('sales')
+  const [hourlyExpand, setHourlyExpand] = useState(null)   // day number | null
+  const [hourlyTargets, setHourlyTargets] = useState({})   // { [day]: { [hour]: { sales, laborCost } } }
   const fileInputRef = useRef(null)
+
+  const openHourly = (day) => {
+    if (!hourlyTargets[day]) {
+      const d = targets.find(t => t.day === day)
+      setHourlyTargets(prev => ({ ...prev, [day]: initHourly(d) }))
+    }
+    setHourlyExpand(day)
+  }
+  const updateHourly = (day, hour, field, value) => {
+    setHourlyTargets(prev => ({
+      ...prev,
+      [day]: { ...prev[day], [hour]: { ...prev[day][hour], [field]: Number(value) } },
+    }))
+  }
 
   const update = (day, field, value) => {
     setTargets(prev => prev.map(d =>
@@ -228,6 +258,7 @@ export default function Targets() {
                 }}>
                   <div>{d.day}日</div>
                   <div style={{ fontSize:10, fontWeight:400 }}>{d.dow}</div>
+                  <button onClick={() => openHourly(d.day)} style={{ fontSize:9, color:'#6366f1', background:'none', border:'none', cursor:'pointer', marginTop:2, padding:0, fontWeight:600 }}>📊詳細</button>
                 </th>
               ))}
               <th style={{ textAlign:'center', padding:'10px 12px', fontWeight:700, color:'white', background:'#94a3b8', minWidth:80, fontSize:12.5 }}>合計/平均</th>
@@ -333,9 +364,78 @@ export default function Targets() {
           </tbody>
         </table>
         <div style={{ padding:'8px 16px', fontSize:11, color:'#94a3b8' }}>
-          ※ セルをクリックして直接編集できます。必要人員は注文数÷時間生産性({avgProductivity}件/h)で推定。
+          ※ セルをクリックして直接編集できます。必要人員は注文数÷時間生産性({avgProductivity}件/h)で推定。列ヘッダの📊詳細で時間帯別入力が可能です。
         </div>
       </div>
+
+      {/* ── Hourly breakdown modal ── */}
+      {hourlyExpand !== null && (() => {
+        const d = targets.find(t => t.day === hourlyExpand)
+        const hData = hourlyTargets[hourlyExpand] || {}
+        const totSales = HOURS_LIST.reduce((s, h) => s + (hData[h]?.sales || 0), 0)
+        const totLabor = HOURS_LIST.reduce((s, h) => s + (hData[h]?.laborCost || 0), 0)
+        return (
+          <div style={{ position:'fixed', inset:0, background:'rgba(15,23,42,0.45)', zIndex:100, display:'flex', alignItems:'center', justifyContent:'center', padding:16 }}>
+            <div style={{ background:'white', borderRadius:16, width:'100%', maxWidth:560, maxHeight:'85vh', display:'flex', flexDirection:'column', boxShadow:'0 20px 60px rgba(15,23,42,0.18)' }}>
+              <div style={{ display:'flex', alignItems:'center', padding:'16px 20px', borderBottom:'1px solid #e2e8f0' }}>
+                <div>
+                  <div style={{ fontSize:16, fontWeight:700, color:'#0f172a' }}>{d.day}日({d.dow}) 時間帯別目標</div>
+                  <div style={{ fontSize:11, color:'#94a3b8', marginTop:2 }}>各時間帯の売上・人件費を入力できます</div>
+                </div>
+                <button onClick={() => setHourlyExpand(null)} style={{ marginLeft:'auto', background:'none', border:'none', fontSize:20, cursor:'pointer', color:'#94a3b8', lineHeight:1 }}>✕</button>
+              </div>
+              <div style={{ overflowY:'auto', padding:'12px 20px' }}>
+                <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12 }}>
+                  <thead>
+                    <tr style={{ background:'#e2e8f0' }}>
+                      {['時間帯','売上目標(千円)','人件費目標(千円)','人件比率','人時生産性'].map(h => (
+                        <th key={h} style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b', textAlign:'center', whiteSpace:'nowrap', borderBottom:'1px solid #cbd5e1' }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {HOURS_LIST.map(h => {
+                      const row = hData[h] || { sales: 0, laborCost: 0 }
+                      const ratio = row.sales > 0 ? (row.laborCost / row.sales * 100).toFixed(1) : '—'
+                      const prod  = row.laborCost > 0 ? `¥${Math.round(row.sales * AVG_WAGE / row.laborCost).toLocaleString()}` : '—'
+                      return (
+                        <tr key={h} style={{ borderBottom:'1px solid #f1f5f9' }}>
+                          <td style={{ padding:'7px 10px', fontWeight:600, color:'#334155', textAlign:'center' }}>{h}:00</td>
+                          {(['sales','laborCost'] ).map(field => (
+                            <td key={field} style={{ padding:'5px 8px', textAlign:'center' }}>
+                              <input type="number" value={row[field]}
+                                onChange={e => updateHourly(hourlyExpand, h, field, e.target.value)}
+                                style={{ width:80, textAlign:'center', border:'1px solid #dde5f0', borderRadius:6, padding:'4px 6px', fontSize:12, outline:'none', fontFamily:'inherit' }}
+                                onFocus={e => e.target.style.borderColor='#4f46e5'}
+                                onBlur={e => e.target.style.borderColor='#dde5f0'}
+                              />
+                            </td>
+                          ))}
+                          <td style={{ padding:'7px 10px', textAlign:'center', fontWeight:600, color: parseFloat(ratio) > 35 ? '#dc2626' : '#334155' }}>{ratio}{ratio !== '—' ? '%' : ''}</td>
+                          <td style={{ padding:'7px 10px', textAlign:'center', fontWeight:600, color:'#334155' }}>{prod}</td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr style={{ background:'#e8edf4', borderTop:'2px solid #cbd5e1' }}>
+                      <td style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b' }}>合計</td>
+                      <td style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b', textAlign:'center' }}>{totSales}</td>
+                      <td style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b', textAlign:'center' }}>{totLabor}</td>
+                      <td style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b', textAlign:'center' }}>{totSales > 0 ? (totLabor / totSales * 100).toFixed(1) : '—'}{totSales > 0 ? '%' : ''}</td>
+                      <td style={{ padding:'8px 10px', fontWeight:700, color:'#1e293b', textAlign:'center' }}>{totLabor > 0 ? `¥${Math.round(totSales * AVG_WAGE / totLabor).toLocaleString()}` : '—'}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <div style={{ padding:'12px 20px', borderTop:'1px solid #e2e8f0', display:'flex', justifyContent:'flex-end', gap:8 }}>
+                <button onClick={() => setHourlyExpand(null)} style={{ padding:'8px 20px', borderRadius:8, border:'1px solid #dde5f0', background:'white', color:'#475569', fontSize:13, fontWeight:600, cursor:'pointer' }}>閉じる</button>
+                <button onClick={() => setHourlyExpand(null)} style={{ padding:'8px 20px', borderRadius:8, border:'none', background:'#4f46e5', color:'white', fontSize:13, fontWeight:600, cursor:'pointer' }}>保存</button>
+              </div>
+            </div>
+          </div>
+        )
+      })()}
     </div>
   )
 }
