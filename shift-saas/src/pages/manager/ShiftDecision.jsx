@@ -3,6 +3,7 @@ import {
   staff, daysConfig, shiftData, assignedShifts, YEAR_MONTH,
   storeConfig, staffConstraints, dailyTargets, ORDER_DISTRIBUTION,
   generateSlots, parseShiftTimes, calcRequiredStaff, skillLabels,
+  decomposeShiftHours, calcDailyPay,
 } from '../../data/mockData'
 
 const AI_STAGES = [
@@ -66,11 +67,13 @@ const SW = 64    // sub-label (top) = start+end cols (bottom)
 const STW = 32   // start col
 const ETW = 32   // end col
 const SUMM = [
-  { k: 'work',  l: '勤務',   w: 38 },
-  { k: 'labor', l: '労働',   w: 38 },
-  { k: 'night', l: '深夜',   w: 38 },
-  { k: 'pay',   l: '給与',   w: 68 },
-  { k: 'trans', l: '交通費', w: 54 },
+  { k: 'work',       l: '勤務',   w: 38 },
+  { k: 'labor',      l: '労働',   w: 38 },
+  { k: 'overtime',   l: '超勤',   w: 38 },
+  { k: 'lateNight',  l: '深夜',   w: 38 },
+  { k: 'otLateNight',l: '残深',   w: 38 },
+  { k: 'pay',        l: '給与',   w: 72 },
+  { k: 'trans',      l: '交通費', w: 60 },
 ]
 
 export default function ShiftDecision() {
@@ -162,11 +165,12 @@ export default function ShiftDecision() {
     const code = shiftData[staffId]?.[selectedDay - 1] || 'X'
     const t = parseShiftTimes(code)
     if (!t) return null
-    const work  = t.end - t.start
-    const labor = Math.max(0, work - (work >= 6 ? 1 : 0))
-    const night = Math.max(0, Math.min(t.end, 24) - Math.max(t.start, 22))
     const member = staff.find(s => s.id === staffId)
-    return { start: t.start, end: t.end, work, labor, night, pay: Math.round(labor * (member?.wage ?? 1050)) }
+    const wage   = member?.wage ?? 1050
+    const trans  = member?.transitPerDay ?? 0
+    const { work, labor, overtime, lateNight, otLateNight } = decomposeShiftHours(t.start, t.end)
+    const pay = calcDailyPay(wage, labor, overtime, lateNight, otLateNight)
+    return { start: t.start, end: t.end, work, labor, overtime, lateNight, otLateNight, pay: Math.round(pay), trans }
   }
 
   const reqColor = (cnt, req) => {
@@ -427,10 +431,13 @@ export default function ShiftDecision() {
                   <td style={td({ background:rowBg })} />
                   {SUMM.map(col => {
                     const v = summ ? (
-                      col.k === 'work'  ? summ.work.toFixed(2) :
-                      col.k === 'labor' ? summ.labor.toFixed(2) :
-                      col.k === 'night' ? (summ.night > 0 ? summ.night.toFixed(2) : '') :
-                      col.k === 'pay'   ? `¥${summ.pay.toLocaleString()}` : ''
+                      col.k === 'work'         ? summ.work.toFixed(2) :
+                      col.k === 'labor'        ? summ.labor.toFixed(2) :
+                      col.k === 'overtime'     ? (summ.overtime > 0    ? summ.overtime.toFixed(2)    : '') :
+                      col.k === 'lateNight'    ? (summ.lateNight > 0   ? summ.lateNight.toFixed(2)   : '') :
+                      col.k === 'otLateNight'  ? (summ.otLateNight > 0 ? summ.otLateNight.toFixed(2) : '') :
+                      col.k === 'pay'          ? `¥${summ.pay.toLocaleString()}` :
+                      col.k === 'trans'        ? `¥${summ.trans.toLocaleString()}` : ''
                     ) : ''
                     return <td key={col.k} style={td({ background: rowBg, color:'#334155', fontWeight: v ? 500 : 400 })}>{v}</td>
                   })}
