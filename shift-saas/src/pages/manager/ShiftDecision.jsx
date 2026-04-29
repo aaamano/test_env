@@ -3,7 +3,7 @@ import {
   staff, daysConfig, shiftData, assignedShifts, YEAR_MONTH,
   storeConfig, staffConstraints, dailyTargets, ORDER_DISTRIBUTION,
   generateSlots, parseShiftTimes, calcRequiredStaff, skillLabels,
-  decomposeShiftHours, calcDailyPay,
+  decomposeShiftHours, calcDailyPay, SALES_PATTERNS, dayPatterns as initialDayPatterns,
 } from '../../data/mockData'
 
 const AI_STAGES = [
@@ -87,6 +87,7 @@ export default function ShiftDecision() {
   const [aiResult,      setAIResult]     = useState(null)
   const [dayTaskOverrides, setDayTaskOverrides] = useState({})  // { [day]: { [taskId]: Partial<Task> } }
   const [editDayTask,      setEditDayTask]      = useState(null) // taskId being edited for the day
+  const [dayPatternMap,    setDayPatternMap]    = useState(initialDayPatterns) // day -> pattern key
   const [shiftStatus,      setShiftStatus]      = useState('draft')   // 'draft' | 'confirmed'
   const [saveFlash,     setSaveFlash]    = useState('')          // 'saved' | 'confirmed' | ''
   const [showPublish,   setShowPublish]  = useState(false)
@@ -151,15 +152,21 @@ export default function ShiftDecision() {
     })
   }
 
+  const currentPatternKey = dayPatternMap[selectedDay] || 'weekday1'
+  const currentPattern    = SALES_PATTERNS[currentPatternKey]
+
   const slotSalesKen = (slot) => {
     const [h] = slot.split(':').map(Number)
+    // Use pattern's hourly amount (in 円) → 千円
+    const amt = currentPattern?.hourlySales[h]
+    if (amt != null) return Math.round(amt / 1000)
     return Math.round((dayTarget?.sales ?? 0) * (ORDER_DISTRIBUTION[h] ?? 0))
   }
   const cumSales = useMemo(() => {
     let cum = 0
     return slots.map(s => { cum += slotSalesKen(s); return cum })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slots, selectedDay])
+  }, [slots, selectedDay, currentPatternKey])
 
   const getShiftSummary = (staffId) => {
     const code = shiftData[staffId]?.[selectedDay - 1] || 'X'
@@ -250,6 +257,25 @@ export default function ShiftDecision() {
             <div>{d.day}</div><div style={{ fontSize:9, fontWeight:400 }}>{d.dow}</div>
           </button>
         ))}
+      </div>
+
+      {/* ── Daily pattern selector ── */}
+      <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap', flexShrink:0 }}>
+        <span style={{ fontSize:12, color:'#64748b' }}>{selectedDay}日のパターン:</span>
+        {Object.entries(SALES_PATTERNS).map(([key, p]) => {
+          const on = currentPatternKey === key
+          return (
+            <button key={key} onClick={() => setDayPatternMap(prev => ({ ...prev, [selectedDay]: key }))} style={{
+              padding:'5px 14px', borderRadius:18, border:'none', cursor:'pointer', fontSize:12,
+              fontWeight: on ? 700 : 500, fontFamily:'inherit',
+              background: on ? '#4f46e5' : '#f0f5f9',
+              color:      on ? 'white'   : '#475569',
+            }}>{p.label}</button>
+          )
+        })}
+        <span style={{ fontSize:11, color:'#94a3b8', marginLeft:'auto' }}>
+          適用パターン売上合計: ¥{Object.values(currentPattern?.hourlySales || {}).reduce((a,b)=>a+b,0).toLocaleString()}
+        </span>
       </div>
 
       {/* ── Special task toggles (per-day) ── */}
