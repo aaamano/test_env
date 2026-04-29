@@ -1,5 +1,7 @@
 import { useState, useRef } from 'react'
-import { dailyTargets, YEAR_MONTH, storeConfig, calcRequiredStaff, ORDER_DISTRIBUTION } from '../../data/mockData'
+import { dailyTargets, YEAR_MONTH, storeConfig, calcRequiredStaff, ORDER_DISTRIBUTION, SALES_PATTERNS } from '../../data/mockData'
+
+const PATTERN_HOURS = Array.from({ length: 14 }, (_, i) => i + 9) // 9-22
 
 const calcDayPeakStaff = (orders, productivity) => {
   const hours = Object.keys(ORDER_DISTRIBUTION).map(Number)
@@ -94,7 +96,17 @@ export default function Targets() {
   const [activeChart, setActiveChart] = useState('sales')
   const [hourlyExpand, setHourlyExpand] = useState(null)   // day number | null
   const [hourlyTargets, setHourlyTargets] = useState({})   // { [day]: { [hour]: { sales, laborCost } } }
+  const [patterns, setPatterns] = useState(SALES_PATTERNS) // editable 5 patterns
+  const [activePattern, setActivePattern] = useState('weekday1')
   const fileInputRef = useRef(null)
+
+  const updatePatternHour = (key, hour, value) => {
+    setPatterns(prev => ({
+      ...prev,
+      [key]: { ...prev[key], hourlySales: { ...prev[key].hourlySales, [hour]: Number(value) || 0 } },
+    }))
+  }
+  const patternTotal = (key) => Object.values(patterns[key]?.hourlySales || {}).reduce((a, b) => a + b, 0)
 
   const openHourly = (day) => {
     if (!hourlyTargets[day]) {
@@ -365,6 +377,76 @@ export default function Targets() {
         </table>
         <div style={{ padding:'8px 16px', fontSize:11, color:'#94a3b8' }}>
           ※ セルをクリックして直接編集できます。必要人員は注文数÷時間生産性({avgProductivity}件/h)で推定。列ヘッダの📊詳細で時間帯別入力が可能です。
+        </div>
+      </div>
+
+      {/* ── 時間帯別売上パターン ── */}
+      <div className="mgr-card" style={{ padding:'20px 20px 14px', marginTop:24 }}>
+        <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', marginBottom:16 }}>
+          <div>
+            <h2 style={{ fontSize:14, fontWeight:600, color:'#0f172a', margin:0 }}>時間帯別売上パターン</h2>
+            <p style={{ fontSize:11, color:'#94a3b8', marginTop:4, marginBottom:0 }}>5パターンの時間帯別売上を設定。シフト決定で各日にどのパターンを使うかを選択できます。</p>
+          </div>
+        </div>
+        <div style={{ display:'flex', gap:6, marginBottom:14, flexWrap:'wrap' }}>
+          {Object.entries(patterns).map(([key, p]) => (
+            <button key={key} onClick={() => setActivePattern(key)}
+              style={{
+                padding:'7px 16px', borderRadius:20, fontSize:12, fontWeight: activePattern === key ? 700 : 500,
+                background: activePattern === key ? '#4f46e5' : '#f0f5f9',
+                color: activePattern === key ? 'white' : '#475569',
+                border:'none', cursor:'pointer', fontFamily:'inherit', transition:'all 0.15s',
+              }}>
+              {p.label}
+              <span style={{ marginLeft:6, fontSize:10, opacity:0.85 }}>¥{patternTotal(key).toLocaleString()}</span>
+            </button>
+          ))}
+        </div>
+        <div style={{ overflowX:'auto' }}>
+          <table style={{ width:'100%', borderCollapse:'collapse', fontSize:12, fontFamily:'inherit' }}>
+            <thead>
+              <tr style={{ background:'#e2e8f0', borderBottom:'1px solid #cbd5e1' }}>
+                <th style={{ textAlign:'left', padding:'8px 12px', fontWeight:700, color:'#1e293b', minWidth:110, fontSize:12 }}>項目</th>
+                {PATTERN_HOURS.map(h => (
+                  <th key={h} style={{ textAlign:'center', padding:'8px 4px', fontWeight:700, color:'#1e293b', minWidth:60, fontSize:11.5 }}>{h}:00</th>
+                ))}
+                <th style={{ textAlign:'center', padding:'8px 12px', fontWeight:700, color:'white', background:'#94a3b8', minWidth:80, fontSize:12 }}>合計</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style={{ borderBottom:'1px solid #f0f5f9' }}>
+                <td style={{ padding:'9px 12px', fontWeight:600, color:'#334155', fontSize:12.5 }}>売上 (円)</td>
+                {PATTERN_HOURS.map(h => {
+                  const v = patterns[activePattern]?.hourlySales[h] ?? 0
+                  return (
+                    <td key={h} style={{ textAlign:'center', padding:'4px 2px', background:'white' }}>
+                      <input type="number" value={v}
+                        onChange={e => updatePatternHour(activePattern, h, e.target.value)}
+                        style={{ width:54, textAlign:'center', border:'1px solid #dde5f0', borderRadius:4, padding:'4px 4px', fontSize:11, outline:'none', fontFamily:'inherit' }}
+                        onFocus={e => e.target.style.borderColor='#4f46e5'}
+                        onBlur={e => e.target.style.borderColor='#dde5f0'} />
+                    </td>
+                  )
+                })}
+                <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:13 }}>
+                  ¥{patternTotal(activePattern).toLocaleString()}
+                </td>
+              </tr>
+              <tr style={{ borderBottom:'1px solid #f0f5f9', background:'#f8fafc' }}>
+                <td style={{ padding:'9px 12px', fontWeight:600, color:'#475569', fontSize:12 }}>構成比 (%)</td>
+                {PATTERN_HOURS.map(h => {
+                  const tot = patternTotal(activePattern) || 1
+                  const v = patterns[activePattern]?.hourlySales[h] ?? 0
+                  return (
+                    <td key={h} style={{ textAlign:'center', padding:'6px 4px', background:'#f8fafc', fontSize:11, color:'#64748b' }}>
+                      {(v / tot * 100).toFixed(1)}%
+                    </td>
+                  )
+                })}
+                <td style={{ textAlign:'center', padding:'8px 12px', background:'#e8edf4', fontWeight:700, color:'#1e293b', fontSize:12 }}>100.0%</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
 
