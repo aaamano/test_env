@@ -89,7 +89,10 @@ function initHourly(d) {
 }
 
 export default function Targets() {
-  const [targets, setTargets] = useState(dailyTargets)
+  const [allTargets, setAllTargets] = useState(dailyTargets)
+  const [half, setHalf] = useState('first')   // 'first' | 'second'
+  const targets = allTargets.filter(d => half === 'first' ? d.day <= 15 : d.day >= 16)
+  const setTargets = (updater) => setAllTargets(prev => typeof updater === 'function' ? updater(prev) : updater)
   const [editingCell, setEditingCell] = useState(null)
   const [saved, setSaved] = useState(false)
   const [csvMsg, setCsvMsg] = useState('')
@@ -123,7 +126,7 @@ export default function Targets() {
   }
 
   const update = (day, field, value) => {
-    setTargets(prev => prev.map(d =>
+    setAllTargets(prev => prev.map(d =>
       d.day !== day ? d : { ...d, [field]: Number(value) }
     ))
   }
@@ -182,11 +185,21 @@ export default function Targets() {
   return (
     <div className="mgr-page">
       {/* Header */}
-      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24 }}>
+      <div style={{ display:'flex', alignItems:'flex-start', justifyContent:'space-between', marginBottom:24, flexWrap:'wrap', gap:12 }}>
         <div>
-          <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH} 前半</div>
+          <div style={{ fontSize:11, color:'#94a3b8', marginBottom:4 }}>{YEAR_MONTH} {half === 'first' ? '前半 (1〜15日)' : '後半 (16〜30日)'}</div>
           <h1 style={{ fontSize:22, fontWeight:700, color:'#0f172a', letterSpacing:'-0.01em', margin:0 }}>目標計画</h1>
           <p style={{ fontSize:12, color:'#64748b', marginTop:4, marginBottom:0 }}>日別売上・客数・客単価の目標を設定します</p>
+          <div style={{ display:'flex', gap:6, marginTop:10 }}>
+            {[{ k:'first', l:'前半 (1〜15日)' }, { k:'second', l:'後半 (16〜30日)' }].map(o => (
+              <button key={o.k} onClick={() => setHalf(o.k)} style={{
+                padding:'5px 14px', borderRadius:18, fontSize:12, fontWeight: half === o.k ? 700 : 500,
+                background: half === o.k ? '#4f46e5' : '#f0f5f9',
+                color:      half === o.k ? 'white'   : '#475569',
+                border:'none', cursor:'pointer', fontFamily:'inherit',
+              }}>{o.l}</button>
+            ))}
+          </div>
         </div>
         <div style={{ display:'flex', alignItems:'center', gap:8 }}>
           {csvMsg && <span style={{ fontSize:12, color: csvMsg.startsWith('✓') ? '#10b981' : '#ef4444' }}>{csvMsg}</span>}

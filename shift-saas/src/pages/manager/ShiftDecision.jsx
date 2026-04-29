@@ -88,6 +88,8 @@ export default function ShiftDecision() {
   const [dayTaskOverrides, setDayTaskOverrides] = useState({})  // { [day]: { [taskId]: Partial<Task> } }
   const [editDayTask,      setEditDayTask]      = useState(null) // taskId being edited for the day
   const [dayPatternMap,    setDayPatternMap]    = useState(initialDayPatterns) // day -> pattern key
+  const [half,             setHalf]             = useState('first') // 'first' | 'second'
+  const visibleDays = daysConfig.filter(d => half === 'first' ? d.day <= 15 : d.day >= 16)
   const [shiftStatus,      setShiftStatus]      = useState('draft')   // 'draft' | 'confirmed'
   const [saveFlash,     setSaveFlash]    = useState('')          // 'saved' | 'confirmed' | ''
   const [showPublish,   setShowPublish]  = useState(false)
@@ -245,9 +247,22 @@ export default function ShiftDecision() {
         </div>
       </div>
 
+      {/* ── Half toggle ── */}
+      <div style={{ display:'flex', gap:6, alignItems:'center', flexShrink:0 }}>
+        <span style={{ fontSize:12, color:'#64748b' }}>期間:</span>
+        {[{ k:'first', l:'前半 (1〜15日)' }, { k:'second', l:'後半 (16〜30日)' }].map(o => (
+          <button key={o.k} onClick={() => { setHalf(o.k); setSelectedDay(o.k === 'first' ? 1 : 16) }} style={{
+            padding:'5px 14px', borderRadius:18, fontSize:12, fontWeight: half === o.k ? 700 : 500,
+            background: half === o.k ? '#4f46e5' : '#f0f5f9',
+            color:      half === o.k ? 'white'   : '#475569',
+            border:'none', cursor:'pointer', fontFamily:'inherit',
+          }}>{o.l}</button>
+        ))}
+      </div>
+
       {/* ── Day selector ── */}
       <div style={{ display:'flex', gap:4, overflowX:'auto', paddingBottom:2, flexShrink:0 }}>
-        {daysConfig.map(d => (
+        {visibleDays.map(d => (
           <button key={d.day} onClick={() => setSelectedDay(d.day)} style={{
             flexShrink:0, width:44, padding:'5px 0', borderRadius:7, border:'none', cursor:'pointer',
             fontSize:11, fontWeight:600, fontFamily:'inherit',

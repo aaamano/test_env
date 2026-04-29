@@ -25,13 +25,16 @@ export const staff = [
   { id: 21, name: '佐藤 慧',         type: 'F',    role: 'スタッフ',     skills: ['barista', 'cashier', 'floor'], hourlyOrders: 9,  wage: 1080, transitPerDay: 682  },
 ]
 
-const DAYS_IN_MONTH = 15 // 前半シフト
-const DOW = ['水','木','金','土','日','月','火','水','木','金','土','日','月','火','水']
+const DAYS_IN_MONTH = 30 // 月全体
+// 2026年4月の曜日配列 (4/1=水 ... 4/30=木)
+const DOW = ['水','木','金','土','日','月','火','水','木','金','土','日','月','火','水',
+             '木','金','土','日','月','火','水','木','金','土','日','月','火','水','木']
 
 export const daysConfig = Array.from({ length: DAYS_IN_MONTH }, (_, i) => ({
   day: i + 1,
   dow: DOW[i],
   isWeekend: ['土','日'].includes(DOW[i]),
+  half: i < 15 ? 'first' : 'second',
 }))
 
 // Shift patterns per staff (simplified)
@@ -66,6 +69,8 @@ export const shiftData = {
   20: [SP.X,   SP.X,   SP.X,   SP.X,   SP['14L'],SP.X, SP.X,   SP.X,   SP.X,   SP['14L'],SP['14L'],SP.X,SP['14L'],SP.X,  SP.X],
   21: [SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.F,   SP.X,   SP.F,   SP.F,   SP.F],
 }
+// 後半(16-30日)はサンプルとして前半をミラーリング
+Object.keys(shiftData).forEach(id => { shiftData[id] = [...shiftData[id], ...shiftData[id]] })
 
 export const dailyTargets = [
   { day: 1,  dow: '水', sales: 420, customers: 140, avgSpend: 3000, orders: 210, laborCost: 130, isWeekend: false },
@@ -83,6 +88,21 @@ export const dailyTargets = [
   { day: 13, dow: '月', sales: 360, customers: 120, avgSpend: 3000, orders: 180, laborCost: 112, isWeekend: false },
   { day: 14, dow: '火', sales: 355, customers: 118, avgSpend: 3008, orders: 177, laborCost: 110, isWeekend: false },
   { day: 15, dow: '水', sales: 425, customers: 141, avgSpend: 3014, orders: 212, laborCost: 132, isWeekend: false },
+  { day: 16, dow: '木', sales: 415, customers: 138, avgSpend: 3007, orders: 207, laborCost: 129, isWeekend: false },
+  { day: 17, dow: '金', sales: 485, customers: 162, avgSpend: 2994, orders: 242, laborCost: 150, isWeekend: false },
+  { day: 18, dow: '土', sales: 635, customers: 211, avgSpend: 3009, orders: 317, laborCost: 203, isWeekend: true  },
+  { day: 19, dow: '日', sales: 600, customers: 199, avgSpend: 3015, orders: 300, laborCost: 192, isWeekend: true  },
+  { day: 20, dow: '月', sales: 375, customers: 124, avgSpend: 3024, orders: 187, laborCost: 116, isWeekend: false },
+  { day: 21, dow: '火', sales: 365, customers: 121, avgSpend: 3017, orders: 182, laborCost: 113, isWeekend: false },
+  { day: 22, dow: '水', sales: 420, customers: 140, avgSpend: 3000, orders: 210, laborCost: 130, isWeekend: false },
+  { day: 23, dow: '木', sales: 410, customers: 137, avgSpend: 2993, orders: 205, laborCost: 127, isWeekend: false },
+  { day: 24, dow: '金', sales: 480, customers: 160, avgSpend: 3000, orders: 240, laborCost: 149, isWeekend: false },
+  { day: 25, dow: '土', sales: 645, customers: 214, avgSpend: 3014, orders: 322, laborCost: 206, isWeekend: true  },
+  { day: 26, dow: '日', sales: 615, customers: 204, avgSpend: 3015, orders: 307, laborCost: 197, isWeekend: true  },
+  { day: 27, dow: '月', sales: 370, customers: 123, avgSpend: 3008, orders: 185, laborCost: 115, isWeekend: false },
+  { day: 28, dow: '火', sales: 365, customers: 121, avgSpend: 3017, orders: 182, laborCost: 113, isWeekend: false },
+  { day: 29, dow: '水', sales: 420, customers: 140, avgSpend: 3000, orders: 210, laborCost: 130, isWeekend: false },
+  { day: 30, dow: '木', sales: 410, customers: 137, avgSpend: 2993, orders: 205, laborCost: 127, isWeekend: false },
 ]
 
 // For the shift decision screen – staff availability per time slot
