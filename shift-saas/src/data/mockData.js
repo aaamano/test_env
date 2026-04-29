@@ -2,27 +2,27 @@ export const STORE_NAME = 'Segafredo ZANETTI 新宿三丁目店'
 export const YEAR_MONTH = '2026年4月'
 
 export const staff = [
-  { id: 1,  name: '金子 光男',       type: 'F',    role: 'マネージャー', skills: ['barista', 'cashier', 'floor'], hourlyOrders: 12, wage: 1250 },
-  { id: 2,  name: '澤井 詩議',       type: 'F',    role: 'サブマネージャー', skills: ['barista', 'cashier'], hourlyOrders: 11, wage: 1200 },
-  { id: 3,  name: '吉田 郁美',       type: 'P',    role: 'スタッフ',     skills: ['barista', 'cashier', 'floor'], hourlyOrders: 9,  wage: 1050 },
-  { id: 4,  name: '岩間 康尚',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050 },
-  { id: 5,  name: '杉崎 浩枝',       type: 'P',    role: 'スタッフ',     skills: ['cashier'],                      hourlyOrders: 7,  wage: 1050 },
-  { id: 6,  name: 'スクアルチナ マルコ', type: 'P', role: 'バリスタ',   skills: ['barista', 'cashier', 'floor'], hourlyOrders: 13, wage: 1100 },
-  { id: 7,  name: '二関 大地',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 7,  wage: 1050 },
-  { id: 8,  name: '松井 華乃',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050 },
-  { id: 9,  name: '堀内 省吾',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030 },
-  { id: 10, name: '崔 恩雄',         type: 'P',    role: 'スタッフ',     skills: ['barista', 'floor'],             hourlyOrders: 9,  wage: 1050 },
-  { id: 11, name: 'クイ',            type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030 },
-  { id: 12, name: '吉冨 寛大',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050 },
-  { id: 13, name: '譚木 りさ',       type: 'P',    role: 'スタッフ',     skills: ['barista', 'cashier'],           hourlyOrders: 8,  wage: 1050 },
-  { id: 14, name: '飯田 奈洋美',     type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050 },
-  { id: 15, name: '若林 百央',       type: 'P',    role: 'スタッフ',     skills: ['barista'],                      hourlyOrders: 7,  wage: 1050 },
-  { id: 16, name: '吉野 友吾',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030 },
-  { id: 17, name: 'サラ',            type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050 },
-  { id: 18, name: 'アイリーン',      type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030 },
-  { id: 19, name: 'エミリー',        type: 'P',    role: 'バリスタ',     skills: ['barista', 'cashier'],           hourlyOrders: 10, wage: 1080 },
-  { id: 20, name: '薬方 咲',         type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050 },
-  { id: 21, name: '佐藤 慧',         type: 'F',    role: 'スタッフ',     skills: ['barista', 'cashier', 'floor'], hourlyOrders: 9,  wage: 1080 },
+  { id: 1,  name: '金子 光男',       type: 'F',    role: 'マネージャー', skills: ['barista', 'cashier', 'floor'], hourlyOrders: 12, wage: 1250, transitPerDay: 0    },
+  { id: 2,  name: '澤井 詩議',       type: 'F',    role: 'サブマネージャー', skills: ['barista', 'cashier'], hourlyOrders: 11, wage: 1200, transitPerDay: 1050 },
+  { id: 3,  name: '吉田 郁美',       type: 'P',    role: 'スタッフ',     skills: ['barista', 'cashier', 'floor'], hourlyOrders: 9,  wage: 1050, transitPerDay: 272  },
+  { id: 4,  name: '岩間 康尚',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050, transitPerDay: 962  },
+  { id: 5,  name: '杉崎 浩枝',       type: 'P',    role: 'スタッフ',     skills: ['cashier'],                      hourlyOrders: 7,  wage: 1050, transitPerDay: 682  },
+  { id: 6,  name: 'スクアルチナ マルコ', type: 'P', role: 'バリスタ',   skills: ['barista', 'cashier', 'floor'], hourlyOrders: 13, wage: 1100, transitPerDay: 1050 },
+  { id: 7,  name: '二関 大地',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 7,  wage: 1050, transitPerDay: 420  },
+  { id: 8,  name: '松井 華乃',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050, transitPerDay: 1430 },
+  { id: 9,  name: '堀内 省吾',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030, transitPerDay: 648  },
+  { id: 10, name: '崔 恩雄',         type: 'P',    role: 'スタッフ',     skills: ['barista', 'floor'],             hourlyOrders: 9,  wage: 1050, transitPerDay: 712  },
+  { id: 11, name: 'クイ',            type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030, transitPerDay: 1028 },
+  { id: 12, name: '吉冨 寛大',       type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050, transitPerDay: 0    },
+  { id: 13, name: '譚木 りさ',       type: 'P',    role: 'スタッフ',     skills: ['barista', 'cashier'],           hourlyOrders: 8,  wage: 1050, transitPerDay: 900  },
+  { id: 14, name: '飯田 奈洋美',     type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 8,  wage: 1050, transitPerDay: 2442 },
+  { id: 15, name: '若林 百央',       type: 'P',    role: 'スタッフ',     skills: ['barista'],                      hourlyOrders: 7,  wage: 1050, transitPerDay: 376  },
+  { id: 16, name: '吉野 友吾',       type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030, transitPerDay: 356  },
+  { id: 17, name: 'サラ',            type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050, transitPerDay: 418  },
+  { id: 18, name: 'アイリーン',      type: 'P',    role: 'スタッフ',     skills: ['floor'],                        hourlyOrders: 6,  wage: 1030, transitPerDay: 682  },
+  { id: 19, name: 'エミリー',        type: 'P',    role: 'バリスタ',     skills: ['barista', 'cashier'],           hourlyOrders: 10, wage: 1080, transitPerDay: 816  },
+  { id: 20, name: '薬方 咲',         type: 'P',    role: 'スタッフ',     skills: ['cashier', 'floor'],             hourlyOrders: 7,  wage: 1050, transitPerDay: 320  },
+  { id: 21, name: '佐藤 慧',         type: 'F',    role: 'スタッフ',     skills: ['barista', 'cashier', 'floor'], hourlyOrders: 9,  wage: 1080, transitPerDay: 682  },
 ]
 
 const DAYS_IN_MONTH = 15 // 前半シフト
@@ -287,3 +287,86 @@ export const sukimaJobs = [
   { id:6, date:'2026-04-23', store:'池袋店',       role:'ホールスタッフ',   startTime:'14:00', endTime:'19:00', wage:1180, filled:0, total:3, deadlineHours:40,   transport:true,  location:'豊島区東池袋1-21-1',   bgColor:'#e3eef5', emoji:'🍹', description:'土曜の賑やかな池袋店でホールを担当。体力に自信がある方向け。経験不問。' },
   { id:7, date:'2026-04-24', store:'青山店',       role:'バリスタ',         startTime:'09:00', endTime:'13:00', wage:1350, filled:0, total:1, deadlineHours:64,   transport:true,  location:'港区南青山5-1-1',       bgColor:'#f0e3f5', emoji:'☕', description:'閑静な青山エリアのカフェ。落ち着いた環境でバリスタスキルを活かせます。' },
 ]
+
+// ─── 給与・税率定数（Excel: ﾃﾞｰﾀ入力!Monthly Data 由来）──────────────────────
+export const PAYROLL = {
+  socialInsuranceThresholdHours: 120, // 月間総時間 ≥ 120h で社会保険加入(ENTRY)
+  rateSocialInsurance: 0.03,           // 社会保険料 = 給与 × 3%
+  rateEmploymentInsurance: 0.006,      // 雇用保険料 = 給与 × 0.6%
+  ratePension: 0.1735,                 // 厚生年金料 = 給与 × 17.35%
+  rateIncomeTax: 0.10,                 // 所得税 = (給与 - 控除合計) × 10%
+  overtimeMultiplier: 0.25,            // 超勤割増 25%
+  lateNightMultiplier: 0.25,           // 深夜割増 25%
+  lateNightOTMultiplier: 0.5,          // 残深(超勤×深夜) 追加 50%
+  overtimeThresholdHours: 8,           // 8時間超で超勤
+  lateNightStartHour: 22,              // 22時以降が深夜
+  breakHoursIfWorkOver6: 1,            // 6h超勤務で1h休憩
+}
+
+// ─── 5+1パターンの時間帯別売上構成比（Excel: ﾃﾞｰﾀ入力!K-R）─────────────────
+// 各キーの値: { [hour]: 売上額(円) } 9-22時
+export const SALES_PATTERNS = {
+  weekday1: {
+    label: '平日①',
+    hourlySales: { 9:7000, 10:13000, 11:13000, 12:18000, 13:28000, 14:31000, 15:30000, 16:32000, 17:30000, 18:21000, 19:15000, 20:16000, 21:12000, 22:4000 },
+  },
+  weekday2: {
+    label: '平日②',
+    hourlySales: { 9:6000, 10:11000, 11:12000, 12:17000, 13:25000, 14:28000, 15:27000, 16:30000, 17:28000, 18:19000, 19:14000, 20:15000, 21:11000, 22:3500 },
+  },
+  friday: {
+    label: '金曜',
+    hourlySales: { 9:6000, 10:10000, 11:14000, 12:20000, 13:34000, 14:24000, 15:31000, 16:38000, 17:26000, 18:27000, 19:17000, 20:20000, 21:19000, 22:14000 },
+  },
+  saturday: {
+    label: '土曜',
+    hourlySales: { 9:20000, 10:20000, 11:20000, 12:32000, 13:45000, 14:47000, 15:50000, 16:50000, 17:36000, 18:26000, 19:21000, 20:24000, 21:9000, 22:0 },
+  },
+  sunday: {
+    label: '日祝',
+    hourlySales: { 9:16000, 10:21000, 11:25000, 12:36000, 13:43000, 14:54000, 15:52000, 16:52000, 17:32000, 18:26000, 19:21000, 20:15000, 21:7000, 22:0 },
+  },
+}
+
+// 日 → パターン割当（前半15日分。曜日に応じて自動）
+const PATTERN_BY_DOW = { '月':'weekday1','火':'weekday1','水':'weekday2','木':'weekday2','金':'friday','土':'saturday','日':'sunday' }
+export const dayPatterns = Object.fromEntries(
+  Array.from({ length: 31 }, (_, i) => i + 1).map(day => {
+    const dow = DOW[(day - 1) % DOW.length] || '月'
+    return [day, PATTERN_BY_DOW[dow] || 'weekday1']
+  })
+)
+
+// 給与計算：1日分（労働/超勤/深夜/残深を引数に給与を算出）
+export function calcDailyPay(wage, labor, overtime, lateNight, otLateNight) {
+  return wage * labor
+       + wage * PAYROLL.overtimeMultiplier * overtime
+       + wage * PAYROLL.lateNightMultiplier * lateNight
+       + wage * PAYROLL.lateNightOTMultiplier * otLateNight
+}
+
+// 勤務時間→各種時間（Excel式の簡易再現）
+// startHour, endHour は decimal (例: 9.5 = 9:30)
+export function decomposeShiftHours(startHour, endHour) {
+  if (endHour <= startHour) return { work: 0, labor: 0, overtime: 0, lateNight: 0, otLateNight: 0 }
+  const work  = endHour - startHour
+  const labor = Math.max(0, work - (work > 6 ? PAYROLL.breakHoursIfWorkOver6 : 0))
+  const overtime = Math.max(0, labor - PAYROLL.overtimeThresholdHours)
+  const lateNight = Math.max(0, Math.min(endHour, 24) - Math.max(startHour, PAYROLL.lateNightStartHour))
+  const otLateNight = Math.min(overtime, lateNight)
+  return { work, labor, overtime, lateNight, otLateNight }
+}
+
+// 月次振込予定額の計算（Monthly Data 計算式）
+export function calcMonthlyPayroll(staffMember, monthlyTotals) {
+  // monthlyTotals = { totalHours, totalDays, totalPay, totalTransit }
+  const enroll = monthlyTotals.totalHours >= PAYROLL.socialInsuranceThresholdHours
+  const socialIns      = enroll ? monthlyTotals.totalPay * PAYROLL.rateSocialInsurance      : 0
+  const empIns         = enroll ? monthlyTotals.totalPay * PAYROLL.rateEmploymentInsurance  : 0
+  const pension        = enroll ? monthlyTotals.totalPay * PAYROLL.ratePension              : 0
+  const taxableBase    = monthlyTotals.totalPay - (socialIns + empIns + pension)
+  const incomeTax      = Math.max(0, taxableBase * PAYROLL.rateIncomeTax)
+  const totalDeduction = socialIns + empIns + pension + incomeTax
+  const finalPay       = (monthlyTotals.totalPay + monthlyTotals.totalTransit) - totalDeduction
+  return { enroll, socialIns, empIns, pension, incomeTax, totalDeduction, finalPay }
+}
