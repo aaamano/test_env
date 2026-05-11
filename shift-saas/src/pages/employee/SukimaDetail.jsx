@@ -1,12 +1,15 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { sukimaJobs } from '../../data/mockData'
+import { sukimaJobs, DEFAULT_STORE_ADDRESS } from '../../data/mockData'
 import EmployeeTabBar from '../../components/EmployeeTabBar'
 
-const MAP_POS = { 1:{x:35,y:62}, 2:{x:48,y:40}, 3:{x:44,y:52}, 4:{x:65,y:50}, 5:{x:38,y:57}, 6:{x:52,y:25}, 7:{x:42,y:58} }
 const INDIGO = '#4F46E5'
 const CORAL  = '#FF6B6B'
 const BORDER = '#E2E8F0'
+
+const getStoreAddress = () => {
+  try { return localStorage.getItem('pitashif_store_address') || DEFAULT_STORE_ADDRESS } catch { return DEFAULT_STORE_ADDRESS }
+}
 
 function deadlineLabel(h) {
   if (h >= 24) return `あと${Math.floor(h/24)}日で締め切り`
@@ -111,22 +114,20 @@ export default function SukimaDetail() {
         </div>
 
         {/* Map */}
-        <div style={{ background:'white', marginTop:8, padding:'14px 16px 8px' }}>
-          <div style={{ fontSize:11, fontWeight:700, color:'#64748B', letterSpacing:'0.04em', marginBottom:8 }}>アクセス</div>
-          <div style={{ borderRadius:10, overflow:'hidden', border:`1px solid ${BORDER}`, marginBottom:6 }}>
-            <svg viewBox="0 0 100 60" style={{ width:'100%', display:'block', background:'#D4DCE8' }}>
-              {[20,40,60,80].map(v => <line key={`h${v}`} x1={0} y1={v*0.6} x2={100} y2={v*0.6} stroke="white" strokeWidth="1.2" />)}
-              {[20,40,60,80].map(v => <line key={`v${v}`} x1={v} y1={0} x2={v} y2={60} stroke="white" strokeWidth="0.8" />)}
-              <rect x={8}  y={4}  width={22} height={10} fill="#C8D5C8" rx="1" />
-              <rect x={38} y={16} width={16} height={10} fill="#C8D5C8" rx="1" />
-              <rect x={60} y={24} width={18} height={10} fill="#C8D5C8" rx="1" />
-              <circle cx={pos.x} cy={pos.y*0.6} r="6" fill={INDIGO} stroke="white" strokeWidth="1.5" opacity="0.18" />
-              <circle cx={pos.x} cy={pos.y*0.6} r="4" fill={INDIGO} stroke="white" strokeWidth="1.5" />
-              <circle cx={pos.x} cy={pos.y*0.6} r="1.4" fill="white" />
-              <text x={pos.x+6} y={pos.y*0.6+2.5} fontSize="3.5" fill="#1E293B" fontWeight="700">{job.store}</text>
-            </svg>
+        <div style={{ background:'white', marginTop:8 }}>
+          <div style={{ fontSize:11, fontWeight:700, color:'#64748B', letterSpacing:'0.04em', padding:'14px 16px 8px' }}>アクセス</div>
+          <div style={{ borderRadius:0, overflow:'hidden' }}>
+            <iframe
+              src={`https://maps.google.com/maps?q=${encodeURIComponent(job.location + ' ' + getStoreAddress())}&output=embed&hl=ja&z=16`}
+              width="100%"
+              height="200"
+              style={{ border:'none', display:'block' }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Google Maps"
+            />
           </div>
-          <div style={{ fontSize:11, color:'#94A3B8', paddingBottom:8 }}>📍 {job.location}</div>
+          <div style={{ fontSize:11, color:'#94A3B8', padding:'6px 16px 12px' }}>📍 {job.location}</div>
         </div>
 
         <div style={{ height:16 }} />

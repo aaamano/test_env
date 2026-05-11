@@ -1,7 +1,26 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { sukimaJobs } from '../../data/mockData'
+import { sukimaJobs, DEFAULT_STORE_ADDRESS } from '../../data/mockData'
 import EmployeeTabBar from '../../components/EmployeeTabBar'
+
+const getStoreAddress = () => {
+  try { return localStorage.getItem('pitashif_store_address') || DEFAULT_STORE_ADDRESS } catch { return DEFAULT_STORE_ADDRESS }
+}
+
+function GoogleMapEmbed({ query, height = 240 }) {
+  const src = `https://maps.google.com/maps?q=${encodeURIComponent(query)}&output=embed&hl=ja&z=15`
+  return (
+    <iframe
+      src={src}
+      width="100%"
+      height={height}
+      style={{ border:'none', display:'block' }}
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      title="Google Maps"
+    />
+  )
+}
 
 const DAYS_JP = ['日','月','火','水','木','金','土']
 const TODAY = new Date('2026-04-21')
@@ -135,20 +154,7 @@ export default function SukimaTop() {
         <div style={{ width:48 }} />
       </div>
       <div className="pita-phone-body">
-        <svg viewBox="0 0 100 80" style={{ width:'100%', display:'block', background:'#D4DCE8' }}>
-          {[20,40,60,80].map(v => <line key={`h${v}`} x1={0} y1={v*0.8} x2={100} y2={v*0.8} stroke="white" strokeWidth="1.2" />)}
-          {[20,40,60,80].map(v => <line key={`v${v}`} x1={v} y1={0} x2={v} y2={80} stroke="white" strokeWidth="0.8" />)}
-          <rect x={8}  y={6}  width={22} height={14} fill="#C8D5C8" rx="1" />
-          <rect x={38} y={22} width={16} height={12} fill="#C8D5C8" rx="1" />
-          <rect x={60} y={32} width={18} height={12} fill="#C8D5C8" rx="1" />
-          {dayJobs.map(j => { const p = MAP_POS[j.id]||{x:50,y:50}; return (
-            <g key={j.id}>
-              <circle cx={p.x} cy={p.y*0.8} r="4.5" fill={INDIGO} stroke="white" strokeWidth="1.2" />
-              <circle cx={p.x} cy={p.y*0.8} r="1.4" fill="white" />
-              <text x={p.x+6} y={p.y*0.8+2.5} fontSize="3" fill="#1E293B" fontWeight="600">{j.store}</text>
-            </g>
-          )})}
-        </svg>
+        <GoogleMapEmbed query={getStoreAddress()} height={260} />
         <div style={{ padding:'8px 12px', display:'flex', flexDirection:'column', gap:6 }}>
           {dayJobs.map(j => (
             <Link key={j.id} to={`/pitashif/employee-ver2/sukima/${j.id}`} style={{ textDecoration:'none' }}>
@@ -263,8 +269,9 @@ export default function SukimaTop() {
       {/* Date selector */}
       <div style={{ display:'flex', gap:6, padding:'8px 12px', overflowX:'auto', flexShrink:0, background:'white', borderBottom:`1px solid ${BORDER}`, msOverflowStyle:'none', scrollbarWidth:'none' }}>
         {DATES.map((d, i) => {
-          const active = i === selDate
-          const dayColor = d.isSun ? CORAL : d.isSat ? SKY : '#0F172A'
+          const isActive  = i === selDate
+          const isToday   = i === 0
+          const dayColor  = d.isSun ? CORAL : d.isSat ? SKY : '#0F172A'
           return (
             <button
               key={i}
@@ -272,14 +279,23 @@ export default function SukimaTop() {
               style={{
                 flexShrink:0, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center',
                 width:50, height:56, borderRadius:12, padding:0, cursor:'pointer',
-                border: active ? 'none' : `1px solid ${BORDER}`,
-                background: active ? INDIGO : 'white',
-                boxShadow: active ? '0 2px 8px rgba(79,70,229,0.25)' : 'none',
+                /* today unselected → indigo ring; selected → solid indigo fill; other → gray border */
+                border: isActive ? 'none' : isToday ? `2px solid ${INDIGO}` : `1px solid ${BORDER}`,
+                background: isActive ? INDIGO : 'white',
+                boxShadow: isActive ? '0 2px 8px rgba(79,70,229,0.28)' : 'none',
               }}
             >
-              {i === 0 && <span style={{ fontSize:8, fontWeight:700, color: active ? 'rgba(255,255,255,0.8)' : '#64748B', marginBottom:1 }}>今日</span>}
-              <span style={{ fontSize:19, fontWeight:800, lineHeight:1.1, color: active ? 'white' : dayColor }}>{d.dayNum}</span>
-              <span style={{ fontSize:9, color: active ? 'rgba(255,255,255,0.7)' : (d.isSun ? CORAL : d.isSat ? SKY : '#64748B') }}>{d.dow}</span>
+              {isToday && (
+                <span style={{ fontSize:8, fontWeight:800, color: isActive ? 'rgba(255,255,255,0.85)' : INDIGO, marginBottom:1, letterSpacing:'0.02em' }}>
+                  今日
+                </span>
+              )}
+              <span style={{ fontSize:19, fontWeight:800, lineHeight:1.1, color: isActive ? 'white' : isToday ? INDIGO : dayColor }}>
+                {d.dayNum}
+              </span>
+              <span style={{ fontSize:9, color: isActive ? 'rgba(255,255,255,0.7)' : isToday ? INDIGO : (d.isSun ? CORAL : d.isSat ? SKY : '#64748B') }}>
+                {d.dow}
+              </span>
             </button>
           )
         })}

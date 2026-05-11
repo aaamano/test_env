@@ -52,7 +52,11 @@ export default function EmployeeTabBar({ base = '/pitashif/employee', sukima = f
   ]
 
   return (
-    <div style={{ display:'flex', background:'white', borderTop:'1px solid #F3F4F6', flexShrink:0, paddingBottom:'max(8px, env(safe-area-inset-bottom, 8px))' }}>
+    <div style={{
+      display:'flex', background:'white', borderTop:'1px solid #F3F4F6', flexShrink:0,
+      paddingBottom:'max(8px, env(safe-area-inset-bottom, 8px))',
+      position:'sticky', bottom:0, zIndex:10,
+    }}>
       {tabs.map(({ id, to, label, Icon }) => {
         const on = active === id
         const hasUnread = id === 'notifications' && UNREAD > 0
