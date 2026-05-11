@@ -58,9 +58,9 @@ function FilterSheet({ opt, current, onSelect, onClose }) {
               <button
                 key={val}
                 onClick={() => { onSelect(opt.key, val); onClose() }}
-                style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'14px 20px', background:'none', border:'none', borderBottom:'1px solid #f9fafb', cursor:'pointer', textAlign:'left' }}
+                style={{ width:'100%', display:'flex', alignItems:'center', justifyContent:'space-between', padding:'16px 20px', background:'none', border:'none', borderBottom:'1px solid #f9fafb', cursor:'pointer', textAlign:'left', minHeight:52 }}
               >
-                <span style={{ fontSize:14, color: on ? '#5B67F8' : '#374151', fontWeight: on ? 700 : 400 }}>{val}</span>
+                <span style={{ fontSize:15, color: on ? '#5B67F8' : '#374151', fontWeight: on ? 700 : 400 }}>{val}</span>
                 {on && <span style={{ color:'#5B67F8', fontSize:18, fontWeight:700 }}>✓</span>}
               </button>
             )
@@ -150,13 +150,13 @@ export default function SukimaTop() {
       <div style={{ padding:'10px 14px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'white', borderBottom:'1px solid #f3f4f6', flexShrink:0 }}>
         <button
           onClick={() => setShowCondition(true)}
-          style={{ display:'flex', alignItems:'center', gap:6, padding:'7px 16px', borderRadius:20, border:'none', background:'#5B67F8', fontSize:12, fontWeight:700, cursor:'pointer', color:'white' }}
+          style={{ display:'flex', alignItems:'center', gap:6, padding:'10px 18px', borderRadius:22, border:'none', background:'#5B67F8', fontSize:13, fontWeight:700, cursor:'pointer', color:'white', minHeight:44 }}
         >
           条件登録
         </button>
         <button
           onClick={() => setFilterSheet(FILTER_OPTS[0].key)}
-          style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:20, border:'1px solid #e5e7eb', background:'white', fontSize:12, cursor:'pointer', color:'#374151', position:'relative' }}
+          style={{ display:'flex', alignItems:'center', gap:5, padding:'10px 14px', borderRadius:22, border:'1px solid #e5e7eb', background:'white', fontSize:13, cursor:'pointer', color:'#374151', position:'relative', minHeight:44 }}
         >
           <IconSliders /> 絞り込み
           {activeFilterCount > 0 && (
@@ -214,10 +214,11 @@ export default function SukimaTop() {
               key={opt.key}
               onClick={() => setFilterSheet(opt.key)}
               style={{
-                display:'flex', alignItems:'center', gap:4, padding:'6px 12px',
-                borderRadius:16, border: isOn ? 'none' : '1px solid #e5e7eb',
+                display:'flex', alignItems:'center', gap:4, padding:'9px 14px',
+                borderRadius:20, border: isOn ? 'none' : '1px solid #e5e7eb',
                 background: isOn ? '#eef0fe' : 'white', color: isOn ? '#5B67F8' : '#6b7280',
-                fontSize:12, fontWeight: isOn ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0,
+                fontSize:13, fontWeight: isOn ? 700 : 400, cursor:'pointer', whiteSpace:'nowrap', flexShrink:0,
+                minHeight:40,
               }}
             >
               <span style={{ fontSize:13 }}>{opt.icon}</span>
@@ -252,8 +253,8 @@ export default function SukimaTop() {
 
       {/* Sort + map toggle */}
       <div style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'8px 14px', background:'white', borderTop:'1px solid #f3f4f6', borderBottom:'1px solid #f3f4f6', flexShrink:0 }}>
-        <button style={{ display:'flex', alignItems:'center', gap:4, background:'none', border:'none', cursor:'pointer', fontSize:12, color:'#374151' }}>⇕ 現在地から近い順 <span style={{ color:'#9ca3af' }}>▼</span></button>
-        <button onClick={() => setShowMap(true)} style={{ display:'flex', alignItems:'center', gap:5, padding:'6px 12px', borderRadius:20, border:'1px solid #e5e7eb', background:'white', fontSize:12, cursor:'pointer', color:'#374151' }}>🗺 マップ</button>
+        <button style={{ display:'flex', alignItems:'center', gap:4, background:'none', border:'none', cursor:'pointer', fontSize:13, color:'#374151', minHeight:40 }}>⇕ 現在地から近い順 <span style={{ color:'#9ca3af' }}>▼</span></button>
+        <button onClick={() => setShowMap(true)} style={{ display:'flex', alignItems:'center', gap:5, padding:'9px 14px', borderRadius:20, border:'1px solid #e5e7eb', background:'white', fontSize:13, cursor:'pointer', color:'#374151', minHeight:40 }}>🗺 マップ</button>
       </div>
 
       {/* Job list */}
