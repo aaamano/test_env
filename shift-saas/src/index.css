@@ -583,8 +583,8 @@ body {
   box-shadow: 0 0 60px rgba(79,70,229,0.20);
 }
 /* SP: full width, no desktop chrome */
-@media (max-width: 480px) {
-  .emp-stage { background: #f9fafb; }
+@media (max-width: 768px) {
+  .emp-stage { background: var(--pita-bg); align-items: stretch; }
   .emp-frame { max-width: 100%; box-shadow: none; min-height: 100svh; }
 }
 
