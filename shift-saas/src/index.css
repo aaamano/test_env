@@ -582,10 +582,15 @@ body {
   flex-direction: column;
   box-shadow: 0 0 60px rgba(79,70,229,0.20);
 }
-/* SP: full width, no desktop chrome */
+/* SP: full width, no desktop chrome, tab bar always locked at bottom */
 @media (max-width: 768px) {
   .emp-stage { background: var(--pita-bg); align-items: stretch; }
-  .emp-frame { max-width: 100%; box-shadow: none; min-height: 100svh; }
+  .emp-frame {
+    max-width: 100%;
+    box-shadow: none;
+    height: 100svh;      /* exact viewport — prevents overflow / tab-bar scroll-away */
+    overflow: hidden;
+  }
 }
 
 /* ── Mobile: phone-stage shows only inner content ── */
